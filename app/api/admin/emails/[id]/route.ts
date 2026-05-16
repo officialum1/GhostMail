@@ -13,7 +13,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 
     if (!email) return NextResponse.json({ error: 'Not found' }, { status: 404 });
     return NextResponse.json(email);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch' }, { status: 500 });
   }
 }
@@ -28,7 +28,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete' }, { status: 500 });
   }
 }

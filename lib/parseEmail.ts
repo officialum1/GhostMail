@@ -5,8 +5,8 @@ export async function parseRawEmail(raw: string) {
   const email = await parser.parse(raw);
   
   return {
-    from: email.from.address,
-    to: email.to[0].address,
+    from: email.from?.address || 'unknown',
+    to: (email.to && email.to.length > 0) ? email.to[0].address : '',
     subject: email.subject,
     text: email.text,
     html: email.html,

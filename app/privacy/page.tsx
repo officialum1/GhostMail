@@ -29,7 +29,7 @@ export default function PrivacyPage() {
 
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">4. Third-Party Services</h2>
-            <p>GhostMail utilizes Cloudflare Email Routing to receive emails. Cloudflare securely forwards incoming emails to our servers. Please refer to Cloudflare's privacy policy for information on how they handle transient email routing.</p>
+            <p>GhostMail utilizes Cloudflare Email Routing to receive emails. Cloudflare securely forwards incoming emails to our servers. Please refer to Cloudflare&apos;s privacy policy for information on how they handle transient email routing.</p>
           </section>
 
           <section>

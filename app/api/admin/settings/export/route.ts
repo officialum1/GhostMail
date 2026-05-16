@@ -8,7 +8,7 @@ export async function GET() {
     });
 
     const headers = ['ID', 'Username', 'Email', 'Created At'];
-    const csvRows = users.map(user => 
+    const csvRows = users.map((user: { id: number; username: string; email: string; createdAt: Date }) => 
       [user.id, user.username, user.email, user.createdAt.toISOString()].join(',')
     );
     
@@ -21,7 +21,7 @@ export async function GET() {
         'Content-Disposition': 'attachment; filename="ghostmail_users.csv"',
       },
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to export' }, { status: 500 });
   }
 }

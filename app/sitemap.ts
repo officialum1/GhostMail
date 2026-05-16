@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+
 
 export default function sitemap() {
   const domain = process.env.NEXT_PUBLIC_DOMAIN || 'yourdomain.com';

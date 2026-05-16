@@ -15,7 +15,7 @@ export async function POST() {
     });
 
     return NextResponse.json({ success: true, count: deleted.count });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to cleanup' }, { status: 500 });
   }
 }

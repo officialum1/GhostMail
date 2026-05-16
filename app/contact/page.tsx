@@ -2,7 +2,7 @@ export const metadata = {
   title: 'Contact Us',
 };
 
-import { Mail, MessageSquare, Info } from 'lucide-react';
+import { Mail, MessageSquare } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ContactPage() {
@@ -16,7 +16,7 @@ export default function ContactPage() {
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
             Get in Touch
           </h1>
-          <p className="text-xl text-slate-400">We're here to help with any questions or issues.</p>
+          <p className="text-xl text-slate-400">We&apos;re here to help with any questions or issues.</p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">

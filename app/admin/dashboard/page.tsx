@@ -1,6 +1,8 @@
 import { db } from '@/lib/db';
 import { Users, Mail, Activity, Clock } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
   const totalUsers = await db.user.count();
   const totalEmails = await db.email.count();
@@ -31,13 +33,13 @@ export default async function AdminDashboard() {
     take: 5
   });
 
-  const topUserIds = topUsersData.map(d => d.userId);
+  const topUserIds = topUsersData.map((d: { userId: number }) => d.userId);
   const topUsersObjects = await db.user.findMany({
     where: { id: { in: topUserIds } }
   });
 
-  const topUsers = topUsersData.map(data => {
-    const user = topUsersObjects.find(u => u.id === data.userId);
+  const topUsers = topUsersData.map((data: { userId: number; _count: { id: number } }) => {
+    const user = topUsersObjects.find((u: { id: number; username: string }) => u.id === data.userId);
     return {
       username: user?.username || 'Unknown',
       emailCount: data._count.id
@@ -117,7 +119,7 @@ export default async function AdminDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
-                {recentEmails.map((email) => (
+                {recentEmails.map((email: { id: number; fromAddress: string; toAddress: string; subject: string; receivedAt: Date }) => (
                   <tr key={email.id} className="text-slate-300">
                     <td className="py-3 truncate max-w-[150px]">{email.fromAddress}</td>
                     <td className="py-3 text-cyan-400 truncate max-w-[150px]">{email.toAddress}</td>
@@ -138,7 +140,7 @@ export default async function AdminDashboard() {
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
           <h2 className="text-xl font-bold mb-6 text-white">Recent Users</h2>
           <div className="space-y-4">
-            {recentUsers.map(user => (
+            {recentUsers.map((user: { id: number; username: string; email: string; createdAt: Date }) => (
               <div key={user.id} className="flex items-center justify-between">
                 <div>
                   <p className="font-medium text-white">{user.username}</p>

@@ -36,6 +36,7 @@ export default function AdminUsersPage() {
       fetchUsers();
     }, 500);
     return () => clearTimeout(delay);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
   const handleDelete = async (id: number) => {

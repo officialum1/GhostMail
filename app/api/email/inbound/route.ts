@@ -34,6 +34,10 @@ export async function POST(req: Request) {
 
     const parsedEmail = await parseRawEmail(rawEmailData);
 
+    if (!parsedEmail.to) {
+      return NextResponse.json({ success: true, message: 'No recipient found' });
+    }
+
     const user = await db.user.findUnique({
       where: { email: parsedEmail.to.toLowerCase() }
     });
@@ -42,7 +46,7 @@ export async function POST(req: Request) {
       await db.email.create({
         data: {
           toAddress: parsedEmail.to.toLowerCase(),
-          fromAddress: parsedEmail.from,
+          fromAddress: parsedEmail.from || 'unknown',
           subject: parsedEmail.subject || '(No Subject)',
           bodyText: parsedEmail.text,
           bodyHtml: parsedEmail.html,

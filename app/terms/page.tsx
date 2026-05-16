@@ -14,7 +14,7 @@ export default function TermsPage() {
         <div className="space-y-8">
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">1. Acceptance of Terms</h2>
-            <p>By accessing and using GhostMail ("the Service") at {domain}, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.</p>
+            <p>By accessing and using GhostMail (&quot;the Service&quot;) at {domain}, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.</p>
           </section>
 
           <section>
@@ -39,7 +39,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">6. Disclaimers</h2>
-            <p>The Service is provided "as is" and "as available". We do not guarantee that the service will be uninterrupted or error-free. We are not responsible for any missed, lost, or deleted emails.</p>
+            <p>The Service is provided &quot;as is&quot; and &quot;as available&quot;. We do not guarantee that the service will be uninterrupted or error-free. We are not responsible for any missed, lost, or deleted emails.</p>
           </section>
 
           <section>

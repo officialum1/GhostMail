@@ -48,7 +48,7 @@ export default function AboutPage() {
             <FastForward className="w-8 h-8 text-blue-400" />
           </div>
           <h3 className="text-xl font-bold mb-3">Cloudflare Powered</h3>
-          <p className="text-slate-400">Utilizing Cloudflare's global edge network for enterprise-grade email routing, ensuring instant delivery.</p>
+          <p className="text-slate-400">Utilizing Cloudflare&apos;s global edge network for enterprise-grade email routing, ensuring instant delivery.</p>
         </motion.div>
       </div>
 

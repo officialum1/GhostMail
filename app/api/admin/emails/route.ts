@@ -26,7 +26,7 @@ export async function GET(req: Request) {
     });
 
     return NextResponse.json(emails);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch emails' }, { status: 500 });
   }
 }
