@@ -1,58 +1,78 @@
-export const metadata = {
-  title: 'Privacy Policy',
+import type { Metadata } from 'next';
+import PageLayout from '@/components/PageLayout';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy — GhostMail',
+  description:
+    'GhostMail privacy policy. Learn how we collect, use, and protect your personal data.',
 };
 
+const sections = [
+  {
+    title: '1. Introduction',
+    body: 'GhostMail is committed to protecting your privacy. This policy explains what information we collect, how we use it, and the choices you have regarding your personal data.',
+  },
+  {
+    title: '2. Data We Collect',
+    body: 'We collect account data such as your chosen username and hashed password, email data stored on your behalf, limited usage and security data such as login times and IP addresses, and we do not use advertising trackers.',
+  },
+  {
+    title: '3. How We Use Your Data',
+    body: 'We use data to provide the email service, secure your account, prevent abuse, and improve reliability. Your data is never sold to third parties.',
+  },
+  {
+    title: '4. Data Storage',
+    body: 'Data is stored on secure infrastructure, encrypted at rest where supported, and processed across US and EU service regions depending on platform providers and operational needs.',
+  },
+  {
+    title: '5. Third Party Services',
+    body: 'GhostMail relies on Cloudflare for email routing and edge protection, Render for application hosting, and infrastructure providers needed to operate the service. We do not participate in advertising networks.',
+  },
+  {
+    title: '6. Cookies',
+    body: 'We use essential session cookies so you can log in and use your dashboard securely. We do not use tracking cookies or third-party ad cookies.',
+  },
+  {
+    title: '7. Data Retention',
+    body: 'Account data is retained until you request deletion. Emails remain until deleted by you, removed under retention policy, or deleted with your account. Operational logs are generally retained for around 30 days unless longer retention is needed for security or compliance.',
+  },
+  {
+    title: '8. Your Rights (GDPR)',
+    body: 'You may have rights to access, correct, delete, export, or object to processing of your data. Contact us if you want to exercise those rights and we will respond in line with applicable law.',
+  },
+  {
+    title: "9. Children's Privacy",
+    body: 'GhostMail is not intended for children under 13 and we do not knowingly collect personal data from children under that age.',
+  },
+  {
+    title: '10. Changes to Policy',
+    body: 'We may update this Privacy Policy to reflect operational, legal, or product changes. Material updates will be reflected by revising the last updated date.',
+  },
+  {
+    title: '11. Contact',
+    body: 'For privacy-related questions or requests, contact privacy@ghostmail.store.',
+  },
+];
+
 export default function PrivacyPage() {
-  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
-
   return (
-    <div className="min-h-screen bg-[#0a0f1e] text-slate-300 font-sans pt-32 pb-20 px-6">
-      <div className="max-w-4xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-md">
-        <h1 className="text-4xl font-bold text-white mb-8">Privacy Policy</h1>
-        <p className="mb-8">Last updated: {new Date().toLocaleDateString()}</p>
-        
-        <div className="space-y-8">
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">1. Information We Collect</h2>
-            <p>When you register for GhostMail, we collect your chosen username and securely hashed password. As you use the service, we temporarily store the emails sent to your `{domain}` address, including sender, subject, and content.</p>
-          </section>
+    <PageLayout>
+      <section className="mx-auto max-w-5xl px-6 py-20 md:py-32">
+        <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur md:p-12">
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Privacy</p>
+          <h1 className="mt-4 text-4xl font-bold md:text-6xl">Privacy Policy</h1>
+          <p className="mt-4 text-slate-400">Last updated: May 2025</p>
 
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">2. How We Use Your Information</h2>
-            <p>We use your information exclusively to provide the GhostMail service—allowing you to log in and read the emails sent to your custom address. We do not sell, rent, or share your data with third parties for marketing purposes.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">3. Data Storage and Security</h2>
-            <p>Your data is stored securely. Passwords are cryptographically hashed using bcrypt. While we implement strong security measures, no system is entirely foolproof, and we cannot guarantee absolute security of your data.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">4. Third-Party Services</h2>
-            <p>GhostMail utilizes Cloudflare Email Routing to receive emails. Cloudflare securely forwards incoming emails to our servers. Please refer to Cloudflare&apos;s privacy policy for information on how they handle transient email routing.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">5. Cookies</h2>
-            <p>We use essential cookies solely to maintain your active session when logged into the dashboard. We do not use tracking or advertising cookies.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">6. Data Retention</h2>
-            <p>Emails may be automatically deleted from our servers after a certain period (e.g., 30 days) to conserve storage space. You may also manually delete emails from your inbox.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">7. Your Rights (GDPR Friendly)</h2>
-            <p>You have the right to access, update, or request the deletion of your personal data. If you wish to delete your account and all associated emails, please contact our support team.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">8. Contact Us</h2>
-            <p>If you have any questions about this Privacy Policy, please contact us via the information provided on our Contact page.</p>
-          </section>
+          <div className="mt-10 space-y-8 text-slate-300">
+            {sections.map((section) => (
+              <section key={section.title}>
+                <h2 className="text-2xl font-semibold text-white">{section.title}</h2>
+                <p className="mt-3 leading-8">{section.body}</p>
+              </section>
+            ))}
+          </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </PageLayout>
   );
 }

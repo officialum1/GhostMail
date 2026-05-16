@@ -1,58 +1,96 @@
-export const metadata = {
-  title: 'Terms of Service',
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import PageLayout from '@/components/PageLayout';
+
+export const metadata: Metadata = {
+  title: 'Terms of Service — GhostMail',
+  description:
+    'Read GhostMail terms of service. Understanding your rights and responsibilities when using our email service.',
 };
 
+const sections = [
+  {
+    title: '1. Acceptance of Terms',
+    body: 'By accessing or using GhostMail, you agree to these Terms of Service. If you do not agree, do not use the service.',
+  },
+  {
+    title: '2. Description of Service',
+    body: 'GhostMail provides a free custom email address at @ghostmail.store, web-based inbox access, email receiving, and secure storage of messages routed to your account.',
+  },
+  {
+    title: '3. User Accounts',
+    body: 'Usernames must generally be 3 to 20 characters and use supported alphanumeric formats. You are responsible for keeping your password secure and for activity that occurs under your account. We may limit one account per user where abuse prevention requires it.',
+  },
+  {
+    title: '4. Acceptable Use Policy',
+    body: 'You may not use GhostMail for spam, bulk messaging, illegal content, phishing, fraud, harassment, malware distribution, or other abusive behavior. We may suspend or terminate accounts that violate these rules.',
+  },
+  {
+    title: '5. Privacy',
+    body: 'Your use of GhostMail is also governed by our Privacy Policy. That policy explains what data we collect and how we use it to operate and secure the service.',
+  },
+  {
+    title: '6. Email Storage',
+    body: 'We store email on your behalf so it can be accessed through your dashboard. We may delete old emails based on retention rules, account status, or operational needs. Permanent storage is not guaranteed.',
+  },
+  {
+    title: '7. Service Availability',
+    body: 'We aim for 99.9% uptime, but maintenance, provider outages, and third-party issues can affect availability. There is no formal SLA for the free tier.',
+  },
+  {
+    title: '8. Intellectual Property',
+    body: 'GhostMail, its software, branding, and visual assets remain our property or the property of our licensors. Using the service does not transfer ownership to you.',
+  },
+  {
+    title: '9. Limitation of Liability',
+    body: 'GhostMail is provided as-is. To the fullest extent permitted by law, we are not liable for indirect, incidental, special, consequential, or punitive damages arising from your use of the service.',
+  },
+  {
+    title: '10. Termination',
+    body: 'We may suspend or terminate access if you violate these terms, abuse the platform, or create security risk. You may stop using the service at any time and request account deletion.',
+  },
+  {
+    title: '11. Changes to Terms',
+    body: 'We may update these terms from time to time. Continued use of GhostMail after changes take effect means you accept the revised terms.',
+  },
+  {
+    title: '12. Governing Law',
+    body: 'These terms are governed by applicable laws in the jurisdiction in which GhostMail operates, subject to consumer rights that may apply in your region.',
+  },
+  {
+    title: '13. Contact Information',
+    body: 'For questions about these terms, contact us at support@ghostmail.store.',
+  },
+];
+
 export default function TermsPage() {
-  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
-
   return (
-    <div className="min-h-screen bg-[#0a0f1e] text-slate-300 font-sans pt-32 pb-20 px-6">
-      <div className="max-w-4xl mx-auto bg-white/5 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-md">
-        <h1 className="text-4xl font-bold text-white mb-8">Terms of Service</h1>
-        <p className="mb-8">Last updated: {new Date().toLocaleDateString()}</p>
-        
-        <div className="space-y-8">
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">1. Acceptance of Terms</h2>
-            <p>By accessing and using GhostMail (&quot;the Service&quot;) at {domain}, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our Service.</p>
-          </section>
+    <PageLayout>
+      <section className="mx-auto max-w-5xl px-6 py-20 md:py-32">
+        <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur md:p-12">
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Legal</p>
+          <h1 className="mt-4 text-4xl font-bold md:text-6xl">Terms of Service</h1>
+          <p className="mt-4 text-slate-400">Last updated: May 2025</p>
 
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">2. Description of Service</h2>
-            <p>GhostMail provides users with custom, temporary-style email addresses for receiving emails, primarily intended for OTPs, verifications, and protecting personal inboxes from spam. We do not support sending emails.</p>
-          </section>
+          <div className="mt-10 space-y-8 text-slate-300">
+            {sections.map((section) => (
+              <section key={section.title}>
+                <h2 className="text-2xl font-semibold text-white">{section.title}</h2>
+                <p className="mt-3 leading-8">{section.body}</p>
+              </section>
+            ))}
+          </div>
 
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">3. User Accounts</h2>
-            <p>You are responsible for maintaining the confidentiality of your account credentials. You agree to accept responsibility for all activities that occur under your account.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">4. Acceptable Use</h2>
-            <p>You agree not to use the Service for any unlawful purpose or in any way that interrupts, damages, or impairs the service. You may not use GhostMail to engage in abuse, harassment, or distribution of malware.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">5. Privacy</h2>
-            <p>Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the Service, to understand our practices regarding your data.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">6. Disclaimers</h2>
-            <p>The Service is provided &quot;as is&quot; and &quot;as available&quot;. We do not guarantee that the service will be uninterrupted or error-free. We are not responsible for any missed, lost, or deleted emails.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">7. Termination</h2>
-            <p>We reserve the right to terminate or suspend your account and access to the Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms.</p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-white mb-4">8. Changes to Terms</h2>
-            <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms.</p>
-          </section>
+          <p className="mt-10 text-slate-400">
+            You should also review our
+            {' '}
+            <Link href="/privacy" className="text-cyan-300 hover:text-cyan-200">
+              Privacy Policy
+            </Link>
+            .
+          </p>
         </div>
-      </div>
-    </div>
+      </section>
+    </PageLayout>
   );
 }

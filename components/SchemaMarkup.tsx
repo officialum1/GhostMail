@@ -1,43 +1,105 @@
-export default function SchemaMarkup() {
-  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
-  const url = process.env.NEXTAUTH_URL || `https://${domain}`;
+type FAQItem = {
+  question: string;
+  answer: string;
+};
 
+type SchemaMarkupProps = {
+  faqItems?: FAQItem[];
+  includeBase?: boolean;
+};
+
+const baseUrl = "https://ghostmail.store";
+
+export default function SchemaMarkup({
+  faqItems,
+  includeBase = true,
+}: SchemaMarkupProps) {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "GhostMail",
-    "url": url,
-    "description": "Free custom email address for receiving OTPs and verifications",
-    "potentialAction": {
+    name: "GhostMail",
+    url: baseUrl,
+    description:
+      "Free custom email address for receiving OTPs and verifications",
+    potentialAction: {
       "@type": "SearchAction",
-      "target": `${url}/register`
-    }
+      target: `${baseUrl}/register`,
+    },
   };
 
-  const webAppSchema = {
+  const webApplicationSchema = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "GhostMail",
-    "applicationCategory": "CommunicationApplication",
-    "operatingSystem": "Web",
-    "offers": {
+    name: "GhostMail",
+    url: baseUrl,
+    applicationCategory: "CommunicationApplication",
+    operatingSystem: "Web Browser",
+    offers: {
       "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "USD"
+      price: "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
     },
-    "description": "Get a free custom email address instantly"
+    description: "Get a free custom email address instantly at ghostmail.store",
   };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "GhostMail",
+    url: baseUrl,
+    logo: `${baseUrl}/favicon.svg`,
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      email: "support@ghostmail.store",
+    },
+  };
+
+  const faqSchema =
+    faqItems && faqItems.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqItems.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: item.answer,
+            },
+          })),
+        }
+      : null;
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(webAppSchema) }}
-      />
+      {includeBase ? (
+        <>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+          />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(webApplicationSchema),
+            }}
+          />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(organizationSchema),
+            }}
+          />
+        </>
+      ) : null}
+      {faqSchema ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      ) : null}
     </>
   );
 }

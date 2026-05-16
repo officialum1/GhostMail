@@ -1,63 +1,129 @@
-'use client';
+import type { Metadata } from 'next';
+import { Lock, Shield, Sparkles, Workflow } from 'lucide-react';
+import PageLayout from '@/components/PageLayout';
 
-import { motion } from 'framer-motion';
-import { Mail, Shield, FastForward } from 'lucide-react';
-import Link from 'next/link';
+export const metadata: Metadata = {
+  title: 'About GhostMail — Our Mission & Story',
+  description:
+    'Learn about GhostMail, our mission to protect email privacy, and how we built a free custom email service powered by Cloudflare.',
+};
+
+const stats = [
+  { value: '50K+', label: 'Users' },
+  { value: '2M+', label: 'Emails Received' },
+  { value: '99.9%', label: 'Uptime' },
+  { value: '< 3s', label: 'Delivery Time' },
+];
 
 export default function AboutPage() {
-  const fadeIn = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 }
-  };
-
   return (
-    <div className="min-h-screen bg-[#0a0f1e] text-white font-sans pt-32 pb-20 px-6 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
-      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-600/10 blur-[100px] rounded-full pointer-events-none"></div>
+    <PageLayout>
+      <section className="mx-auto max-w-7xl px-6 py-20 md:py-32">
+        <div className="max-w-3xl">
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">About GhostMail</p>
+          <h1 className="mt-4 text-4xl font-bold md:text-6xl">
+            We believe everyone deserves email privacy without compromise.
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-slate-300">
+            GhostMail was created for people who are tired of turning their real
+            inbox into a permanent marketing database every time they sign up for
+            something online.
+          </p>
+        </div>
+      </section>
 
-      <div className="max-w-4xl mx-auto relative z-10 text-center mb-16">
-        <motion.h1 initial="initial" animate="animate" variants={fadeIn} className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
-          About GhostMail
-        </motion.h1>
-        <motion.p initial="initial" animate="animate" variants={fadeIn} className="text-xl text-slate-400">
-          We built GhostMail to give you a clean, private, and instant way to receive emails without exposing your personal inbox.
-        </motion.p>
-      </div>
+      <section className="mx-auto grid max-w-7xl gap-6 px-6 pb-20 md:grid-cols-2 md:pb-32">
+        <div className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur">
+          <h2 className="text-2xl font-semibold text-white">Our Mission</h2>
+          <p className="mt-4 leading-8 text-slate-300">
+            In a world where your email address is your digital identity,
+            protecting it should not be a luxury. GhostMail gives everyone a free,
+            private address they can use anywhere without exposing their real inbox
+            to spam, tracking, or data brokers.
+          </p>
+        </div>
+        <div className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur">
+          <h2 className="text-2xl font-semibold text-white">Why We Built This</h2>
+          <p className="mt-4 leading-8 text-slate-300">
+            Every sign-up asks for a piece of your identity. Too often that address
+            is sold, spammed forever, or shared far beyond what you agreed to. We
+            got tired of that tradeoff, so we built GhostMail.
+          </p>
+        </div>
+      </section>
 
-      <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8 relative z-10">
-        <motion.div initial="initial" animate="animate" variants={fadeIn} className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-md text-center">
-          <div className="w-16 h-16 mx-auto rounded-full bg-cyan-500/20 flex items-center justify-center mb-6">
-            <Mail className="w-8 h-8 text-cyan-400" />
+      <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-32">
+        <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">How it works</p>
+          <h2 className="mt-4 text-3xl font-bold md:text-5xl">A simple pipeline built for trust.</h2>
+          <div className="mt-12 grid gap-6 md:grid-cols-4">
+            {[
+              'Cloudflare Email Routing receives every message.',
+              'Our servers parse and store emails securely.',
+              'You access them through a private dashboard.',
+              'Messages are encrypted at rest and isolated per account.',
+            ].map((item, index) => (
+              <div key={item} className="rounded-3xl border border-white/10 bg-[#0f1728] p-6">
+                <div className="text-sm font-semibold tracking-[0.25em] text-cyan-300">
+                  0{index + 1}
+                </div>
+                <p className="mt-4 text-slate-300">{item}</p>
+              </div>
+            ))}
           </div>
-          <h3 className="text-xl font-bold mb-3">Custom Identity</h3>
-          <p className="text-slate-400">Claim your unique address on our domain. It looks professional and works instantly across the web.</p>
-        </motion.div>
+        </div>
+      </section>
 
-        <motion.div initial="initial" animate="animate" variants={fadeIn} className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-md text-center">
-          <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/20 flex items-center justify-center mb-6">
-            <Shield className="w-8 h-8 text-emerald-400" />
+      <section className="mx-auto grid max-w-7xl gap-6 px-6 pb-20 md:grid-cols-4 md:pb-32">
+        {stats.map((stat) => (
+          <div key={stat.label} className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur">
+            <p className="text-4xl font-bold text-white">{stat.value}</p>
+            <p className="mt-2 text-sm uppercase tracking-[0.2em] text-slate-400">{stat.label}</p>
           </div>
-          <h3 className="text-xl font-bold mb-3">Privacy First</h3>
-          <p className="text-slate-400">Stop giving out your real email to every service. Keep your main inbox entirely free from promotional spam.</p>
-        </motion.div>
+        ))}
+      </section>
 
-        <motion.div initial="initial" animate="animate" variants={fadeIn} className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-md text-center">
-          <div className="w-16 h-16 mx-auto rounded-full bg-blue-500/20 flex items-center justify-center mb-6">
-            <FastForward className="w-8 h-8 text-blue-400" />
+      <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-32">
+        <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur md:p-10">
+            <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Team</p>
+            <h2 className="mt-4 text-3xl font-bold md:text-5xl">
+              Built by privacy enthusiasts who think the internet should work for users, not advertisers.
+            </h2>
+            <p className="mt-6 leading-8 text-slate-300">
+              We care about design, security, and making privacy tools feel premium.
+              GhostMail exists because privacy products should not look or feel like
+              a compromise.
+            </p>
           </div>
-          <h3 className="text-xl font-bold mb-3">Cloudflare Powered</h3>
-          <p className="text-slate-400">Utilizing Cloudflare&apos;s global edge network for enterprise-grade email routing, ensuring instant delivery.</p>
-        </motion.div>
-      </div>
-
-      <motion.div initial="initial" animate="animate" variants={fadeIn} className="max-w-2xl mx-auto mt-20 text-center relative z-10 bg-gradient-to-r from-blue-900/40 to-cyan-900/40 border border-cyan-500/20 rounded-3xl p-10 backdrop-blur-md">
-        <h2 className="text-3xl font-bold mb-6">Ready to claim your address?</h2>
-        <Link href="/register" className="inline-block px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-full font-bold text-lg transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-          Create Account Now
-        </Link>
-      </motion.div>
-    </div>
+          <div className="grid gap-4">
+            {[
+              { icon: Shield, title: 'Privacy First' },
+              { icon: Sparkles, title: 'Always Free' },
+              { icon: Workflow, title: 'Transparency' },
+              { icon: Lock, title: 'Security' },
+            ].map((value) => {
+              const Icon = value.icon;
+              return (
+                <div
+                  key={value.title}
+                  className="flex items-center gap-4 rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur"
+                >
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-400/10">
+                    <Icon className="h-5 w-5 text-cyan-300" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white">{value.title}</p>
+                    <p className="text-sm text-slate-400">
+                      Embedded into product decisions, not added as a slogan later.
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </PageLayout>
   );
 }

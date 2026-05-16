@@ -1,17 +1,17 @@
+import type { MetadataRoute } from 'next';
 
-
-export default function sitemap() {
-  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
-  const url = process.env.NEXTAUTH_URL || `https://${domain}`;
+export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = 'https://ghostmail.store';
+  const now = new Date();
 
   return [
-    { url: url, lastModified: new Date(), changeFrequency: 'weekly', priority: 1 },
-    { url: `${url}/register`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.9 },
-    { url: `${url}/login`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
-    { url: `${url}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${url}/faq`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-    { url: `${url}/terms`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${url}/privacy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${url}/contact`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
+    { url: baseUrl, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },
+    { url: `${baseUrl}/register`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${baseUrl}/login`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${baseUrl}/faq`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/contact`, lastModified: now, changeFrequency: 'yearly', priority: 0.5 },
+    { url: `${baseUrl}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${baseUrl}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ];
 }

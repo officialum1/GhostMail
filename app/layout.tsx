@@ -1,41 +1,60 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import SchemaMarkup from "@/components/SchemaMarkup";
-import "./globals.css";
-import { Providers } from "./providers";
+import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
+import { Toaster } from 'react-hot-toast';
+import SchemaMarkup from '@/components/SchemaMarkup';
+import { Providers } from './providers';
+import './globals.css';
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "GhostMail — Free Custom Email Address",
-    template: "%s | GhostMail"
+    default: 'GhostMail — Free Custom Email Address',
+    template: '%s | GhostMail',
   },
-  description: "Get your own custom email address instantly. Perfect for receiving OTPs, sign-ups, and protecting your real inbox. Free forever.",
-  keywords: ["temporary email", "custom email", "OTP email", "disposable email", "free email address", "receive OTP", "email inbox"],
-  authors: [{ name: "GhostMail" }],
-  creator: "GhostMail",
+  description:
+    'Get your own custom email address instantly at ghostmail.store. Perfect for receiving OTPs, sign-ups, and protecting your real inbox. Free forever, no credit card required.',
+  keywords: [
+    'free email address',
+    'custom email',
+    'OTP email',
+    'disposable email',
+    'temporary email',
+    'receive OTP',
+    'ghostmail',
+    'free inbox',
+    'email privacy',
+    'burner email',
+  ],
+  authors: [{ name: 'GhostMail' }],
+  creator: 'GhostMail',
+  publisher: 'GhostMail',
+  metadataBase: new URL('https://ghostmail.store'),
   openGraph: {
-    type: "website",
-    locale: "en_US",
-    url: process.env.NEXTAUTH_URL,
-    siteName: "GhostMail",
-    title: "GhostMail — Free Custom Email Address",
-    description: "Get your own custom email address instantly. Free forever.",
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://ghostmail.store',
+    siteName: 'GhostMail',
+    title: 'GhostMail — Free Custom Email Address',
+    description:
+      'Get your own custom email address instantly. Receive OTPs, sign-ups, and protect your real inbox. Free forever.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'GhostMail',
+      },
+    ],
   },
   twitter: {
-    card: "summary_large_image",
-    title: "GhostMail — Free Custom Email Address",
-    description: "Get your own custom email address instantly. Free forever.",
+    card: 'summary_large_image',
+    title: 'GhostMail — Free Custom Email Address',
+    description: 'Get your own custom email address instantly. Free forever.',
+    images: ['/og-image.png'],
   },
   robots: {
     index: true,
@@ -43,11 +62,24 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-    }
+      'max-image-preview': 'large',
+    },
+  },
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/apple-touch-icon.png',
+  },
+  verification: {
+    google: 'add-your-google-verification-code-here',
   },
   alternates: {
-    canonical: process.env.NEXTAUTH_URL
-  }
+    canonical: 'https://ghostmail.store',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#0a0f1e',
 };
 
 export default function RootLayout({
@@ -56,13 +88,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SchemaMarkup />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.variable} bg-[#0a0f1e] font-sans text-white antialiased`}>
         <Providers>
+          <SchemaMarkup />
           {children}
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: '#10182a',
+                color: '#fff',
+                border: '1px solid rgba(255,255,255,0.08)',
+              },
+            }}
+          />
         </Providers>
       </body>
     </html>
