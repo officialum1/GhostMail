@@ -8,12 +8,15 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  emails    Email[]
+  id         Int         @id @default(autoincrement())
+  username   String      @unique
+  email      String      @unique
+  password   String
+  createdAt  DateTime    @default(now())
+  isBanned   Boolean     @default(false)
+  lastActive DateTime?
+  emails     Email[]
+  bannedUser BannedUser?
 }
 
 model Email {
@@ -39,4 +42,47 @@ model Admin {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+}
+
+model BannedUser {
+  id       Int      @id @default(autoincrement())
+  userId   Int      @unique
+  reason   String?
+  bannedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model BlacklistedUsername {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  createdAt DateTime @default(now())
+}
+
+model BlacklistedDomain {
+  id        Int      @id @default(autoincrement())
+  domain    String   @unique
+  createdAt DateTime @default(now())
+}
+
+model WebhookLog {
+  id          Int      @id @default(autoincrement())
+  toAddress   String
+  fromAddress String
+  status      String
+  error       String?
+  receivedAt  DateTime @default(now())
+}
+
+model FailedLoginAttempt {
+  id          Int      @id @default(autoincrement())
+  email       String
+  ip          String?
+  attemptedAt DateTime @default(now())
+}
+
+model AdminSetting {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
 }
