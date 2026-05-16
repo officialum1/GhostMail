@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { LayoutDashboard, Users, Mail, Settings, LogOut } from 'lucide-react';
 
 export default function AdminSidebar() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? '';
   const router = useRouter();
 
   const links = [
