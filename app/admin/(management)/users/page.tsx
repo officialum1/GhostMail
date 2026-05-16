@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { Users, Trash2, Mail, Calendar } from 'lucide-react';
-import { revalidatePath } from 'next/cache';
+import { deleteUser } from './actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,21 +13,6 @@ export default async function AdminUsersPage() {
       }
     }
   });
-
-  async function deleteUser(formData: FormData) {
-    'use server';
-    const id = formData.get('id');
-    if (!id) return;
-
-    try {
-      await db.user.delete({
-        where: { id: parseInt(id.toString()) }
-      });
-      revalidatePath('/admin/users');
-    } catch (error) {
-      console.error('Failed to delete user:', error);
-    }
-  }
 
   return (
     <div className="p-8 lg:p-12 space-y-10">

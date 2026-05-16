@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { Users, Mail, Activity, Clock, RefreshCcw } from 'lucide-react';
-import { revalidatePath } from 'next/cache';
+import { refreshDashboard } from './actions';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,11 +26,6 @@ export default async function AdminDashboard() {
     include: { user: { select: { username: true, email: true } } }
   });
 
-  async function refresh() {
-    'use server';
-    revalidatePath('/admin/dashboard');
-  }
-
   return (
     <div className="space-y-8 p-6 lg:p-10">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -38,7 +33,7 @@ export default async function AdminDashboard() {
           <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">System Overview</h1>
           <p className="text-slate-400">Live monitoring and system metrics</p>
         </div>
-        <form action={refresh}>
+        <form action={refreshDashboard}>
           <button type="submit" className="flex items-center gap-2 px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-slate-200 transition-all active:scale-95 font-medium">
             <RefreshCcw className="w-4 h-4" />
             Refresh Data
