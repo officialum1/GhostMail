@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Username must be lowercase letters/numbers only, min 3 chars' }, { status: 400 });
     }
 
-    const domain = process.env.DOMAIN || 'yourdomain.com';
+    const domain = process.env.DOMAIN || 'ghostmail.store';
     const email = `${username}@${domain}`;
 
     const existingUser = await db.user.findUnique({

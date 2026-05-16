@@ -15,7 +15,7 @@ export default function RegisterPage() {
 
   // In a real app we'd fetch the domain from an API or env, 
   // but for the UI preview we'll assume the environment variable domain or a placeholder.
-  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'yourdomain.com';
+  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

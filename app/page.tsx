@@ -5,7 +5,7 @@ import { Mail, Shield, Zap, ArrowRight, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function Home() {
-  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'yourdomain.com';
+  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
 
   const fadeIn = {
     initial: { opacity: 0, y: 20 },

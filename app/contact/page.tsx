@@ -26,8 +26,8 @@ export default function ContactPage() {
             </div>
             <h2 className="text-2xl font-bold mb-3">Email Support</h2>
             <p className="text-slate-400 mb-6">Send us an email directly. We typically respond within 24 hours.</p>
-            <a href="mailto:support@yourdomain.com" className="text-cyan-400 hover:text-cyan-300 font-medium text-lg">
-              support@yourdomain.com
+            <a href="mailto:support@ghostmail.store" className="text-cyan-400 hover:text-cyan-300 font-medium text-lg">
+              support@ghostmail.store
             </a>
           </div>
 

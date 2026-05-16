@@ -3,7 +3,7 @@ export const metadata = {
 };
 
 export default function PrivacyPage() {
-  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'yourdomain.com';
+  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
 
   return (
     <div className="min-h-screen bg-[#0a0f1e] text-slate-300 font-sans pt-32 pb-20 px-6">

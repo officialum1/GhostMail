@@ -1,5 +1,5 @@
 export default function robots() {
-  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'yourdomain.com';
+  const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
   const url = process.env.NEXTAUTH_URL || `https://${domain}`;
 
   return {
