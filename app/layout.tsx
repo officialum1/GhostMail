@@ -19,25 +19,23 @@ const googleVerification = process.env.GOOGLE_SITE_VERIFICATION
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'GhostMail — Free Custom Email Address | Receive OTPs Instantly',
+    default: 'GhostMail - Free Custom Email Address',
     template: '%s | GhostMail',
   },
   description:
-    'Get a free custom email address at ghostmail.store instantly. Perfect for receiving OTPs, sign-ups, and protecting your real inbox from spam. No credit card required. Powered by Cloudflare.',
+    'Get a free custom email address at ghostmail.store instantly. Perfect for receiving OTPs, sign-ups, and protecting your real inbox from spam. No credit card required.',
   keywords: [...DEFAULT_KEYWORDS],
-  authors: [{ name: 'GhostMail', url: SITE_URL }],
+  authors: [{ name: 'GhostMail' }],
   creator: 'GhostMail',
   publisher: 'GhostMail',
-  category: 'Technology',
-  classification: 'Email Service',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: SITE_URL,
     siteName: 'GhostMail',
-    title: 'GhostMail — Free Custom Email Address',
+    title: 'GhostMail - Free Custom Email Address',
     description:
-      'Get your own @ghostmail.store email address instantly. Receive OTPs, sign-ups, and keep your real inbox spam-free. Forever free.',
+      'Get your own @ghostmail.store email address instantly. Receive OTPs, sign-ups, and keep your real inbox spam-free.',
     images: [
       {
         url: OG_IMAGE_URL,
@@ -50,23 +48,17 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    site: '@ghostmailstore',
-    creator: '@ghostmailstore',
-    title: 'GhostMail — Free Custom Email Address',
-    description: 'Get your own email address instantly. Free forever. No credit card.',
+    title: 'GhostMail - Free Custom Email Address',
+    description: 'Get your own email address instantly. Free forever. No credit card required.',
     images: [OG_IMAGE_URL],
   },
   robots: {
     index: true,
     follow: true,
-    nocache: false,
     googleBot: {
       index: true,
       follow: true,
-      noimageindex: false,
-      'max-video-preview': -1,
       'max-image-preview': 'large',
-      'max-snippet': -1,
     },
   },
   icons: {
@@ -75,12 +67,10 @@ export const metadata: Metadata = {
       { url: '/favicon.ico' },
     ],
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
-    other: [{ rel: 'mask-icon', url: '/favicon.svg', color: '#22d3ee' }],
   },
   manifest: '/site.webmanifest',
   alternates: {
     canonical: SITE_URL,
-    languages: { 'en-US': SITE_URL },
   },
   verification: googleVerification
     ? {
@@ -90,13 +80,6 @@ export const metadata: Metadata = {
   other: {
     'theme-color': '#0a0f1e',
     'color-scheme': 'dark',
-    'mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-capable': 'yes',
-    'apple-mobile-web-app-status-bar-style': 'black-translucent',
-    'apple-mobile-web-app-title': 'GhostMail',
-    'application-name': 'GhostMail',
-    'msapplication-TileColor': '#0a0f1e',
-    'msapplication-config': '/browserconfig.xml',
   },
 }
 

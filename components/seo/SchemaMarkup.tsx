@@ -7,12 +7,12 @@ const schemas = [
     '@id': `${baseUrl}/#website`,
     name: 'GhostMail',
     url: baseUrl,
-    description: 'Free custom email address service for receiving OTPs and sign-ups',
+    description: 'Free custom email address for receiving OTPs and sign-ups',
     inLanguage: 'en-US',
     potentialAction: {
-      '@type': 'RegisterAction',
+      '@type': 'SearchAction',
       target: `${baseUrl}/register`,
-      name: 'Create Free Account',
+      name: 'Create GhostMail account',
     },
   },
   {
@@ -21,23 +21,13 @@ const schemas = [
     '@id': `${baseUrl}/#organization`,
     name: 'GhostMail',
     url: baseUrl,
-    logo: {
-      '@type': 'ImageObject',
-      url: `${baseUrl}/favicon.svg`,
-      width: 512,
-      height: 512,
-    },
+    logo: `${baseUrl}/favicon.svg`,
     description: 'GhostMail provides free custom email addresses for privacy-conscious users',
-    foundingDate: '2025',
-    contactPoint: [
-      {
-        '@type': 'ContactPoint',
-        contactType: 'customer support',
-        email: 'support@ghostmail.store',
-        availableLanguage: 'English',
-      },
-    ],
-    sameAs: ['https://twitter.com/ghostmailstore'],
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: 'support@ghostmail.store',
+    },
   },
   {
     '@context': 'https://schema.org',
@@ -46,96 +36,14 @@ const schemas = [
     name: 'GhostMail',
     url: baseUrl,
     applicationCategory: 'CommunicationApplication',
-    applicationSubCategory: 'Email',
     operatingSystem: 'Web Browser',
-    browserRequirements: 'Requires JavaScript',
     offers: {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
-      priceValidUntil: '2026-12-31',
-      description: 'Free custom email address forever',
     },
-    featureList: [
-      'Custom email address',
-      'Instant OTP delivery',
-      'Private inbox',
-      'Spam protection',
-      'Cloudflare powered',
-    ],
-    screenshot: `${baseUrl}/api/og`,
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      reviewCount: '1247',
-      bestRating: '5',
-      worstRating: '1',
-    },
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Home',
-        item: baseUrl,
-      },
-    ],
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'HowTo',
-    name: 'How to Get a Free Custom Email Address with GhostMail',
-    description: 'Get your own @ghostmail.store email address in 3 simple steps',
-    totalTime: 'PT1M',
-    estimatedCost: {
-      '@type': 'MonetaryAmount',
-      currency: 'USD',
-      value: '0',
-    },
-    step: [
-      {
-        '@type': 'HowToStep',
-        position: 1,
-        name: 'Create Account',
-        text: 'Click Create Free Account and choose your username. No credit card needed.',
-        url: `${baseUrl}/register`,
-      },
-      {
-        '@type': 'HowToStep',
-        position: 2,
-        name: 'Get Your Email',
-        text: 'Instantly receive your username@ghostmail.store email address.',
-        url: `${baseUrl}/register`,
-      },
-      {
-        '@type': 'HowToStep',
-        position: 3,
-        name: 'Receive Emails',
-        text: 'Use your new address anywhere and receive OTPs and emails in your dashboard.',
-        url: `${baseUrl}/dashboard`,
-      },
-    ],
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
-    name: 'GhostMail',
-    operatingSystem: 'Web',
-    applicationCategory: 'CommunicationApplication',
-    offers: {
-      '@type': 'Offer',
-      price: '0',
-      priceCurrency: 'USD',
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      ratingCount: '1247',
-    },
+    description: 'Get a free custom email address instantly at ghostmail.store',
   },
 ]
 
@@ -172,7 +80,7 @@ export const FAQ_PAGE_SCHEMA = {
       name: 'Can I receive OTPs with GhostMail?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes! OTPs from Google, Reddit, Twitter, banks, and any other service arrive in seconds in your GhostMail inbox.',
+        text: 'Yes. OTPs from Google, Reddit, X, banks, and other services arrive in seconds in your GhostMail inbox.',
       },
     },
     {
@@ -180,7 +88,7 @@ export const FAQ_PAGE_SCHEMA = {
       name: 'Can I use GhostMail for Reddit sign up?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Absolutely! Just use your@ghostmail.store when Reddit asks for an email. Verification emails arrive instantly in your dashboard.',
+        text: 'Yes. Use your @ghostmail.store address when Reddit asks for an email and the verification email should arrive in your dashboard.',
       },
     },
     {
@@ -188,7 +96,7 @@ export const FAQ_PAGE_SCHEMA = {
       name: 'Who can read my emails?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Only you. We do not read, sell, or share your emails with anyone. Your privacy is our top priority.',
+        text: 'Only you. We do not read, sell, or share your emails with anyone.',
       },
     },
     {
@@ -196,15 +104,7 @@ export const FAQ_PAGE_SCHEMA = {
       name: 'Do I need a credit card to sign up?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'No credit card required. Sign up with just a username and password. Your email address is ready instantly.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Does GhostMail work with Google sign up?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Yes, GhostMail works with any service that sends emails including Google, Facebook, Twitter, Reddit, and thousands more.',
+        text: 'No. Sign up with just a username and password. Your email address is ready instantly.',
       },
     },
   ],
