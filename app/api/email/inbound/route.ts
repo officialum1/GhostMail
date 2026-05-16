@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { normalizeEmailAddress } from '@/lib/emailAddress';
+import { extractEmailAddresses, normalizeEmailAddress } from '@/lib/emailAddress';
 import { parseRawEmail } from '@/lib/parseEmail';
 
 export async function POST(req: Request) {
@@ -32,17 +32,31 @@ export async function POST(req: Request) {
       finalHeaders = parsed.headers;
     }
 
-    const normalizedTo = normalizeEmailAddress(finalTo);
+    const recipients = extractEmailAddresses(finalTo);
+    const normalizedTo = recipients[0] || normalizeEmailAddress(finalTo);
     const normalizedFrom = normalizeEmailAddress(finalFrom) || 'unknown';
 
     if (!normalizedTo) {
+      await db.webhookLog.create({
+        data: {
+          toAddress: '',
+          fromAddress: normalizedFrom,
+          status: 'rejected_no_recipient',
+          error: 'No recipient found in inbound payload'
+        }
+      });
+
       return NextResponse.json({ error: 'No recipient' }, { status: 400 });
     }
 
     console.log(`Email received for: ${normalizedTo}`);
 
-    const user = await db.user.findUnique({
-      where: { email: normalizedTo }
+    const user = await db.user.findFirst({
+      where: {
+        email: {
+          in: recipients.length > 0 ? recipients : [normalizedTo]
+        }
+      }
     });
 
     if (user) {
@@ -55,6 +69,23 @@ export async function POST(req: Request) {
           bodyHtml: finalHtml,
           rawHeaders: finalHeaders,
           userId: user.id
+        }
+      });
+
+      await db.webhookLog.create({
+        data: {
+          toAddress: normalizedTo,
+          fromAddress: normalizedFrom,
+          status: 'delivered'
+        }
+      });
+    } else {
+      await db.webhookLog.create({
+        data: {
+          toAddress: normalizedTo,
+          fromAddress: normalizedFrom,
+          status: 'no_matching_user',
+          error: `Recipients checked: ${(recipients.length > 0 ? recipients : [normalizedTo]).join(', ')}`
         }
       });
     }

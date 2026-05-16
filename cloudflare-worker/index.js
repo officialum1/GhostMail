@@ -17,7 +17,7 @@ export default {
       });
 
       if (!response.ok) {
-        console.error(`Webhook returned ${response.status}`);
+        console.error(`Webhook returned ${response.status}: ${await response.text()}`);
       }
     } catch (e) {
       console.error('Worker error:', e);

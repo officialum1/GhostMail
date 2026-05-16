@@ -7,3 +7,12 @@ export function normalizeEmailAddress(value: string | null | undefined) {
 
   return candidate.toLowerCase()
 }
+
+export function extractEmailAddresses(value: string | null | undefined) {
+  if (!value) return []
+
+  return value
+    .split(/[,\n;]/)
+    .map((part) => normalizeEmailAddress(part))
+    .filter((part, index, all) => Boolean(part) && all.indexOf(part) === index)
+}
