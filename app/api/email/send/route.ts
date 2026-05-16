@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth-options';
 import { db } from '@/lib/db';
+import { normalizeEmailAddress } from '@/lib/emailAddress';
 import nodemailer from 'nodemailer';
 
 export async function POST(req: Request) {
@@ -12,8 +13,9 @@ export async function POST(req: Request) {
     }
 
     const { to, subject, body } = await req.json();
+    const normalizedTo = normalizeEmailAddress(to);
 
-    if (!to || !subject || !body) {
+    if (!normalizedTo || !subject || !body) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -31,7 +33,8 @@ export async function POST(req: Request) {
     // Send email
     await transporter.sendMail({
       from: `"${session.user.name}" <${session.user.email}>`,
-      to,
+      to: normalizedTo,
+      replyTo: session.user.email,
       subject,
       text: body,
       html: body.replace(/\n/g, '<br>'),
@@ -44,8 +47,8 @@ export async function POST(req: Request) {
 
     // Save to DB
     await db.email.create({
-      data: {
-        toAddress: to,
+        data: {
+        toAddress: normalizedTo,
         fromAddress: session.user.email,
         subject: subject,
         bodyText: body,

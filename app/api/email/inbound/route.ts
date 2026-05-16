@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { normalizeEmailAddress } from '@/lib/emailAddress';
 import { parseRawEmail } from '@/lib/parseEmail';
 
 export async function POST(req: Request) {
@@ -31,21 +32,24 @@ export async function POST(req: Request) {
       finalHeaders = parsed.headers;
     }
 
-    if (!finalTo) {
+    const normalizedTo = normalizeEmailAddress(finalTo);
+    const normalizedFrom = normalizeEmailAddress(finalFrom) || 'unknown';
+
+    if (!normalizedTo) {
       return NextResponse.json({ error: 'No recipient' }, { status: 400 });
     }
 
-    console.log(`Email received for: ${finalTo}`);
+    console.log(`Email received for: ${normalizedTo}`);
 
     const user = await db.user.findUnique({
-      where: { email: finalTo.toLowerCase() }
+      where: { email: normalizedTo }
     });
 
     if (user) {
       await db.email.create({
         data: {
-          toAddress: finalTo.toLowerCase(),
-          fromAddress: finalFrom || 'unknown',
+          toAddress: normalizedTo,
+          fromAddress: normalizedFrom,
           subject: finalSubject || '(No Subject)',
           bodyText: finalText || '',
           bodyHtml: finalHtml,

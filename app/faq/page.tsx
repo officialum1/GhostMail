@@ -16,7 +16,7 @@ const faqs = [
   },
   {
     q: "Can I send emails too?",
-    a: "No, GhostMail is strictly a receive-only service. It is designed to protect your privacy and receive verifications, not for outgoing communication."
+    a: "Yes. GhostMail users can receive emails from anyone and can also send emails to external addresses from their GhostMail inbox."
   },
   {
     q: "How fast do emails arrive?",
