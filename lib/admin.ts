@@ -27,6 +27,10 @@ export const DEFAULT_ADMIN_SETTINGS = {
   siteName: 'GhostMail',
   maxEmailsPerUser: '1000',
   emailRetentionDays: '30',
+  registration_enabled: 'true',
+  maintenance_mode: 'false',
+  maintenance_message: "We're performing scheduled maintenance. We'll be back shortly.",
+  min_username_length: '3',
 } as const
 
 export type AdminSettingsMap = Record<string, string>

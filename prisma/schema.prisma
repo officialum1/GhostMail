@@ -38,10 +38,13 @@ model Email {
 }
 
 model Admin {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
+  id                 Int        @id @default(autoincrement())
+  email              String     @unique
+  password           String
+  createdAt          DateTime   @default(now())
+  twoFactorSecret    String?
+  twoFactorEnabled   Boolean    @default(false)
+  auditLogs          AuditLog[]
 }
 
 model BannedUser {
@@ -85,4 +88,60 @@ model AdminSetting {
   key       String   @unique
   value     String
   updatedAt DateTime @updatedAt
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  type      String
+  message   String
+  metadata  String?  @db.Text
+  userId    Int?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  adminId   Int
+  action    String
+  target    String?
+  details   String?  @db.Text
+  ip        String?
+  createdAt DateTime @default(now())
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Cascade)
+
+  @@index([adminId])
+  @@index([createdAt])
+}
+
+model SuspiciousActivity {
+  id          Int      @id @default(autoincrement())
+  type        String
+  description String
+  ip          String?
+  userId      Int?
+  severity    String
+  resolved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([resolved])
+  @@index([severity])
+}
+
+model IpBlacklist {
+  id        Int      @id @default(autoincrement())
+  ip        String   @unique
+  reason    String?
+  createdAt DateTime @default(now())
+}
+
+model AnnouncementBanner {
+  id        Int      @id @default(autoincrement())
+  message   String
+  color     String   @default("blue")
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
 }

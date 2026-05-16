@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { logActivity } from '@/lib/activity'
+import { logAudit } from '@/lib/audit'
 import { requireAdmin } from '@/lib/admin-auth'
+import { getAdminFromToken } from '@/lib/adminSession'
+import { getClientIp } from '@/lib/clientIp'
+import { db } from '@/lib/db'
 
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
@@ -43,6 +47,24 @@ export async function POST(req: Request, { params }: { params: { id: string } })
           update: { reason: reason || null },
         }),
       ])
+
+      await logActivity({
+        type: 'user_banned',
+        message: `User banned: ${user.username}`,
+        userId: user.id,
+        metadata: JSON.stringify({ reason }),
+      })
+    }
+
+    const admin = await getAdminFromToken()
+    if (admin) {
+      await logAudit(
+        admin.adminId,
+        user.isBanned ? 'user_unban' : 'user_ban',
+        user.username,
+        reason,
+        getClientIp(req)
+      )
     }
 
     return NextResponse.json({ success: true, banned: !user.isBanned })

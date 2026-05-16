@@ -1,15 +1,29 @@
 import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { DEFAULT_BLACKLISTED_USERNAMES } from '@/lib/admin'
+import { logActivity } from '@/lib/activity'
+import { getClientIp } from '@/lib/clientIp'
 import { db } from '@/lib/db'
 import { checkRateLimit } from '@/lib/rateLimit'
 
 export async function POST(req: Request) {
   try {
-    const ip =
-      req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
-      req.headers.get('x-real-ip') ||
-      'unknown'
+    const ip = getClientIp(req)
+
+    const regSetting = await db.adminSetting.findUnique({
+      where: { key: 'registration_enabled' },
+    })
+    if (regSetting?.value === 'false') {
+      return NextResponse.json(
+        { error: 'Registration is currently closed. Please try again later.' },
+        { status: 403 }
+      )
+    }
+
+    const blockedIp = await db.ipBlacklist.findUnique({ where: { ip } })
+    if (blockedIp) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 })
+    }
 
     const rate = checkRateLimit(`register:${ip}`, 5, 60 * 60 * 1000)
     if (!rate.allowed) {
@@ -25,11 +39,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Username and password are required' }, { status: 400 })
     }
 
+    const minLenSetting = await db.adminSetting.findUnique({ where: { key: 'min_username_length' } })
+    const minLen = Math.min(20, Math.max(3, parseInt(minLenSetting?.value || '3', 10) || 3))
+
     const normalizedUsername = String(username).toLowerCase()
 
-    if (!/^[a-z0-9]+$/.test(normalizedUsername) || normalizedUsername.length < 3) {
+    if (!/^[a-z0-9]+$/.test(normalizedUsername) || normalizedUsername.length < minLen) {
       return NextResponse.json(
-        { error: 'Username must be lowercase letters/numbers only, min 3 chars' },
+        { error: `Username must be lowercase letters/numbers only, min ${minLen} chars` },
         { status: 400 }
       )
     }
@@ -74,6 +91,33 @@ export async function POST(req: Request) {
         createdAt: true,
       },
     })
+
+    await logActivity({
+      type: 'user_registered',
+      message: `New user registered: ${normalizedUsername}`,
+      userId: user.id,
+      ip,
+      metadata: JSON.stringify({ email: user.email }),
+    })
+
+    const recentSignups = await db.activityLog.count({
+      where: {
+        type: 'user_registered',
+        ip,
+        createdAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
+      },
+    })
+
+    if (recentSignups > 5) {
+      await db.suspiciousActivity.create({
+        data: {
+          type: 'mass_signup',
+          description: `${recentSignups} signups from same IP in 1 hour`,
+          ip,
+          severity: 'high',
+        },
+      })
+    }
 
     return NextResponse.json({ success: true, email: user.email }, { status: 201 })
   } catch (error) {

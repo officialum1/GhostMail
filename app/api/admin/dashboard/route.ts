@@ -54,6 +54,9 @@ export async function GET() {
     monthAgo.setDate(monthAgo.getDate() - 29)
     monthAgo.setHours(0, 0, 0, 0)
 
+    const dayAgo = new Date()
+    dayAgo.setDate(dayAgo.getDate() - 1)
+
     const [
       totalUsers,
       totalEmails,
@@ -64,6 +67,11 @@ export async function GET() {
       recentEmails,
       growthUsers,
       weeklyEmails,
+      failedLogins24h,
+      suspiciousUnresolved,
+      highSeverityCount,
+      topUsers,
+      topSendersRaw,
     ] = await Promise.all([
       db.user.count(),
       db.email.count({ where: { deletedAt: null } }),
@@ -89,7 +97,43 @@ export async function GET() {
         where: { deletedAt: null, receivedAt: { gte: weekAgo } },
         select: { receivedAt: true },
       }),
+      db.failedLoginAttempt.count({ where: { attemptedAt: { gte: dayAgo } } }),
+      db.suspiciousActivity.count({ where: { resolved: false } }),
+      db.suspiciousActivity.count({ where: { resolved: false, severity: 'high' } }),
+      db.user.findMany({
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          lastActive: true,
+          _count: { select: { emails: true } },
+        },
+        orderBy: { emails: { _count: 'desc' } },
+        take: 5,
+      }),
+      db.email.findMany({
+        where: { deletedAt: null },
+        select: { fromAddress: true },
+        take: 10000,
+      }),
     ])
+
+    const { getEmailDomain } = await import('@/lib/emailAddress')
+    const domainCounts = new Map<string, number>()
+    for (const e of topSendersRaw) {
+      const domain = getEmailDomain(e.fromAddress) || 'unknown'
+      domainCounts.set(domain, (domainCounts.get(domain) ?? 0) + 1)
+    }
+    const topSenders = [...domainCounts.entries()]
+      .map(([domain, count]) => ({ domain, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5)
+
+    const suspicious = await db.suspiciousActivity.findMany({
+      where: { resolved: false },
+      orderBy: { createdAt: 'desc' },
+      take: 5,
+    })
 
     const userGrowth = mapSeries(
       growthUsers.map((item) => item.createdAt),
@@ -116,6 +160,15 @@ export async function GET() {
       emailVolume,
       recentUsers,
       recentEmails,
+      alerts: {
+        failedLogins24h,
+        suspiciousUnresolved,
+        highSeverityCount,
+        bannedUsers,
+      },
+      topUsers,
+      topSenders,
+      suspicious,
     })
   } catch (error) {
     console.error('Admin dashboard error:', error)

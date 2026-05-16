@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import SchemaMarkup from '@/components/SchemaMarkup';
+import AnnouncementBanner from '@/components/AnnouncementBanner';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -92,6 +93,7 @@ export default function RootLayout({
       <body className={`${inter.variable} bg-[#0a0f1e] font-sans text-white antialiased`}>
         <Providers>
           <SchemaMarkup />
+          <AnnouncementBanner />
           {children}
           <Toaster
             position="bottom-right"

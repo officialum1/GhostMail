@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAdminSettingsMap, parseSettingNumber } from '@/lib/admin'
+import { logActivity } from '@/lib/activity'
 import { db } from '@/lib/db'
 import { notifyNewEmail } from '@/lib/emailEvents'
 import { extractEmailAddresses, getEmailDomain, normalizeEmailAddress } from '@/lib/emailAddress'
@@ -174,6 +175,35 @@ export async function POST(req: NextRequest) {
     })
 
     notifyNewEmail(matchedUser.id)
+
+    await logActivity({
+      type: 'email_received',
+      message: `Email received: ${subject || 'No Subject'} from ${fromAddress}`,
+      userId: matchedUser.id,
+      metadata: JSON.stringify({ from: fromAddress, subject: subject || 'No Subject' }),
+    })
+
+    const recentEmails = await db.email.count({
+      where: {
+        userId: matchedUser.id,
+        receivedAt: { gte: new Date(Date.now() - 60 * 60 * 1000) },
+      },
+    })
+
+    if (recentEmails > 50) {
+      const userRecord = await db.user.findUnique({
+        where: { id: matchedUser.id },
+        select: { email: true },
+      })
+      await db.suspiciousActivity.create({
+        data: {
+          type: 'email_spike',
+          description: `User ${userRecord?.email || matchedTo} received ${recentEmails} emails in 1 hour`,
+          userId: matchedUser.id,
+          severity: 'medium',
+        },
+      })
+    }
 
     console.log('Email saved successfully, id:', savedEmail.id)
     return NextResponse.json({ success: true, emailId: savedEmail.id })

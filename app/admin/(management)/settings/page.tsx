@@ -59,17 +59,28 @@ export default function AdminSettingsPage() {
   const [stats, setStats] = useState<Stats | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [registrationEnabled, setRegistrationEnabled] = useState(true)
+  const [minUsernameLength, setMinUsernameLength] = useState('3')
+  const [maintenanceEnabled, setMaintenanceEnabled] = useState(false)
+  const [maintenanceMessage, setMaintenanceMessage] = useState('')
+  const [announcementMsg, setAnnouncementMsg] = useState('')
+  const [announcementColor, setAnnouncementColor] = useState('blue')
+  const [announcementActive, setAnnouncementActive] = useState(false)
 
   const loadData = useCallback(async () => {
     setLoading(true)
     try {
-      const [settingsRes, usernameRes, domainRes, logsRes, failedRes, statsRes] = await Promise.all([
+      const [settingsRes, usernameRes, domainRes, logsRes, failedRes, statsRes, regRes, maintRes, annRes] =
+        await Promise.all([
         fetch('/api/admin/settings'),
         fetch('/api/admin/settings/blacklist/usernames'),
         fetch('/api/admin/settings/blacklist/domains'),
         fetch('/api/admin/settings/webhook-logs'),
         fetch('/api/admin/settings/failed-logins'),
         fetch('/api/admin/settings/stats'),
+        fetch('/api/admin/settings/registration'),
+        fetch('/api/admin/settings/maintenance'),
+        fetch('/api/admin/announcement'),
       ])
 
       const settingsData = settingsRes.ok ? await settingsRes.json() : {}
@@ -84,6 +95,23 @@ export default function AdminSettingsPage() {
       if (logsRes.ok) setLogs(await logsRes.json())
       if (failedRes.ok) setFailedLogins(await failedRes.json())
       if (statsRes.ok) setStats(await statsRes.json())
+      if (regRes.ok) {
+        const reg = await regRes.json()
+        setRegistrationEnabled(reg.enabled !== false)
+      }
+      if (maintRes.ok) {
+        const maint = await maintRes.json()
+        setMaintenanceEnabled(maint.enabled)
+        setMaintenanceMessage(maint.message || '')
+      }
+      if (annRes.ok) {
+        const ann = await annRes.json()
+        if (ann) {
+          setAnnouncementMsg(ann.message || '')
+          setAnnouncementColor(ann.color || 'blue')
+          setAnnouncementActive(ann.isActive)
+        }
+      }
     } catch (error) {
       console.error(error)
       toast.error('Failed to load settings')
@@ -243,7 +271,48 @@ export default function AdminSettingsPage() {
     }
   }
 
+  const saveRegistration = async () => {
+    const res = await fetch('/api/admin/settings/registration', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ enabled: registrationEnabled, minUsernameLength }),
+    })
+    if (res.ok) toast.success('Registration settings saved')
+    else toast.error('Failed to save')
+  }
+
+  const saveMaintenance = async () => {
+    const res = await fetch('/api/admin/settings/maintenance', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ enabled: maintenanceEnabled, message: maintenanceMessage }),
+    })
+    if (res.ok) toast.success('Maintenance settings saved')
+    else toast.error('Failed to save')
+  }
+
+  const saveAnnouncement = async () => {
+    if (announcementActive) {
+      const res = await fetch('/api/admin/announcement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: announcementMsg, color: announcementColor, isActive: true }),
+      })
+      if (res.ok) toast.success('Announcement saved')
+      else toast.error('Failed to save')
+    } else {
+      const res = await fetch('/api/admin/announcement', { method: 'DELETE' })
+      if (res.ok) toast.success('Announcement disabled')
+    }
+  }
+
   const storageEstimate = stats ? `${(stats.estimatedStorageBytes / 1024 / 1024).toFixed(2)} MB` : '--'
+  const announcementPreviewClass: Record<string, string> = {
+    blue: 'bg-blue-500/20 border-blue-500/30 text-blue-300',
+    green: 'bg-green-500/20 border-green-500/30 text-green-300',
+    yellow: 'bg-yellow-500/20 border-yellow-500/30 text-yellow-300',
+    red: 'bg-red-500/20 border-red-500/30 text-red-300',
+  }
 
   return (
     <div className="space-y-6">
@@ -285,6 +354,46 @@ export default function AdminSettingsPage() {
               </button>
             </section>
           </div>
+
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <section className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-6 space-y-4">
+              <h2 className="text-lg font-semibold text-white">Registration & Access</h2>
+              <label className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <span className="text-slate-300">Allow new registrations</span>
+                <input type="checkbox" checked={registrationEnabled} onChange={(e) => setRegistrationEnabled(e.target.checked)} />
+              </label>
+              <input value={minUsernameLength} onChange={(e) => setMinUsernameLength(e.target.value)} type="number" min={3} max={20} className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none" />
+              <button onClick={saveRegistration} className="rounded-2xl bg-cyan-500 px-4 py-3 text-white">Save Registration</button>
+            </section>
+            <section className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-6 space-y-4">
+              <h2 className="text-lg font-semibold text-white">Maintenance Mode</h2>
+              <label className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                <span className="text-slate-300">Enable maintenance</span>
+                <input type="checkbox" checked={maintenanceEnabled} onChange={(e) => setMaintenanceEnabled(e.target.checked)} />
+              </label>
+              <textarea value={maintenanceMessage} onChange={(e) => setMaintenanceMessage(e.target.value)} rows={3} className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none" />
+              <button onClick={saveMaintenance} className="rounded-2xl bg-amber-500/80 px-4 py-3 text-white">Save Maintenance</button>
+            </section>
+          </div>
+
+          <section className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-6 space-y-4">
+            <h2 className="text-lg font-semibold text-white">Announcement Banner</h2>
+            <label className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+              <span className="text-slate-300">Show banner</span>
+              <input type="checkbox" checked={announcementActive} onChange={(e) => setAnnouncementActive(e.target.checked)} />
+            </label>
+            <textarea value={announcementMsg} onChange={(e) => setAnnouncementMsg(e.target.value)} rows={2} className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none" />
+            <select value={announcementColor} onChange={(e) => setAnnouncementColor(e.target.value)} className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none">
+              <option value="blue">Blue</option>
+              <option value="green">Green</option>
+              <option value="yellow">Yellow</option>
+              <option value="red">Red</option>
+            </select>
+            {announcementMsg ? (
+              <div className={`rounded-xl border px-4 py-3 text-sm ${announcementPreviewClass[announcementColor]}`}>{announcementMsg}</div>
+            ) : null}
+            <button onClick={saveAnnouncement} className="rounded-2xl bg-purple-500/80 px-4 py-3 text-white">Save Announcement</button>
+          </section>
 
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <section className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-6 space-y-4">
