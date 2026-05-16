@@ -1,34 +1,28 @@
-import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-import bcrypt from 'bcryptjs';
+import { NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import bcrypt from 'bcryptjs'
 
 export async function POST() {
   try {
-    const adminCount = await db.admin.count();
-
-    if (adminCount > 0) {
-      return NextResponse.json({ error: 'Already configured' }, { status: 403 });
+    const count = await db.admin.count()
+    if (count > 0) {
+      return NextResponse.json({ error: 'Admin already exists' }, { status: 403 })
     }
 
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (!adminEmail || !adminPassword) {
-      return NextResponse.json({ error: 'Missing environment variables' }, { status: 500 });
+    const email = process.env.ADMIN_EMAIL
+    const password = process.env.ADMIN_PASSWORD
+    
+    if (!email || !password) {
+      return NextResponse.json({ error: 'ADMIN_EMAIL or ADMIN_PASSWORD not configured' }, { status: 500 })
     }
 
-    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+    const hashed = await bcrypt.hash(password, 12)
 
-    const admin = await db.admin.create({
-      data: {
-        email: adminEmail,
-        password: hashedPassword,
-      },
-    });
+    await db.admin.create({ data: { email, password: hashed } })
 
-    return NextResponse.json({ success: true, email: admin.email });
+    return NextResponse.json({ success: true, email })
   } catch (error) {
-    console.error('Setup error:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    console.error('Setup failed:', error)
+    return NextResponse.json({ error: 'Setup failed' }, { status: 500 })
   }
 }

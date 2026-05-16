@@ -1,96 +1,97 @@
-'use client';
+'use client'
+import { useState } from 'react'
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Mail } from 'lucide-react';
-import { motion } from 'framer-motion';
+export default function AdminLoginPage() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-export default function AdminLogin() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    
     try {
       const res = await fetch('/api/admin/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
+        body: JSON.stringify({ email, password })
+      })
+      
+      const data = await res.json()
+      
       if (res.ok) {
-        router.push('/admin/dashboard');
-        router.refresh();
+        window.location.href = '/admin/dashboard'
       } else {
-        const data = await res.json();
-        setError(data.error || 'Invalid credentials');
+        setError(data.error || 'Login failed')
       }
     } catch {
-      setError('An error occurred during login');
+      setError('Connection error. Please try again.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0a0f1e] p-4 text-white font-sans relative overflow-hidden">
-      <div className="absolute inset-0 z-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-600/20 blur-[100px] rounded-full pointer-events-none"></div>
-
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md p-8 space-y-6 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl relative z-10"
-      >
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-500/20 mb-4">
-            <Mail className="w-8 h-8 text-cyan-400" />
+    <div className="min-h-screen bg-[#0a0f1e] flex items-center justify-center p-4">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
+              ✉️
+            </div>
+            <span className="text-2xl font-bold text-white">GhostMail</span>
           </div>
-          <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">Admin Portal</h1>
-          <p className="text-slate-400 mt-2">Sign in to manage GhostMail</p>
+          <p className="text-slate-400">Admin Portal</p>
         </div>
 
-        {error && <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-lg text-sm text-center">{error}</div>}
+        {/* Card */}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-xl">
+          <h1 className="text-2xl font-bold text-white text-center mb-2">Sign In</h1>
+          <p className="text-slate-400 text-center mb-8 text-sm">Access the GhostMail admin dashboard</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
-            <input
-              type="email"
-              required
-              className="w-full rounded-lg border border-white/10 bg-black/40 py-2.5 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent sm:text-sm outline-none px-4 transition-all"
-              placeholder="admin@yourdomain.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value.toLowerCase())}
-            />
-          </div>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="text-slate-300 text-sm mb-2 block">Email Address</label>
+              <input
+                type="email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                placeholder="admin@ghostmail.store"
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
+              />
+            </div>
+            <div>
+              <label className="text-slate-300 text-sm mb-2 block">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1">Password</label>
-            <input
-              type="password"
-              required
-              className="w-full rounded-lg border border-white/10 bg-black/40 py-2.5 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent sm:text-sm outline-none px-4 transition-all"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm">
+                {error}
+              </div>
+            )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 px-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white rounded-lg font-bold transition-all disabled:opacity-50 shadow-[0_0_20px_rgba(6,182,212,0.3)] mt-2"
-          >
-            {loading ? 'Authenticating...' : 'Sign In'}
-          </button>
-        </form>
-      </motion.div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-semibold py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Signing in...' : 'Sign In'}
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
-  );
+  )
 }

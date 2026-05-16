@@ -1,55 +1,28 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { auth } from "./auth";
-import { jwtVerify } from 'jose';
+import { NextRequest, NextResponse } from 'next/server'
+import { jwtVerify } from 'jose'
 
-export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl
 
-  // --- Admin Routes ---
-  if (pathname.startsWith("/admin")) {
-    if (pathname === "/admin/login") {
-      const adminToken = request.cookies.get('admin_token');
-      if (adminToken) {
-        try {
-          const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'secret');
-          await jwtVerify(adminToken.value, secret);
-          return NextResponse.redirect(new URL("/admin/dashboard", request.url));
-        } catch (e) {
-          // Token invalid, allow to proceed to login
-        }
-      }
-      return NextResponse.next();
-    }
-
-    const adminToken = request.cookies.get('admin_token');
-    if (!adminToken) {
-      return NextResponse.redirect(new URL("/admin/login", request.url));
+  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+    const token = req.cookies.get('admin_token')?.value
+    
+    if (!token) {
+      return NextResponse.redirect(new URL('/admin/login', req.url))
     }
 
     try {
-      const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'secret');
-      await jwtVerify(adminToken.value, secret);
-      return NextResponse.next();
-    } catch (e) {
-      return NextResponse.redirect(new URL("/admin/login", request.url));
+      const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'secret')
+      await jwtVerify(token, secret)
+      return NextResponse.next()
+    } catch {
+      return NextResponse.redirect(new URL('/admin/login', req.url))
     }
   }
 
-  // --- User Routes ---
-  const session = await auth();
-
-  if (pathname.startsWith("/dashboard") && !session) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  if ((pathname.startsWith("/login") || pathname.startsWith("/register")) && session) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
-  return NextResponse.next();
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/register", "/admin/:path*"],
-};
+  matcher: ['/admin/:path*', '/dashboard/:path*']
+}
