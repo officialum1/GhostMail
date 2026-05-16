@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Mail, Menu, X } from 'lucide-react';
 
 const navLinks = [
@@ -15,6 +16,7 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname() || '/';
+  const { data: session, status } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -72,18 +74,37 @@ export default function Navbar() {
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
-            <Link
-              href="/login"
-              className="rounded-xl border border-white/15 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/5"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_16px_36px_rgba(59,130,246,0.28)] transition hover:scale-[1.01]"
-            >
-              Get Started
-            </Link>
+            {status === 'loading' ? (
+              <div className="h-8 w-8 animate-pulse rounded-full bg-white/10" />
+            ) : session ? (
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+                >
+                  <Mail className="h-4 w-4" />
+                  Go to Inbox
+                </Link>
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 text-sm font-bold text-white">
+                  {session.user?.name?.[0]?.toUpperCase() || 'U'}
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link
+                  href="/login"
+                  className="text-sm font-medium text-slate-300 transition hover:text-white"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-2 text-sm font-semibold text-white transition hover:opacity-90"
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
           </div>
 
           <button
@@ -120,20 +141,46 @@ export default function Navbar() {
                 </Link>
               );
             })}
-            <div className="mt-6 flex flex-col gap-3">
-              <Link
-                href="/login"
-                className="rounded-2xl border border-white/10 px-5 py-4 text-center font-medium text-white"
-              >
-                Login
-              </Link>
-              <Link
-                href="/register"
-                className="rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-4 text-center font-semibold text-white"
-              >
-                Get Started
-              </Link>
-            </div>
+            {status === 'loading' ? (
+              <div className="mt-6 h-12 animate-pulse rounded-2xl bg-white/10" />
+            ) : session ? (
+              <div className="mt-6 flex flex-col gap-3">
+                <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 text-sm font-bold text-white">
+                    {session.user?.name?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate font-medium text-white">
+                      {session.user?.name || 'User'}
+                    </p>
+                    <p className="truncate text-sm text-cyan-300">
+                      {session.user?.email}
+                    </p>
+                  </div>
+                </div>
+                <Link
+                  href="/dashboard"
+                  className="rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-4 text-center font-semibold text-white"
+                >
+                  Go to Inbox
+                </Link>
+              </div>
+            ) : (
+              <div className="mt-6 flex flex-col gap-3">
+                <Link
+                  href="/login"
+                  className="rounded-2xl border border-white/10 px-5 py-4 text-center font-medium text-white"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/register"
+                  className="rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-4 text-center font-semibold text-white"
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
           </nav>
         </div>
       ) : null}

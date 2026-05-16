@@ -10,6 +10,8 @@ import {
   Check,
   ChevronLeft,
   Copy,
+  Download,
+  Eye,
   Filter,
   Inbox,
   LogOut,
@@ -36,6 +38,7 @@ type EmailItem = {
   receivedAt: string
   isRead: boolean
   sent: boolean
+  starred?: boolean
 }
 
 type FullEmail = EmailItem & {
@@ -113,7 +116,9 @@ export default function DashboardPage() {
   const [composeSubject, setComposeSubject] = useState('')
   const [composeBody, setComposeBody] = useState('')
   const [isSending, setIsSending] = useState(false)
+  const [showMoreMenu, setShowMoreMenu] = useState(false)
   const previousEmailsRef = useRef<EmailItem[]>([])
+  const moreMenuRef = useRef<HTMLDivElement | null>(null)
 
   const fetchInbox = useCallback(async (showLoading = false) => {
     if (showLoading) setLoading(true)
@@ -142,6 +147,24 @@ export default function DashboardPage() {
       setRefreshCountdown(20)
     }
   }, [])
+
+  const deleteEmail = useCallback(async (id: number) => {
+    const existing = emails.find((email) => email.id === id)
+    try {
+      const res = await fetch(`/api/email/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Delete failed')
+      if (existing) {
+        setDeletedEmails((current) => [existing, ...current.filter((item) => item.id !== existing.id)])
+      }
+      setEmails((current) => current.filter((email) => email.id !== id))
+      setSelectedEmail((current) => (current?.id === id ? null : current))
+      setShowMoreMenu(false)
+      toast.success('Email deleted')
+    } catch (error) {
+      console.error('Delete failed', error)
+      toast.error('Failed to delete email')
+    }
+  }, [emails])
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -196,7 +219,20 @@ export default function DashboardPage() {
 
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [fetchInbox, selectedEmail])
+  }, [fetchInbox, selectedEmail, deleteEmail])
+
+  useEffect(() => {
+    if (!showMoreMenu) return
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!moreMenuRef.current?.contains(event.target as Node)) {
+        setShowMoreMenu(false)
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [showMoreMenu])
 
   const filteredEmails = useMemo(() => {
     const query = search.trim().toLowerCase()
@@ -233,6 +269,7 @@ export default function DashboardPage() {
   }
 
   const openEmail = async (id: number) => {
+    setShowMoreMenu(false)
     setLoadingEmail(true)
     try {
       const res = await fetch(`/api/email/${id}`)
@@ -248,22 +285,63 @@ export default function DashboardPage() {
     }
   }
 
-  const deleteEmail = useCallback(async (id: number) => {
-    const existing = emails.find((email) => email.id === id)
-    try {
-      const res = await fetch(`/api/email/${id}`, { method: 'DELETE' })
-      if (!res.ok) throw new Error('Delete failed')
-      if (existing) {
-        setDeletedEmails((current) => [existing, ...current.filter((item) => item.id !== existing.id)])
-      }
-      setEmails((current) => current.filter((email) => email.id !== id))
-      setSelectedEmail((current) => (current?.id === id ? null : current))
-      toast.success('Email deleted')
-    } catch (error) {
-      console.error('Delete failed', error)
-      toast.error('Failed to delete email')
-    }
-  }, [emails, selectedEmail])
+  const toggleRead = useCallback((email: FullEmail | EmailItem | null) => {
+    if (!email) return
+
+    setEmails((current) =>
+      current.map((item) =>
+        item.id === email.id ? { ...item, isRead: !item.isRead } : item
+      )
+    )
+    setSelectedEmail((current) =>
+      current && current.id === email.id
+        ? { ...current, isRead: !current.isRead }
+        : current
+    )
+    toast.success(email.isRead ? 'Marked as unread' : 'Marked as read')
+  }, [])
+
+  const toggleStar = useCallback((email: FullEmail | EmailItem | null) => {
+    if (!email) return
+
+    const isStarred = starredIds.includes(email.id)
+    setStarredIds((current) =>
+      current.includes(email.id)
+        ? current.filter((id) => id !== email.id)
+        : [...current, email.id]
+    )
+    setEmails((current) =>
+      current.map((item) =>
+        item.id === email.id ? { ...item, starred: !isStarred } : item
+      )
+    )
+    setSelectedEmail((current) =>
+      current && current.id === email.id
+        ? { ...current, starred: !isStarred }
+        : current
+    )
+    toast.success(isStarred ? 'Email unstarred' : 'Email starred')
+  }, [starredIds])
+
+  const downloadEmail = useCallback((email: FullEmail | null) => {
+    if (!email) return
+
+    const content = `From: ${email.fromAddress}
+To: ${email.toAddress}
+Subject: ${email.subject}
+Date: ${new Date(email.receivedAt).toLocaleString()}
+
+${email.bodyText || 'No plain text content'}`
+
+    const blob = new Blob([content], { type: 'text/plain' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    anchor.href = url
+    anchor.download = `${(email.subject || 'email').replace(/[\\/:*?"<>|]/g, '_')}.txt`
+    anchor.click()
+    URL.revokeObjectURL(url)
+    toast.success('Email downloaded')
+  }, [])
 
   const handleSend = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -310,6 +388,8 @@ export default function DashboardPage() {
   }
 
   const selectedMailboxLabel = mailbox[0].toUpperCase() + mailbox.slice(1)
+  const selectedEmailStarred =
+    selectedEmail ? starredIds.includes(selectedEmail.id) : false
 
   if (status === 'loading') {
     return (
@@ -560,10 +640,10 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => setStarredIds((current) => current.includes(selectedEmail.id) ? current.filter((id) => id !== selectedEmail.id) : [...current, selectedEmail.id])}
+                        onClick={() => toggleStar(selectedEmail)}
                         className="rounded-xl border border-white/10 bg-white/5 p-3 text-slate-300 transition hover:bg-white/10 hover:text-white"
                       >
-                        <Star className={`h-4 w-4 ${starredIds.includes(selectedEmail.id) ? 'fill-current text-amber-300' : ''}`} />
+                        <Star className={`h-4 w-4 ${selectedEmailStarred ? 'fill-current text-amber-300' : ''}`} />
                       </button>
                       <button
                         onClick={() => toast('Archive is not configured yet')}
@@ -577,12 +657,74 @@ export default function DashboardPage() {
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>
-                      <button
-                        onClick={() => toast('More actions coming soon')}
-                        className="rounded-xl border border-white/10 bg-white/5 p-3 text-slate-300 transition hover:bg-white/10 hover:text-white"
-                      >
-                        <MoreVertical className="h-4 w-4" />
-                      </button>
+                      <div className="relative" ref={moreMenuRef}>
+                        <button
+                          onClick={(event) => {
+                            event.stopPropagation()
+                            setShowMoreMenu((current) => !current)
+                          }}
+                          className="rounded-xl border border-white/10 bg-white/5 p-3 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </button>
+
+                        {showMoreMenu ? (
+                          <div className="absolute right-0 top-14 z-50 w-48 rounded-xl border border-white/10 bg-[#1a2035] py-2 shadow-2xl">
+                            <button
+                              onClick={() => {
+                                toggleRead(selectedEmail)
+                                setShowMoreMenu(false)
+                              }}
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                            >
+                              <Eye className="h-4 w-4" />
+                              Mark as {selectedEmail.isRead ? 'Unread' : 'Read'}
+                            </button>
+                            <button
+                              onClick={() => {
+                                toggleStar(selectedEmail)
+                                setShowMoreMenu(false)
+                              }}
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                            >
+                              <Star className="h-4 w-4" />
+                              {selectedEmailStarred ? 'Unstar' : 'Star'} email
+                            </button>
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(selectedEmail.fromAddress || '')
+                                setShowMoreMenu(false)
+                                toast.success('Copied!')
+                              }}
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                            >
+                              <Copy className="h-4 w-4" />
+                              Copy sender email
+                            </button>
+                            <hr className="my-1 border-white/10" />
+                            <button
+                              onClick={() => {
+                                downloadEmail(selectedEmail)
+                                setShowMoreMenu(false)
+                              }}
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                            >
+                              <Download className="h-4 w-4" />
+                              Download .txt
+                            </button>
+                            <button
+                              onClick={() => {
+                                void deleteEmail(selectedEmail.id)
+                                setShowMoreMenu(false)
+                              }}
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-red-400 transition hover:bg-red-500/10"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              Delete email
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
                   </div>
                 </div>
