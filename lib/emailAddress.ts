@@ -16,3 +16,13 @@ export function extractEmailAddresses(value: string | null | undefined) {
     .map((part) => normalizeEmailAddress(part))
     .filter((part, index, all) => Boolean(part) && all.indexOf(part) === index)
 }
+
+export function getEmailDomain(value: string | null | undefined) {
+  const normalized = normalizeEmailAddress(value)
+  return normalized.split('@')[1] ?? ''
+}
+
+export function getEmailUsername(value: string | null | undefined) {
+  const normalized = normalizeEmailAddress(value)
+  return normalized.split('@')[0] ?? ''
+}

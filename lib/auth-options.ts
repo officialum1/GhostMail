@@ -14,15 +14,32 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
+        const email = credentials.email.toLowerCase()
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
         })
 
-        if (!user) return null
-        if (user.isBanned) return null
+        if (!user) {
+          await prisma.failedLoginAttempt.create({
+            data: {
+              email,
+            },
+          })
+          return null
+        }
+        if (user.isBanned) {
+          throw new Error('Your account has been suspended')
+        }
 
         const isValid = await bcrypt.compare(credentials.password, user.password)
-        if (!isValid) return null
+        if (!isValid) {
+          await prisma.failedLoginAttempt.create({
+            data: {
+              email,
+            },
+          })
+          return null
+        }
 
         return {
           id: String(user.id),

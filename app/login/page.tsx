@@ -22,7 +22,11 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
-        setError('Invalid email or password');
+        setError(
+          result.error.includes('suspended')
+            ? 'Your account has been suspended'
+            : 'Invalid email or password'
+        );
       } else {
         window.location.href = '/dashboard';
       }

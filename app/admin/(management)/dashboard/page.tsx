@@ -1,177 +1,159 @@
-import { db } from '@/lib/db';
-import { Prisma } from '@prisma/client';
-import { Users, Mail, Activity, Clock, RefreshCcw } from 'lucide-react';
-import { refreshDashboard } from './actions';
+'use client'
 
-export const dynamic = 'force-dynamic';
+import { useCallback, useEffect, useState } from 'react'
+import { CheckCircle, Mail, Shield, TrendingUp, Users, Zap } from 'lucide-react'
+import AdminAutoRefresh from '@/components/admin/AdminAutoRefresh'
+import AdminDashboardCharts from '@/components/admin/AdminDashboardCharts'
 
-type RecentUser = Prisma.UserGetPayload<{
-  include: { _count: { select: { emails: true } } };
-}>;
+type ChartPoint = {
+  date: string
+  count: number
+  label: string
+}
 
-type RecentEmail = Prisma.EmailGetPayload<{
-  include: { user: { select: { username: true, email: true } } };
-}>;
+type RecentUser = {
+  id: number
+  username: string
+  email: string
+  createdAt: string
+  _count: { emails: number }
+}
 
-type DashboardStats = {
-  totalUsers: number;
-  totalEmails: number;
-  emailsToday: number;
-  recentUsers: RecentUser[];
-  recentEmails: RecentEmail[];
-};
+type RecentEmail = {
+  id: number
+  fromAddress: string
+  subject: string
+  receivedAt: string
+  user: { username: string; email: string }
+}
 
-export default async function AdminDashboard() {
-  let stats: DashboardStats = {
-    totalUsers: 0,
-    totalEmails: 0,
-    emailsToday: 0,
-    recentUsers: [],
-    recentEmails: [],
-  };
-  
-  try {
-    const totalUsers = await db.user.count();
-    const totalEmails = await db.email.count();
-    
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const emailsToday = await db.email.count({
-      where: { receivedAt: { gte: today } }
-    });
+type DashboardData = {
+  stats: {
+    totalUsers: number
+    totalEmails: number
+    emailsToday: number
+    emailsThisWeek: number
+    bannedUsers: number
+    systemStatus: string
+  }
+  userGrowth: ChartPoint[]
+  emailVolume: ChartPoint[]
+  recentUsers: RecentUser[]
+  recentEmails: RecentEmail[]
+}
 
-    const recentUsers = await db.user.findMany({
-      take: 10,
-      orderBy: { createdAt: 'desc' },
-      include: { _count: { select: { emails: true } } }
-    });
+const statCardStyles = [
+  'text-blue-400 bg-blue-500/10 border-blue-500/20',
+  'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+  'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+  'text-purple-400 bg-purple-500/10 border-purple-500/20',
+  'text-red-400 bg-red-500/10 border-red-500/20',
+  'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+]
 
-    const recentEmails = await db.email.findMany({
-      take: 10,
-      orderBy: { receivedAt: 'desc' },
-      include: { user: { select: { username: true, email: true } } }
-    });
+export default function AdminDashboardPage() {
+  const [data, setData] = useState<DashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-    stats = { totalUsers, totalEmails, emailsToday, recentUsers, recentEmails };
-  } catch (error) {
-    console.error('CRITICAL: Database query failed in AdminDashboard:', error);
-    return (
-      <div className="p-20 text-center">
-        <h1 className="text-2xl font-bold text-red-500 mb-4">Database Connection Error</h1>
-        <p className="text-slate-400">The server could not connect to the database. Please check your DATABASE_URL.</p>
-        <p className="text-xs text-slate-600 mt-4 font-mono">{(error as Error).message}</p>
-      </div>
-    );
+  const fetchDashboard = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/dashboard')
+      if (!res.ok) throw new Error('Failed to load dashboard')
+      const json = await res.json()
+      setData(json)
+      setError('')
+    } catch (err) {
+      console.error(err)
+      setError('Failed to load dashboard data')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    fetchDashboard()
+  }, [fetchDashboard])
+
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-[400px] text-slate-400">Loading dashboard...</div>
   }
 
-  const { totalUsers, totalEmails, emailsToday, recentUsers, recentEmails } = stats;
+  if (error || !data) {
+    return <div className="text-red-400">{error || 'Dashboard unavailable'}</div>
+  }
+
+  const stats = [
+    { label: 'Total Users', value: data.stats.totalUsers, icon: Users },
+    { label: 'Total Emails', value: data.stats.totalEmails, icon: Mail },
+    { label: 'Emails Today', value: data.stats.emailsToday, icon: Zap },
+    { label: 'Emails This Week', value: data.stats.emailsThisWeek, icon: TrendingUp },
+    { label: 'Banned Users', value: data.stats.bannedUsers, icon: Shield },
+    { label: 'System Status', value: data.stats.systemStatus, icon: CheckCircle },
+  ]
 
   return (
-    <div className="space-y-8 p-6 lg:p-10">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">System Overview</h1>
-          <p className="text-slate-400">Live monitoring and system metrics</p>
-        </div>
-        <form action={refreshDashboard}>
-          <button type="submit" className="flex items-center gap-2 px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl text-slate-200 transition-all active:scale-95 font-medium">
-            <RefreshCcw className="w-4 h-4" />
-            Refresh Data
-          </button>
-        </form>
+    <div className="space-y-6">
+      <AdminAutoRefresh interval={30000} onRefresh={fetchDashboard} />
+
+      <div>
+        <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
+        <p className="mt-2 text-slate-400">Live system metrics, user growth, and recent platform activity.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-[#0d1425] border border-white/5 rounded-3xl p-6 shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-3xl -mr-10 -mt-10 rounded-full"></div>
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="p-4 bg-blue-500/10 text-blue-400 rounded-2xl border border-blue-500/20">
-              <Users className="w-7 h-7" />
-            </div>
-            <div>
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Total Users</p>
-              <h3 className="text-3xl font-bold text-white tracking-tight" suppressHydrationWarning>{totalUsers.toLocaleString()}</h3>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-[#0d1425] border border-white/5 rounded-3xl p-6 shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/5 blur-3xl -mr-10 -mt-10 rounded-full"></div>
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="p-4 bg-cyan-500/10 text-cyan-400 rounded-2xl border border-cyan-500/20">
-              <Mail className="w-7 h-7" />
-            </div>
-            <div>
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Total Emails</p>
-              <h3 className="text-3xl font-bold text-white tracking-tight" suppressHydrationWarning>{totalEmails.toLocaleString()}</h3>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-[#0d1425] border border-white/5 rounded-3xl p-6 shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl -mr-10 -mt-10 rounded-full"></div>
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="p-4 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20">
-              <Activity className="w-7 h-7" />
-            </div>
-            <div>
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Today&apos;s Traffic</p>
-              <h3 className="text-3xl font-bold text-white tracking-tight" suppressHydrationWarning>{emailsToday.toLocaleString()}</h3>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-[#0d1425] border border-white/5 rounded-3xl p-6 shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 blur-3xl -mr-10 -mt-10 rounded-full"></div>
-          <div className="flex items-center gap-4 relative z-10">
-            <div className="p-4 bg-emerald-500/10 text-emerald-400 rounded-2xl border border-emerald-500/20">
-              <Clock className="w-7 h-7" />
-            </div>
-            <div>
-              <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Status</p>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                <h3 className="text-xl font-bold text-emerald-400 tracking-tight">System Online</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {stats.map((stat, index) => {
+          const Icon = stat.icon
+          const cardStyle = statCardStyles[index]
+          return (
+            <div key={stat.label} className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-400">{stat.label}</p>
+                  <p className="mt-2 text-3xl font-bold text-white">
+                    {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
+                  </p>
+                </div>
+                <div className={`rounded-2xl border p-3 ${cardStyle}`}>
+                  <Icon className="h-6 w-6" />
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          )
+        })}
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        <div className="bg-[#0d1425] border border-white/5 rounded-[32px] p-8 shadow-2xl">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-white flex items-center gap-3">
-              <Users className="w-5 h-5 text-blue-400" />
-              Recent Registrations
-            </h2>
-          </div>
+      <AdminDashboardCharts userGrowth={data.userGrowth} emailVolume={data.emailVolume} />
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-6">
+          <h2 className="text-lg font-semibold text-white mb-4">Recent Users</h2>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
+            <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/5 text-slate-500">
-                  <th className="pb-4 font-bold uppercase tracking-widest text-[10px]">User</th>
-                  <th className="pb-4 font-bold uppercase tracking-widest text-[10px]">Email Address</th>
-                  <th className="pb-4 font-bold uppercase tracking-widest text-[10px]">Joined</th>
-                  <th className="pb-4 font-bold uppercase tracking-widest text-[10px] text-right">Activity</th>
+                <tr className="border-b border-white/10 text-left text-slate-400">
+                  <th className="pb-3 font-medium">User</th>
+                  <th className="pb-3 font-medium">Email</th>
+                  <th className="pb-3 font-medium">Joined</th>
+                  <th className="pb-3 font-medium text-right">Emails</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
-                {recentUsers.map((user: { id: number; username: string; email: string; createdAt: Date; _count: { emails: number } }) => (
-                  <tr key={user.id} className="group hover:bg-white/2 transition-colors">
+              <tbody>
+                {data.recentUsers.map((user) => (
+                  <tr key={user.id} className="border-b border-white/5 hover:bg-white/5">
                     <td className="py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-xs">
-                          {user.username[0].toUpperCase()}
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 font-semibold text-white">
+                          {user.username[0]?.toUpperCase()}
                         </div>
-                        <span className="font-bold text-white">{user.username}</span>
+                        <span className="font-medium text-white">{user.username}</span>
                       </div>
                     </td>
-                    <td className="py-4 text-slate-400 font-mono">{user.email}</td>
-                    <td className="py-4 text-slate-500" suppressHydrationWarning>{new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td className="py-4 text-slate-300">{user.email}</td>
+                    <td className="py-4 text-slate-400">{new Date(user.createdAt).toLocaleDateString()}</td>
                     <td className="py-4 text-right">
-                      <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-[10px] font-bold border border-blue-500/20">
-                        {user._count.emails} emails
+                      <span className="rounded-full px-2 py-0.5 text-xs bg-cyan-400/10 text-cyan-300">
+                        {user._count.emails}
                       </span>
                     </td>
                   </tr>
@@ -181,34 +163,25 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        <div className="bg-[#0d1425] border border-white/5 rounded-[32px] p-8 shadow-2xl">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-white flex items-center gap-3">
-              <Mail className="w-5 h-5 text-cyan-400" />
-              Latest Email Traffic
-            </h2>
-          </div>
+        <div className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-6">
+          <h2 className="text-lg font-semibold text-white mb-4">Recent Emails</h2>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
+            <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-white/5 text-slate-500">
-                  <th className="pb-4 font-bold uppercase tracking-widest text-[10px]">From</th>
-                  <th className="pb-4 font-bold uppercase tracking-widest text-[10px]">To (User)</th>
-                  <th className="pb-4 font-bold uppercase tracking-widest text-[10px]">Subject</th>
-                  <th className="pb-4 font-bold uppercase tracking-widest text-[10px] text-right">Time</th>
+                <tr className="border-b border-white/10 text-left text-slate-400">
+                  <th className="pb-3 font-medium">From</th>
+                  <th className="pb-3 font-medium">To</th>
+                  <th className="pb-3 font-medium">Subject</th>
+                  <th className="pb-3 font-medium text-right">Time</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
-                {recentEmails.map((email: { id: number; fromAddress: string; subject: string; receivedAt: Date; user: { username: string } }) => (
-                  <tr key={email.id} className="group hover:bg-white/2 transition-colors">
-                    <td className="py-4">
-                      <p className="text-white font-medium truncate max-w-[140px]">{email.fromAddress}</p>
-                    </td>
-                    <td className="py-4">
-                      <p className="text-cyan-400 text-xs font-bold truncate max-w-[120px]">{email.user.username}</p>
-                    </td>
-                    <td className="py-4 text-slate-400 truncate max-w-[150px]">{email.subject}</td>
-                    <td className="py-4 text-right text-slate-500 text-[10px] font-mono" suppressHydrationWarning>
+              <tbody>
+                {data.recentEmails.map((email) => (
+                  <tr key={email.id} className="border-b border-white/5 hover:bg-white/5">
+                    <td className="py-4 text-white max-w-[180px] truncate">{email.fromAddress}</td>
+                    <td className="py-4 text-cyan-300">{email.user.username}</td>
+                    <td className="py-4 text-slate-300 max-w-[220px] truncate">{email.subject}</td>
+                    <td className="py-4 text-right text-slate-400">
                       {new Date(email.receivedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </td>
                   </tr>
@@ -219,5 +192,7 @@ export default async function AdminDashboard() {
         </div>
       </div>
     </div>
-  );
+  )
 }
+
+

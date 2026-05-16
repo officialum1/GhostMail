@@ -91,6 +91,16 @@ export default function DashboardPage() {
     }
 
     fetchInbox(true);
+
+    const eventSource = new EventSource('/api/email/stream');
+    eventSource.onmessage = () => {
+      fetchInbox();
+      setRefreshCountdown(20);
+    };
+    eventSource.onerror = () => {
+      eventSource.close();
+    };
+
     const interval = setInterval(() => {
       setRefreshCountdown((prev) => {
         if (prev <= 1) {
@@ -100,7 +110,11 @@ export default function DashboardPage() {
         return prev - 1;
       });
     }, 1000);
-    return () => clearInterval(interval);
+
+    return () => {
+      eventSource.close();
+      clearInterval(interval);
+    };
   }, [fetchInbox, status]);
 
   if (status === 'loading') return <div>Loading...</div>;
@@ -390,9 +404,9 @@ export default function DashboardPage() {
                     />
                   </div>
                 ) : (
-                  <div className="p-8 bg-[#0d1425] rounded-2xl border border-white/10 text-slate-300 whitespace-pre-wrap font-mono text-sm leading-relaxed">
+                  <pre className="p-8 bg-[#0d1425] rounded-2xl border border-white/10 text-slate-300 whitespace-pre-wrap font-mono text-sm leading-relaxed">
                     {selectedEmail.bodyText}
-                  </div>
+                  </pre>
                 )}
               </div>
             </motion.div>
