@@ -5,26 +5,43 @@ import { refreshDashboard } from './actions';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboard() {
-  const totalUsers = await db.user.count();
-  const totalEmails = await db.email.count();
+  let stats = { totalUsers: 0, totalEmails: 0, emailsToday: 0, recentUsers: [], recentEmails: [] };
   
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const emailsToday = await db.email.count({
-    where: { receivedAt: { gte: today } }
-  });
+  try {
+    const totalUsers = await db.user.count();
+    const totalEmails = await db.email.count();
+    
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const emailsToday = await db.email.count({
+      where: { receivedAt: { gte: today } }
+    });
 
-  const recentUsers = await db.user.findMany({
-    take: 10,
-    orderBy: { createdAt: 'desc' },
-    include: { _count: { select: { emails: true } } }
-  });
+    const recentUsers = await db.user.findMany({
+      take: 10,
+      orderBy: { createdAt: 'desc' },
+      include: { _count: { select: { emails: true } } }
+    }) as any;
 
-  const recentEmails = await db.email.findMany({
-    take: 10,
-    orderBy: { receivedAt: 'desc' },
-    include: { user: { select: { username: true, email: true } } }
-  });
+    const recentEmails = await db.email.findMany({
+      take: 10,
+      orderBy: { receivedAt: 'desc' },
+      include: { user: { select: { username: true, email: true } } }
+    }) as any;
+
+    stats = { totalUsers, totalEmails, emailsToday, recentUsers, recentEmails };
+  } catch (error) {
+    console.error('CRITICAL: Database query failed in AdminDashboard:', error);
+    return (
+      <div className="p-20 text-center">
+        <h1 className="text-2xl font-bold text-red-500 mb-4">Database Connection Error</h1>
+        <p className="text-slate-400">The server could not connect to the database. Please check your DATABASE_URL.</p>
+        <p className="text-xs text-slate-600 mt-4 font-mono">{(error as Error).message}</p>
+      </div>
+    );
+  }
+
+  const { totalUsers, totalEmails, emailsToday, recentUsers, recentEmails } = stats;
 
   return (
     <div className="space-y-8 p-6 lg:p-10">

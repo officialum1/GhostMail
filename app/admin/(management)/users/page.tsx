@@ -5,14 +5,26 @@ import { deleteUser } from './actions';
 export const dynamic = 'force-dynamic';
 
 export default async function AdminUsersPage() {
-  const users = await db.user.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      _count: {
-        select: { emails: true }
+  let users = [];
+  try {
+    users = await db.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: {
+        _count: {
+          select: { emails: true }
+        }
       }
-    }
-  });
+    });
+  } catch (error) {
+    console.error('CRITICAL: Database query failed in AdminUsersPage:', error);
+    return (
+      <div className="p-20 text-center">
+        <h1 className="text-2xl font-bold text-red-500 mb-4">Database Connection Error</h1>
+        <p className="text-slate-400">The server could not connect to the database. Please check your DATABASE_URL.</p>
+        <p className="text-xs text-slate-600 mt-4 font-mono">{(error as Error).message}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 lg:p-12 space-y-10">
