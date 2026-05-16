@@ -1,11 +1,34 @@
 import { db } from '@/lib/db';
+import { Prisma } from '@prisma/client';
 import { Users, Mail, Activity, Clock, RefreshCcw } from 'lucide-react';
 import { refreshDashboard } from './actions';
 
 export const dynamic = 'force-dynamic';
 
+type RecentUser = Prisma.UserGetPayload<{
+  include: { _count: { select: { emails: true } } };
+}>;
+
+type RecentEmail = Prisma.EmailGetPayload<{
+  include: { user: { select: { username: true, email: true } } };
+}>;
+
+type DashboardStats = {
+  totalUsers: number;
+  totalEmails: number;
+  emailsToday: number;
+  recentUsers: RecentUser[];
+  recentEmails: RecentEmail[];
+};
+
 export default async function AdminDashboard() {
-  let stats = { totalUsers: 0, totalEmails: 0, emailsToday: 0, recentUsers: [], recentEmails: [] };
+  let stats: DashboardStats = {
+    totalUsers: 0,
+    totalEmails: 0,
+    emailsToday: 0,
+    recentUsers: [],
+    recentEmails: [],
+  };
   
   try {
     const totalUsers = await db.user.count();
@@ -21,13 +44,13 @@ export default async function AdminDashboard() {
       take: 10,
       orderBy: { createdAt: 'desc' },
       include: { _count: { select: { emails: true } } }
-    }) as any;
+    });
 
     const recentEmails = await db.email.findMany({
       take: 10,
       orderBy: { receivedAt: 'desc' },
       include: { user: { select: { username: true, email: true } } }
-    }) as any;
+    });
 
     stats = { totalUsers, totalEmails, emailsToday, recentUsers, recentEmails };
   } catch (error) {
