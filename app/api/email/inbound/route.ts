@@ -11,46 +11,45 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const contentType = req.headers.get('content-type') || '';
-    let rawEmailData = '';
+    const body = await req.json();
+    const { raw, to, from, subject, text, html } = body;
 
-    if (contentType.includes('multipart/form-data')) {
-      const formData = await req.formData();
-      const emailField = formData.get('email');
-      if (typeof emailField === 'string') {
-        rawEmailData = emailField;
-      } else if (emailField instanceof File) {
-        rawEmailData = await emailField.text();
-      }
-    } else if (contentType.includes('application/json')) {
-      const json = await req.json();
-      rawEmailData = json.raw || json.email;
+    let finalTo = to;
+    let finalFrom = from;
+    let finalSubject = subject;
+    let finalText = text;
+    let finalHtml = html;
+    let finalHeaders = '';
+
+    if (raw) {
+      const parsed = await parseRawEmail(raw);
+      finalTo = parsed.to;
+      finalFrom = parsed.from;
+      finalSubject = parsed.subject;
+      finalText = parsed.text;
+      finalHtml = parsed.html;
+      finalHeaders = parsed.headers;
     }
 
-    if (!rawEmailData) {
-      // Return 200 so Cloudflare doesn't retry
-      return NextResponse.json({ success: true, message: 'No email data found' });
+    if (!finalTo) {
+      return NextResponse.json({ error: 'No recipient' }, { status: 400 });
     }
 
-    const parsedEmail = await parseRawEmail(rawEmailData);
-
-    if (!parsedEmail.to) {
-      return NextResponse.json({ success: true, message: 'No recipient found' });
-    }
+    console.log(`Email received for: ${finalTo}`);
 
     const user = await db.user.findUnique({
-      where: { email: parsedEmail.to.toLowerCase() }
+      where: { email: finalTo.toLowerCase() }
     });
 
     if (user) {
       await db.email.create({
         data: {
-          toAddress: parsedEmail.to.toLowerCase(),
-          fromAddress: parsedEmail.from || 'unknown',
-          subject: parsedEmail.subject || '(No Subject)',
-          bodyText: parsedEmail.text,
-          bodyHtml: parsedEmail.html,
-          rawHeaders: parsedEmail.headers,
+          toAddress: finalTo.toLowerCase(),
+          fromAddress: finalFrom || 'unknown',
+          subject: finalSubject || '(No Subject)',
+          bodyText: finalText || '',
+          bodyHtml: finalHtml,
+          rawHeaders: finalHeaders,
           userId: user.id
         }
       });
@@ -59,7 +58,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Webhook error:', error);
-    // Return 200 so Cloudflare doesn't retry
-    return NextResponse.json({ success: true, error: 'Internal error processed' });
+    // Always return 200 to prevent Cloudflare retries
+    return NextResponse.json({ success: true, processed: false });
   }
 }

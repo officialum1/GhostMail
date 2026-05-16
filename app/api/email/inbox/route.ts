@@ -11,7 +11,10 @@ export async function GET() {
 
   try {
     const emails = await db.email.findMany({
-      where: { userId: parseInt(session.user.id) },
+      where: { 
+        userId: parseInt(session.user.id),
+        deletedAt: null
+      },
       orderBy: { receivedAt: 'desc' },
       select: {
         id: true,
@@ -21,8 +24,8 @@ export async function GET() {
         bodyText: true,
         receivedAt: true,
         isRead: true,
+        sent: true,
         userId: true,
-        // Exclude bodyHtml to keep the payload small for the list view
       }
     });
 

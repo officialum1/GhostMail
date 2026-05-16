@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
-import { Users, Mail, Activity, Clock } from 'lucide-react';
+import { Users, Mail, Activity, Clock, RefreshCcw } from 'lucide-react';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,43 +15,35 @@ export default async function AdminDashboard() {
   });
 
   const recentEmails = await db.email.findMany({
-    take: 20,
+    take: 10,
     orderBy: { receivedAt: 'desc' },
-    include: { user: true }
+    include: { user: { select: { username: true } } }
   });
 
   const recentUsers = await db.user.findMany({
     take: 10,
-    orderBy: { createdAt: 'desc' }
+    orderBy: { createdAt: 'desc' },
+    include: { _count: { select: { emails: true } } }
   });
 
-  // Prisma doesn't easily support group by with count for relations in a way that returns the user object directly,
-  // so we approximate active users by grouping.
-  const topUsersData = await db.email.groupBy({
-    by: ['userId'],
-    _count: { id: true },
-    orderBy: { _count: { id: 'desc' } },
-    take: 5
-  });
-
-  const topUserIds = topUsersData.map((d: { userId: number }) => d.userId);
-  const topUsersObjects = await db.user.findMany({
-    where: { id: { in: topUserIds } }
-  });
-
-  const topUsers = topUsersData.map((data: { userId: number; _count: { id: number } }) => {
-    const user = topUsersObjects.find((u: { id: number; username: string }) => u.id === data.userId);
-    return {
-      username: user?.username || 'Unknown',
-      emailCount: data._count.id
-    };
-  });
+  async function refresh() {
+    'use server';
+    revalidatePath('/admin/dashboard');
+  }
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard Overview</h1>
-        <p className="text-slate-400">System statistics and recent activity</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-2">Dashboard Overview</h1>
+          <p className="text-slate-400">System statistics and recent activity</p>
+        </div>
+        <form action={refresh}>
+          <button type="submit" className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-slate-300 transition-all">
+            <RefreshCcw className="w-4 h-4" />
+            Refresh
+          </button>
+        </form>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -96,18 +89,16 @@ export default async function AdminDashboard() {
               <Clock className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm text-slate-400 font-medium">Most Active User</p>
-              <h3 className="text-lg font-bold text-white truncate max-w-[120px]" title={topUsers[0]?.username || 'N/A'}>
-                {topUsers[0]?.username || 'N/A'}
-              </h3>
+              <p className="text-sm text-slate-400 font-medium">Server Status</p>
+              <h3 className="text-2xl font-bold text-emerald-400">Online</h3>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
-          <h2 className="text-xl font-bold mb-6 text-white">Recent Emails</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
+          <h2 className="text-xl font-bold mb-6 text-white">Latest Emails</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
               <thead>
@@ -121,11 +112,11 @@ export default async function AdminDashboard() {
               <tbody className="divide-y divide-white/5">
                 {recentEmails.map((email: { id: number; fromAddress: string; toAddress: string; subject: string; receivedAt: Date }) => (
                   <tr key={email.id} className="text-slate-300">
-                    <td className="py-3 truncate max-w-[150px]">{email.fromAddress}</td>
-                    <td className="py-3 text-cyan-400 truncate max-w-[150px]">{email.toAddress}</td>
-                    <td className="py-3 truncate max-w-[200px]">{email.subject}</td>
-                    <td className="py-3 text-right text-slate-500 whitespace-nowrap">
-                      {new Date(email.receivedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    <td className="py-3 truncate max-w-[120px]">{email.fromAddress}</td>
+                    <td className="py-3 text-cyan-400 truncate max-w-[120px]">{email.toAddress}</td>
+                    <td className="py-3 truncate max-w-[150px]">{email.subject}</td>
+                    <td className="py-3 text-right text-slate-500 whitespace-nowrap text-xs">
+                      {new Date(email.receivedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </td>
                   </tr>
                 ))}
@@ -138,16 +129,17 @@ export default async function AdminDashboard() {
         </div>
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md">
-          <h2 className="text-xl font-bold mb-6 text-white">Recent Users</h2>
+          <h2 className="text-xl font-bold mb-6 text-white">Latest Users</h2>
           <div className="space-y-4">
-            {recentUsers.map((user: { id: number; username: string; email: string; createdAt: Date }) => (
-              <div key={user.id} className="flex items-center justify-between">
+            {recentUsers.map((user: { id: number; username: string; email: string; _count: { emails: number }; createdAt: Date }) => (
+              <div key={user.id} className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
                 <div>
-                  <p className="font-medium text-white">{user.username}</p>
+                  <p className="font-bold text-white">{user.username}</p>
                   <p className="text-xs text-slate-400">{user.email}</p>
                 </div>
-                <div className="text-xs text-slate-500">
-                  {new Date(user.createdAt).toLocaleDateString()}
+                <div className="text-right">
+                  <p className="text-xs font-bold text-cyan-400">{user._count.emails} emails</p>
+                  <p className="text-[10px] text-slate-500">{new Date(user.createdAt).toLocaleDateString()}</p>
                 </div>
               </div>
             ))}

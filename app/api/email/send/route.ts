@@ -1,0 +1,61 @@
+import { NextResponse } from 'next/server';
+import { auth } from '@/auth';
+import { db } from '@/lib/db';
+import nodemailer from 'nodemailer';
+
+export async function POST(req: Request) {
+  try {
+    const session = await auth();
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { to, subject, body } = await req.json();
+
+    if (!to || !subject || !body) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Configure transporter
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '465'),
+      secure: true, // Use SSL/TLS
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    // Send email
+    await transporter.sendMail({
+      from: `"${session.user.name}" <${session.user.email}>`,
+      to,
+      subject,
+      text: body,
+      html: body.replace(/\n/g, '<br>'),
+    });
+
+    const userId = parseInt(session.user.id || '0');
+    if (!userId) {
+      return NextResponse.json({ error: 'User ID not found' }, { status: 400 });
+    }
+
+    // Save to DB
+    await db.email.create({
+      data: {
+        toAddress: to,
+        fromAddress: session.user.email,
+        subject: subject,
+        bodyText: body,
+        sent: true,
+        userId: userId,
+      },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Send email error:', error);
+    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
+  }
+}
