@@ -22,7 +22,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const isValid = await bcrypt.compare(credentials.password as string, user.password)
         if (!isValid) return null
 
-        return { id: user.id.toString(), email: user.email, name: user.username }
+        return { 
+          id: user.id.toString(), 
+          email: user.email, 
+          name: user.username 
+        }
       },
     }),
   ],
@@ -30,13 +34,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
-        token.username = user.name
-        token.email = user.email
+        token.username = user.name || ''
+        token.email = user.email || ''
       }
       return token
     },
     async session({ session, token }) {
-      if (session.user) {
+      if (token) {
         session.user.id = token.id as string
         session.user.name = token.username as string
         session.user.email = token.email as string

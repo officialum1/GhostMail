@@ -181,19 +181,25 @@ export default function DashboardPage() {
 
           <div className="bg-white/5 rounded-2xl p-4 border border-white/10 mb-6">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-lg">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-lg text-white shadow-[0_0_15px_rgba(6,182,212,0.4)]">
                 {session?.user?.name?.[0]?.toUpperCase() || 'U'}
               </div>
-              <div>
-                <div className="font-bold text-sm truncate w-32">{session?.user?.name}</div>
+              <div className="min-w-0">
+                <div className="font-bold text-sm text-white truncate">{session?.user?.name || 'User'}</div>
                 <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Active Account</div>
               </div>
             </div>
-            <div className="flex items-center justify-between gap-2 bg-black/40 p-2 rounded-lg border border-white/5">
+            <div className="flex items-center justify-between gap-2 bg-black/40 p-2 rounded-lg border border-white/5 group relative">
               <span className="text-xs text-cyan-400 truncate flex-1 font-mono">{session?.user?.email}</span>
               <button onClick={copyEmail} className="p-1 hover:bg-white/10 rounded transition-colors text-slate-400 hover:text-white">
                 {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
               </button>
+              
+              {copied && (
+                <div className="absolute -top-10 right-0 bg-emerald-500 text-white text-[10px] px-2 py-1 rounded shadow-lg animate-bounce">
+                  Copied!
+                </div>
+              )}
             </div>
           </div>
 

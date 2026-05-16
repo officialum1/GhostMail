@@ -1,120 +1,116 @@
-'use client';
+import { db } from '@/lib/db';
+import { Users, Trash2, Mail, Calendar } from 'lucide-react';
+import { revalidatePath } from 'next/cache';
 
-import { useState, useEffect } from 'react';
-import { Search, Trash2 } from 'lucide-react';
+export const dynamic = 'force-dynamic';
 
-type User = {
-  id: number;
-  username: string;
-  email: string;
-  createdAt: string;
-  _count: { emails: number };
-};
-
-export default function AdminUsersPage() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
-
-  const fetchUsers = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}`);
-      if (res.ok) {
-        const data = await res.json();
-        setUsers(data);
+export default async function AdminUsersPage() {
+  const users = await db.user.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: {
+      _count: {
+        select: { emails: true }
       }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
     }
-  };
+  });
 
-  useEffect(() => {
-    const delay = setTimeout(() => {
-      fetchUsers();
-    }, 500);
-    return () => clearTimeout(delay);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
+  async function deleteUser(formData: FormData) {
+    'use server';
+    const id = formData.get('id');
+    if (!id) return;
 
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this user and ALL their emails?')) return;
     try {
-      const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setUsers(users.filter(u => u.id !== id));
-      } else {
-        alert('Failed to delete user');
-      }
-    } catch (e) {
-      console.error(e);
-      alert('Error deleting user');
+      await db.user.delete({
+        where: { id: parseInt(id.toString()) }
+      });
+      revalidatePath('/admin/users');
+    } catch (error) {
+      console.error('Failed to delete user:', error);
     }
-  };
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="p-8 lg:p-12 space-y-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Users Management</h1>
-          <p className="text-slate-400">View and manage registered users</p>
+          <h1 className="text-4xl font-black text-white mb-2 tracking-tight flex items-center gap-4">
+            <Users className="w-10 h-10 text-blue-500" />
+            User Management
+          </h1>
+          <p className="text-slate-400 text-lg">Manage registered accounts and monitor their activity</p>
         </div>
-        <div className="relative w-full sm:w-72">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-          <input 
-            type="text" 
-            placeholder="Search username or email..." 
-            className="w-full pl-10 pr-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white focus:ring-2 focus:ring-cyan-500 outline-none transition-all"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
+        <div className="px-6 py-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 font-bold">
+          {users.length} Total Users
         </div>
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md overflow-hidden">
+      <div className="bg-[#0d1425] border border-white/5 rounded-[40px] shadow-2xl overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-black/20">
-              <tr className="text-slate-400">
-                <th className="px-6 py-4 font-medium">ID</th>
-                <th className="px-6 py-4 font-medium">Username</th>
-                <th className="px-6 py-4 font-medium">Email</th>
-                <th className="px-6 py-4 font-medium">Joined</th>
-                <th className="px-6 py-4 font-medium text-center">Emails</th>
-                <th className="px-6 py-4 font-medium text-right">Actions</th>
+          <table className="w-full text-left">
+            <thead>
+              <tr className="bg-white/2 border-b border-white/5 text-slate-500">
+                <th className="px-8 py-6 font-bold uppercase tracking-widest text-xs">#</th>
+                <th className="px-8 py-6 font-bold uppercase tracking-widest text-xs">Identity</th>
+                <th className="px-8 py-6 font-bold uppercase tracking-widest text-xs">Email Address</th>
+                <th className="px-8 py-6 font-bold uppercase tracking-widest text-xs">Joined</th>
+                <th className="px-8 py-6 font-bold uppercase tracking-widest text-xs">Traffic</th>
+                <th className="px-8 py-6 font-bold uppercase tracking-widest text-xs text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {loading ? (
-                <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-500">Loading...</td></tr>
-              ) : users.length === 0 ? (
-                <tr><td colSpan={6} className="px-6 py-8 text-center text-slate-500">No users found</td></tr>
-              ) : (
-                users.map((user) => (
-                  <tr key={user.id} className="text-slate-300 hover:bg-white/5 transition-colors">
-                    <td className="px-6 py-4 text-slate-500">#{user.id}</td>
-                    <td className="px-6 py-4 font-medium text-white">{user.username}</td>
-                    <td className="px-6 py-4 text-cyan-400">{user.email}</td>
-                    <td className="px-6 py-4 text-slate-400">{new Date(user.createdAt).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 text-center">
-                      <span className="bg-white/10 px-2 py-1 rounded text-xs">{user._count.emails}</span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
+              {users.map((user, index) => (
+                <tr key={user.id} className="group hover:bg-white/2 transition-all">
+                  <td className="px-8 py-6 text-slate-600 font-mono text-sm">{index + 1}</td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-lg text-white shadow-lg">
+                        {user.username[0].toUpperCase()}
+                      </div>
+                      <span className="font-bold text-white text-lg">{user.username}</span>
+                    </div>
+                  </td>
+                  <td className="px-8 py-6">
+                    <span className="px-4 py-2 bg-black/40 border border-white/5 rounded-xl text-cyan-400 font-mono text-sm">
+                      {user.email}
+                    </span>
+                  </td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-2 text-slate-400">
+                      <Calendar className="w-4 h-4" />
+                      {new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </div>
+                  </td>
+                  <td className="px-8 py-6">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-blue-500/10 text-blue-400 rounded-lg">
+                        <Mail className="w-4 h-4" />
+                      </div>
+                      <span className="font-bold text-white">{user._count.emails} emails</span>
+                    </div>
+                  </td>
+                  <td className="px-8 py-6 text-right">
+                    <form action={deleteUser} onSubmit={(e) => {
+                      if (!confirm('Are you sure? This deletes all their emails too.')) e.preventDefault();
+                    }}>
+                      <input type="hidden" name="id" value={user.id} />
                       <button 
-                        onClick={() => handleDelete(user.id)}
-                        className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg transition-colors"
-                        title="Delete user"
+                        type="submit"
+                        className="p-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-all active:scale-90"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-5 h-5" />
                       </button>
-                    </td>
-                  </tr>
-                ))
-              )}
+                    </form>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
+          {users.length === 0 && (
+            <div className="p-20 text-center text-slate-500">
+              <Users className="w-20 h-20 mx-auto mb-6 opacity-10" />
+              <p className="text-xl">No users found in database</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
