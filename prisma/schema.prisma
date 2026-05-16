@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  emails    Email[]
+}
+
+model Email {
+  id         Int      @id @default(autoincrement())
+  toAddress  String
+  fromAddress String
+  subject    String
+  bodyText   String?  @db.LongText
+  bodyHtml   String?  @db.LongText
+  rawHeaders String?  @db.LongText
+  receivedAt DateTime @default(now())
+  isRead     Boolean  @default(false)
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}

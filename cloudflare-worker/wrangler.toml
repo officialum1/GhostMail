@@ -1,0 +1,8 @@
+name = "ghostmail-inbound"
+main = "index.js"
+compatibility_date = "2024-05-15"
+
+# Environment variables
+# [vars]
+# WEBHOOK_URL = "https://yourdomain.com/api/email/inbound"
+# WEBHOOK_SECRET = "your-webhook-secret-here"
