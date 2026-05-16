@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import { Toaster } from 'react-hot-toast'
 import SchemaMarkup from '@/components/seo/SchemaMarkup'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 import AnnouncementBanner from '@/components/AnnouncementBanner'
 import { DEFAULT_KEYWORDS, OG_IMAGE_URL, SITE_URL } from '@/lib/seo'
 import { Providers } from './providers'
@@ -100,6 +101,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href={SITE_URL} />
       </head>
       <body className={`${inter.variable} bg-[#0a0f1e] font-sans text-white antialiased`}>
+        <GoogleAnalytics />
         <SchemaMarkup />
         <Providers>
           <AnnouncementBanner />
