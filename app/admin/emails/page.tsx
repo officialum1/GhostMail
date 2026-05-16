@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Mail, Trash2, Eye, X, Clock, User, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import ClientDate from '@/components/ClientDate';
+
 type Email = {
   id: number;
   fromAddress: string;
@@ -102,7 +104,7 @@ export default function AdminEmailsPage() {
                   <td className="px-8 py-6">
                     <div className="flex items-center gap-2 text-slate-500 text-sm">
                       <Clock className="w-4 h-4" />
-                      {new Date(email.receivedAt).toLocaleString()}
+                      <ClientDate date={email.receivedAt} />
                     </div>
                   </td>
                   <td className="px-8 py-6 text-right" onClick={(e) => e.stopPropagation()}>
@@ -193,7 +195,9 @@ export default function AdminEmailsPage() {
                   <div className="p-2 bg-white/5 rounded-lg text-slate-500"><Clock className="w-4 h-4" /></div>
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-1">Received</p>
-                    <p className="text-slate-400 text-sm">{new Date(selectedEmail.receivedAt).toLocaleString()}</p>
+                    <p className="text-slate-400 text-sm">
+                      <ClientDate date={selectedEmail.receivedAt} />
+                    </p>
                   </div>
                 </div>
               </div>

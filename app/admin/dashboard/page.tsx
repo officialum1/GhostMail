@@ -55,7 +55,7 @@ export default async function AdminDashboard() {
             </div>
             <div>
               <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Total Users</p>
-              <h3 className="text-3xl font-bold text-white tracking-tight">{totalUsers.toLocaleString()}</h3>
+              <h3 className="text-3xl font-bold text-white tracking-tight" suppressHydrationWarning>{totalUsers.toLocaleString()}</h3>
             </div>
           </div>
         </div>
@@ -68,7 +68,7 @@ export default async function AdminDashboard() {
             </div>
             <div>
               <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Total Emails</p>
-              <h3 className="text-3xl font-bold text-white tracking-tight">{totalEmails.toLocaleString()}</h3>
+              <h3 className="text-3xl font-bold text-white tracking-tight" suppressHydrationWarning>{totalEmails.toLocaleString()}</h3>
             </div>
           </div>
         </div>
@@ -81,7 +81,7 @@ export default async function AdminDashboard() {
             </div>
             <div>
               <p className="text-xs text-slate-500 font-bold uppercase tracking-widest mb-1">Today&apos;s Traffic</p>
-              <h3 className="text-3xl font-bold text-white tracking-tight">{emailsToday.toLocaleString()}</h3>
+              <h3 className="text-3xl font-bold text-white tracking-tight" suppressHydrationWarning>{emailsToday.toLocaleString()}</h3>
             </div>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default async function AdminDashboard() {
                       </div>
                     </td>
                     <td className="py-4 text-slate-400 font-mono">{user.email}</td>
-                    <td className="py-4 text-slate-500">{new Date(user.createdAt).toLocaleDateString()}</td>
+                    <td className="py-4 text-slate-500" suppressHydrationWarning>{new Date(user.createdAt).toLocaleDateString()}</td>
                     <td className="py-4 text-right">
                       <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-full text-[10px] font-bold border border-blue-500/20">
                         {user._count.emails} emails
@@ -173,7 +173,7 @@ export default async function AdminDashboard() {
                       <p className="text-cyan-400 text-xs font-bold truncate max-w-[120px]">{email.user.username}</p>
                     </td>
                     <td className="py-4 text-slate-400 truncate max-w-[150px]">{email.subject}</td>
-                    <td className="py-4 text-right text-slate-500 text-[10px] font-mono">
+                    <td className="py-4 text-right text-slate-500 text-[10px] font-mono" suppressHydrationWarning>
                       {new Date(email.receivedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </td>
                   </tr>

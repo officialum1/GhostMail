@@ -75,7 +75,7 @@ export default async function AdminUsersPage() {
                     </span>
                   </td>
                   <td className="px-8 py-6">
-                    <div className="flex items-center gap-2 text-slate-400">
+                    <div className="flex items-center gap-2 text-slate-400" suppressHydrationWarning>
                       <Calendar className="w-4 h-4" />
                       {new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </div>
