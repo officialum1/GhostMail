@@ -23,28 +23,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!isValid) return null
 
         return { 
-          id: user.id.toString(), 
+          id: user.id, 
+          username: user.username,
           email: user.email, 
           name: user.username 
-        }
+        } as any
       },
     }),
   ],
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        token.username = user.name || ''
-        token.email = user.email || ''
+        token.id = Number(user.id)
+        token.username = (user as any).username
+        token.email = (user as any).email
       }
       return token
     },
     async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string
-        session.user.name = token.username as string
-        session.user.email = token.email as string
-      }
+      session.user.id = Number(token.id)
+      session.user.name = token.username as string
+      session.user.email = token.email as string
       return session
     }
   },

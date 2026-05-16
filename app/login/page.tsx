@@ -54,7 +54,7 @@ export default function LoginPage() {
               type="email"
               required
               className="w-full rounded-md border-0 bg-gray-800 py-2.5 text-white shadow-sm ring-1 ring-inset ring-gray-700 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 outline-none px-3"
-              placeholder="username@yourdomain.com"
+              placeholder="username@ghostmail.store"
               value={email}
               onChange={(e) => setEmail(e.target.value.toLowerCase())}
             />

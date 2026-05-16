@@ -78,7 +78,8 @@ export default function RegisterPage() {
                 className="block flex-1 border-0 bg-transparent py-2.5 pl-3 text-white placeholder:text-gray-500 focus:ring-0 sm:text-sm sm:leading-6 outline-none"
                 placeholder="johndoe"
                 value={username}
-                onChange={(e) => setUsername(e.target.value.toLowerCase())}
+                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ''))}
+                minLength={3}
               />
               <span className="flex select-none items-center pr-3 text-gray-500 sm:text-sm">
                 @{domain}

@@ -19,7 +19,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       where: { id: emailId }
     });
 
-    if (!email || email.userId !== parseInt(session.user.id)) {
+    if (!email || email.userId !== session.user.id) {
       return NextResponse.json({ error: 'Email not found' }, { status: 404 });
     }
 
@@ -54,7 +54,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       where: { id: emailId }
     });
 
-    if (!email || email.userId !== parseInt(session.user.id)) {
+    if (!email || email.userId !== session.user.id) {
       return NextResponse.json({ error: 'Email not found' }, { status: 404 });
     }
 

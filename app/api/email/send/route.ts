@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       html: body.replace(/\n/g, '<br>'),
     });
 
-    const userId = parseInt(session.user.id || '0');
+    const userId = session.user.id;
     if (!userId) {
       return NextResponse.json({ error: 'User ID not found' }, { status: 400 });
     }
