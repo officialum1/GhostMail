@@ -1,0 +1,33 @@
+{
+  "name": "GhostMail — Free Custom Email Address",
+  "short_name": "GhostMail",
+  "description": "Get a free custom email address instantly. Receive OTPs and sign-ups without exposing your real inbox.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0f1e",
+  "theme_color": "#22d3ee",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["productivity", "utilities", "communication"],
+  "screenshots": [
+    {
+      "src": "/api/og",
+      "sizes": "1200x630",
+      "type": "image/png"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

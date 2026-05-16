@@ -1,98 +1,124 @@
-import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
-import { Toaster } from 'react-hot-toast';
-import SchemaMarkup from '@/components/SchemaMarkup';
-import AnnouncementBanner from '@/components/AnnouncementBanner';
-import { Providers } from './providers';
-import './globals.css';
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
+import { Toaster } from 'react-hot-toast'
+import SchemaMarkup from '@/components/seo/SchemaMarkup'
+import AnnouncementBanner from '@/components/AnnouncementBanner'
+import { DEFAULT_KEYWORDS, OG_IMAGE_URL, SITE_URL } from '@/lib/seo'
+import { Providers } from './providers'
+import './globals.css'
 
 const inter = Inter({
   subsets: ['latin'],
+  display: 'swap',
+  preload: true,
   variable: '--font-inter',
-});
+})
+
+const googleVerification = process.env.GOOGLE_SITE_VERIFICATION
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: 'GhostMail — Free Custom Email Address',
+    default: 'GhostMail — Free Custom Email Address | Receive OTPs Instantly',
     template: '%s | GhostMail',
   },
   description:
-    'Get your own custom email address instantly at ghostmail.store. Perfect for receiving OTPs, sign-ups, and protecting your real inbox. Free forever, no credit card required.',
-  keywords: [
-    'free email address',
-    'custom email',
-    'OTP email',
-    'disposable email',
-    'temporary email',
-    'receive OTP',
-    'ghostmail',
-    'free inbox',
-    'email privacy',
-    'burner email',
-  ],
-  authors: [{ name: 'GhostMail' }],
+    'Get a free custom email address at ghostmail.store instantly. Perfect for receiving OTPs, sign-ups, and protecting your real inbox from spam. No credit card required. Powered by Cloudflare.',
+  keywords: [...DEFAULT_KEYWORDS],
+  authors: [{ name: 'GhostMail', url: SITE_URL }],
   creator: 'GhostMail',
   publisher: 'GhostMail',
-  metadataBase: new URL('https://ghostmail.store'),
+  category: 'Technology',
+  classification: 'Email Service',
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://ghostmail.store',
+    url: SITE_URL,
     siteName: 'GhostMail',
     title: 'GhostMail — Free Custom Email Address',
     description:
-      'Get your own custom email address instantly. Receive OTPs, sign-ups, and protect your real inbox. Free forever.',
+      'Get your own @ghostmail.store email address instantly. Receive OTPs, sign-ups, and keep your real inbox spam-free. Forever free.',
     images: [
       {
-        url: '/og-image.png',
+        url: OG_IMAGE_URL,
         width: 1200,
         height: 630,
-        alt: 'GhostMail',
+        alt: 'GhostMail - Free Custom Email Address',
+        type: 'image/png',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
+    site: '@ghostmailstore',
+    creator: '@ghostmailstore',
     title: 'GhostMail — Free Custom Email Address',
-    description: 'Get your own custom email address instantly. Free forever.',
-    images: ['/og-image.png'],
+    description: 'Get your own email address instantly. Free forever. No credit card.',
+    images: [OG_IMAGE_URL],
   },
   robots: {
     index: true,
     follow: true,
+    nocache: false,
     googleBot: {
       index: true,
       follow: true,
+      noimageindex: false,
+      'max-video-preview': -1,
       'max-image-preview': 'large',
+      'max-snippet': -1,
     },
   },
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/apple-touch-icon.png',
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    other: [{ rel: 'mask-icon', url: '/favicon.svg', color: '#22d3ee' }],
   },
-  verification: {
-    google: 'add-your-google-verification-code-here',
-  },
+  manifest: '/site.webmanifest',
   alternates: {
-    canonical: 'https://ghostmail.store',
+    canonical: SITE_URL,
+    languages: { 'en-US': SITE_URL },
   },
-};
+  verification: googleVerification
+    ? {
+        google: googleVerification,
+      }
+    : undefined,
+  other: {
+    'theme-color': '#0a0f1e',
+    'color-scheme': 'dark',
+    'mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'black-translucent',
+    'apple-mobile-web-app-title': 'GhostMail',
+    'application-name': 'GhostMail',
+    'msapplication-TileColor': '#0a0f1e',
+    'msapplication-config': '/browserconfig.xml',
+  },
+}
 
 export const viewport: Viewport = {
   themeColor: '#0a0f1e',
-};
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href={SITE_URL} />
+      </head>
       <body className={`${inter.variable} bg-[#0a0f1e] font-sans text-white antialiased`}>
+        <SchemaMarkup />
         <Providers>
-          <SchemaMarkup />
           <AnnouncementBanner />
           {children}
           <Toaster
@@ -108,5 +134,5 @@ export default function RootLayout({
         </Providers>
       </body>
     </html>
-  );
+  )
 }

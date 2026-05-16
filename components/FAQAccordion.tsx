@@ -27,17 +27,19 @@ export default function FAQAccordion({ items }: { items: FAQItem[] }) {
                 setOpenKey((current) => (current === item.question ? '' : item.question))
               }
               className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+              aria-expanded={isOpen}
             >
-              <span className="text-lg font-medium text-white">{item.question}</span>
+              <h3 className="text-lg font-medium text-white">{item.question}</h3>
               <ChevronDown
                 className={`h-5 w-5 flex-none text-cyan-300 transition-transform ${
                   isOpen ? 'rotate-180' : ''
                 }`}
+                aria-hidden="true"
               />
             </button>
             {isOpen ? (
-              <div className="border-t border-white/8 px-6 pb-6 pt-4 text-slate-300">
-                {item.answer}
+              <div className="border-t border-white/8 px-6 pb-6 pt-4">
+                <p className="text-slate-300">{item.answer}</p>
               </div>
             ) : null}
           </div>

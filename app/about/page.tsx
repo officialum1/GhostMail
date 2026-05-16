@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { Lock, Shield, Sparkles, Workflow } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
+import { SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'About GhostMail — Our Mission & Story',
+  title: 'About GhostMail — Our Mission to Protect Email Privacy',
   description:
-    'Learn about GhostMail, our mission to protect email privacy, and how we built a free custom email service powered by Cloudflare.',
+    'Learn about GhostMail and our mission to give everyone a free, private email address. Built on Cloudflare infrastructure for instant, reliable email delivery.',
+  alternates: { canonical: `${SITE_URL}/about` },
 };
 
 const stats = [

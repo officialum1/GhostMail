@@ -2,11 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Check } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
+import { SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Pricing — GhostMail',
   description:
     'GhostMail pricing. Start free and keep your sign-ups, OTPs, and verification emails private.',
+  alternates: { canonical: `${SITE_URL}/pricing` },
 };
 
 export default function PricingPage() {

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -11,6 +12,14 @@ import {
   Zap,
 } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
+import { SITE_URL } from '@/lib/seo';
+
+export const metadata: Metadata = {
+  title: 'GhostMail — Free Custom Email Address | Receive OTPs Instantly',
+  description:
+    'Get a free @ghostmail.store email address in seconds. Receive OTPs from Google, Reddit, Twitter and any service instantly. No spam, no credit card. Free forever.',
+  alternates: { canonical: SITE_URL },
+};
 
 const stats = [
   { value: '50K+', label: 'Users' },
@@ -146,7 +155,7 @@ export default function HomePage() {
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-7 py-4 text-base font-semibold text-white shadow-[0_24px_50px_rgba(59,130,246,0.26)] transition hover:scale-[1.01]"
                 >
                   Create Free Account
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
                 </Link>
                 <Link
                   href="#how-it-works"
@@ -162,7 +171,7 @@ export default function HomePage() {
                       key={item}
                       className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2"
                     >
-                      <Check className="h-4 w-4 text-emerald-400" />
+                      <Check className="h-4 w-4 text-emerald-400" aria-hidden="true" />
                       {item}
                     </div>
                   ),
@@ -256,6 +265,13 @@ export default function HomePage() {
           </div>
         </section>
 
+        <p className="relative mx-auto max-w-2xl px-6 pb-8 text-center text-sm leading-7 text-slate-500">
+          GhostMail provides free custom email addresses at @ghostmail.store. Our service is perfect
+          for receiving OTP codes, email verifications, and sign-up confirmations without exposing
+          your real email address to spam. Powered by Cloudflare&apos;s global network for instant,
+          reliable delivery.
+        </p>
+
         <section className="relative border-y border-white/5 bg-[#0b1220]/80">
           <div className="mx-auto grid max-w-7xl gap-6 px-6 py-10 md:grid-cols-4">
             {stats.map((stat) => (
@@ -272,9 +288,10 @@ export default function HomePage() {
         <section id="how-it-works" className="relative mx-auto max-w-7xl px-6 py-20 md:py-32">
           <div className="max-w-2xl">
             <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">How it works</p>
-            <h2 className="mt-4 text-3xl font-bold md:text-5xl">
+            <h2 className="mt-4 text-3xl font-bold md:text-5xl">How GhostMail Works</h2>
+            <p className="mt-4 text-lg text-slate-400">
               Built for sign-ups, verification, and a cleaner digital life.
-            </h2>
+            </p>
           </div>
           <div className="mt-16 grid gap-8 md:grid-cols-3">
             {[
@@ -311,9 +328,10 @@ export default function HomePage() {
         <section id="features" className="relative mx-auto max-w-7xl px-6 py-20 md:py-32">
           <div className="mb-14 max-w-2xl">
             <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Features</p>
-            <h2 className="mt-4 text-3xl font-bold md:text-5xl">
+            <h2 className="mt-4 text-3xl font-bold md:text-5xl">Why Choose GhostMail</h2>
+            <p className="mt-4 text-lg text-slate-400">
               The inbox layer between you and the noisy internet.
-            </h2>
+            </p>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {features.map((feature) => {
@@ -324,7 +342,7 @@ export default function HomePage() {
                   className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur transition hover:border-white/20"
                 >
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400/20 to-blue-500/20">
-                    <Icon className="h-6 w-6 text-cyan-300" />
+                    <Icon className="h-6 w-6 text-cyan-300" aria-hidden="true" />
                   </div>
                   <h3 className="mt-6 text-2xl font-semibold text-white">{feature.title}</h3>
                   <p className="mt-3 text-slate-400">{feature.description}</p>
@@ -390,9 +408,7 @@ export default function HomePage() {
           <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
             <div>
               <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">FAQ</p>
-              <h2 className="mt-4 text-3xl font-bold md:text-5xl">
-                The most common questions, answered clearly.
-              </h2>
+              <h2 className="mt-4 text-3xl font-bold md:text-5xl">Frequently Asked Questions</h2>
               <Link
                 href="/faq"
                 className="mt-8 inline-flex items-center gap-2 text-base font-medium text-cyan-300 transition hover:text-cyan-200"

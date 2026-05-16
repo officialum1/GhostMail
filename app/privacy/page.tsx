@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import PageLayout from '@/components/PageLayout';
+import { SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy — GhostMail',
   description:
-    'GhostMail privacy policy. Learn how we collect, use, and protect your personal data.',
+    'GhostMail privacy policy. Learn how we protect your data and respect your privacy. GDPR compliant.',
+  alternates: { canonical: `${SITE_URL}/privacy` },
 };
 
 const sections = [

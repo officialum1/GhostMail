@@ -1,0 +1,2 @@
+# GhostMail Ads.txt
+placeholder.example.com, placeholder, DIRECT

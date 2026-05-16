@@ -1,12 +1,54 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  compress: true,
+  poweredByHeader: false,
+  generateEtags: true,
+  httpAgentOptions: { keepAlive: true },
   experimental: {
-    serverComponentsExternalPackages: ['bcryptjs', 'prisma', '@prisma/client']
+    serverComponentsExternalPackages: ['bcryptjs', 'prisma', '@prisma/client'],
+    optimizePackageImports: ['lucide-react', 'recharts'],
   },
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 60,
+  },
+  headers: async () => [
+    {
+      source: '/(.*)',
+      headers: [
+        { key: 'X-Content-Type-Options', value: 'nosniff' },
+        { key: 'X-Frame-Options', value: 'DENY' },
+        { key: 'X-XSS-Protection', value: '1; mode=block' },
+        { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        {
+          key: 'Permissions-Policy',
+          value: 'camera=(), microphone=(), geolocation=()',
+        },
+      ],
+    },
+    {
+      source: '/fonts/(.*)',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+      ],
+    },
+    {
+      source: '/_next/static/(.*)',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'public, max-age=31536000, immutable',
+        },
+      ],
+    },
+  ],
   webpack: (config) => {
     config.externals.push('bcryptjs')
     return config
-  }
-};
+  },
+}
 
-export default nextConfig;
+export default nextConfig

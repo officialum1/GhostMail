@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { AlertTriangle, Briefcase, LifeBuoy } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
+import { SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'Contact GhostMail — Get Help',
+  title: 'Contact GhostMail — Get Support',
   description:
-    'Contact the GhostMail team for support, feedback, or business inquiries.',
+    'Contact the GhostMail team for help, feedback, or business inquiries. We respond within 24 hours.',
+  alternates: { canonical: `${SITE_URL}/contact` },
 };
 
 const contacts = [

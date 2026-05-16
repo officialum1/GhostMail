@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import PageLayout from '@/components/PageLayout';
+import { SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Terms of Service — GhostMail',
   description:
-    'Read GhostMail terms of service. Understanding your rights and responsibilities when using our email service.',
+    'Read GhostMail terms of service. Understand your rights and responsibilities when using our free email service.',
+  alternates: { canonical: `${SITE_URL}/terms` },
 };
 
 const sections = [

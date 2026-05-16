@@ -1,12 +1,14 @@
 import type { Metadata } from 'next';
 import PageLayout from '@/components/PageLayout';
-import SchemaMarkup from '@/components/SchemaMarkup';
+import { FaqSchemaMarkup } from '@/components/seo/SchemaMarkup';
 import FAQAccordion from '@/components/FAQAccordion';
+import { SITE_URL } from '@/lib/seo';
 
 export const metadata: Metadata = {
-  title: 'FAQ — Frequently Asked Questions',
+  title: 'FAQ — GhostMail Frequently Asked Questions',
   description:
-    'Find answers to common questions about GhostMail, our free custom email service.',
+    'Find answers to common questions about GhostMail. Learn how to receive OTPs, use your custom email address, and keep your inbox private.',
+  alternates: { canonical: `${SITE_URL}/faq` },
 };
 
 const faqCategories = [
@@ -116,18 +118,10 @@ const faqCategories = [
   },
 ];
 
-const allFaqItems = faqCategories.flatMap((category) => category.items);
-
 export default function FAQPage() {
   return (
     <PageLayout>
-      <SchemaMarkup
-        includeBase={false}
-        faqItems={allFaqItems.map((item) => ({
-          question: item.question,
-          answer: item.answer,
-        }))}
-      />
+      <FaqSchemaMarkup />
       <section className="mx-auto max-w-5xl px-6 py-20 md:py-32">
         <div className="max-w-3xl">
           <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">FAQ</p>

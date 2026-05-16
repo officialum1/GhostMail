@@ -1,0 +1,3 @@
+Contact: security@ghostmail.store
+Preferred-Languages: en
+Canonical: https://ghostmail.store/.well-known/security.txt
