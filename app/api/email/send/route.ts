@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/auth';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth-options';
 import { db } from '@/lib/db';
 import nodemailer from 'nodemailer';
 
 export async function POST(req: Request) {
   try {
-    const session = await auth();
+    const session = await getServerSession(authOptions);
     if (!session?.user?.email) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
       html: body.replace(/\n/g, '<br>'),
     });
 
-    const userId = session.user.id;
+    const userId = Number(session.user.id);
     if (!userId) {
       return NextResponse.json({ error: 'User ID not found' }, { status: 400 });
     }

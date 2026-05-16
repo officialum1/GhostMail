@@ -46,7 +46,7 @@ function formatRelativeTime(dateString: string) {
 }
 
 export default function DashboardPage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [emails, setEmails] = useState<EmailItem[]>([]);
   const [selectedEmail, setSelectedEmail] = useState<FullEmail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,6 +81,15 @@ export default function DashboardPage() {
   }, []);
 
   useEffect(() => {
+    if (status === 'unauthenticated') {
+      window.location.href = '/login';
+      return;
+    }
+
+    if (status !== 'authenticated') {
+      return;
+    }
+
     fetchInbox(true);
     const interval = setInterval(() => {
       setRefreshCountdown((prev) => {
@@ -92,7 +101,10 @@ export default function DashboardPage() {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, [fetchInbox]);
+  }, [fetchInbox, status]);
+
+  if (status === 'loading') return <div>Loading...</div>;
+  if (status === 'unauthenticated') return null;
 
   const copyEmail = () => {
     if (session?.user?.email) {
@@ -237,7 +249,7 @@ export default function DashboardPage() {
 
         <div className="mt-auto p-6 border-t border-white/5">
           <button 
-            onClick={() => signOut()}
+            onClick={() => signOut({ callbackUrl: '/login' })}
             className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-xl transition-all"
           >
             <LogOut className="w-5 h-5" />

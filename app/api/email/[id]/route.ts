@@ -1,15 +1,17 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@/auth';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth-options';
 import { db } from '@/lib/db';
 
 export async function GET(req: Request, { params }: { params: { id: string } }) {
-  const session = await auth();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
+    const userId = Number(session.user.id);
     const emailId = parseInt(params.id);
     if (isNaN(emailId)) {
       return NextResponse.json({ error: 'Invalid email ID' }, { status: 400 });
@@ -19,7 +21,7 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
       where: { id: emailId }
     });
 
-    if (!email || email.userId !== session.user.id) {
+    if (!email || email.userId !== userId) {
       return NextResponse.json({ error: 'Email not found' }, { status: 404 });
     }
 
@@ -38,13 +40,14 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
 }
 
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
-  const session = await auth();
+  const session = await getServerSession(authOptions);
 
   if (!session?.user?.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
+    const userId = Number(session.user.id);
     const emailId = parseInt(params.id);
     if (isNaN(emailId)) {
       return NextResponse.json({ error: 'Invalid email ID' }, { status: 400 });
@@ -54,7 +57,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
       where: { id: emailId }
     });
 
-    if (!email || email.userId !== session.user.id) {
+    if (!email || email.userId !== userId) {
       return NextResponse.json({ error: 'Email not found' }, { status: 404 });
     }
 
