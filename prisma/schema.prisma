@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -21,9 +21,9 @@ model Email {
   toAddress  String
   fromAddress String
   subject    String
-  bodyText   String?  @db.LongText
-  bodyHtml   String?  @db.LongText
-  rawHeaders String?  @db.LongText
+  bodyText   String?  @db.Text
+  bodyHtml   String?  @db.Text
+  rawHeaders String?  @db.Text
   receivedAt DateTime @default(now())
   isRead     Boolean  @default(false)
   userId     Int
