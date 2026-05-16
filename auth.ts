@@ -3,6 +3,8 @@ import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { db } from "@/lib/db"
 
+export const runtime = "nodejs"
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
@@ -41,10 +43,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token
     },
     async session({ session, token }) {
-      session.user.id = Number(token.id)
-      session.user.name = token.username as string
-      session.user.email = token.email as string
-      return session
+      return {
+        ...session,
+        user: {
+          ...session.user,
+          id: token.id,
+          name: token.username,
+          email: token.email,
+        }
+      } as any
     }
   },
   session: { strategy: "jwt" },
