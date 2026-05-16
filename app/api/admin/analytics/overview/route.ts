@@ -1,141 +1,171 @@
-import { NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/admin-auth'
-import { db } from '@/lib/db'
+import { NextRequest, NextResponse } from 'next/server'
+import { jwtVerify } from 'jose'
+import { prisma } from '@/lib/db'
 import { getEmailDomain } from '@/lib/emailAddress'
 
-function createSeries(days: number) {
+async function verifyAdmin(req: NextRequest) {
+  const token = req.cookies.get('admin_token')?.value
+  if (!token) return false
+  try {
+    const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'secret')
+    await jwtVerify(token, secret)
+    return true
+  } catch {
+    return false
+  }
+}
+
+function groupByDate(
+  items: Array<Record<string, Date | string>>,
+  dateField: string,
+  days: number,
+  formatter?: (date: Date) => string
+) {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
+  const groups: Record<string, number> = {}
+
+  items.forEach((item) => {
+    const value = item[dateField]
+    const date = new Date(value)
+    const key = date.toISOString().split('T')[0]
+    groups[key] = (groups[key] || 0) + 1
+  })
+
   return Array.from({ length: days }, (_, index) => {
     const date = new Date(today)
     date.setDate(today.getDate() - (days - index - 1))
-    return { date: date.toISOString().slice(0, 10), count: 0 }
+    const key = date.toISOString().split('T')[0]
+    return {
+      date: key,
+      count: groups[key] || 0,
+      label: formatter ? formatter(date) : key,
+    }
   })
 }
 
-function mapDates(items: Date[], days: number) {
-  const series = createSeries(days)
-  const counts = new Map<string, number>()
-  for (const item of items) {
-    const key = new Date(item).toISOString().slice(0, 10)
-    counts.set(key, (counts.get(key) ?? 0) + 1)
-  }
-  return series.map((entry) => ({ ...entry, count: counts.get(entry.date) ?? 0 }))
-}
-
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const authError = await requireAdmin()
-    if (authError) return authError
+    const isAdmin = await verifyAdmin(req)
+    if (!isAdmin) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
 
-    const { searchParams } = new URL(req.url)
-    const days = Math.min(90, parseInt(searchParams.get('days') || '30', 10) || 30)
-
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const weekAgo = new Date(today)
-    weekAgo.setDate(weekAgo.getDate() - 7)
-    const monthAgo = new Date(today)
-    monthAgo.setDate(monthAgo.getDate() - 29)
-    const rangeStart = new Date(today)
-    rangeStart.setDate(rangeStart.getDate() - (days - 1))
+    const now = new Date()
+    const todayStart = new Date(now)
+    todayStart.setHours(0, 0, 0, 0)
+    const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    const monthStart = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    const last24Hours = new Date(Date.now() - 24 * 60 * 60 * 1000)
 
     const [
       totalUsers,
-      usersToday,
-      usersThisWeek,
-      usersThisMonth,
-      growthUsers,
+      todayUsers,
+      weekUsers,
       totalEmails,
-      emailsToday,
-      emailsThisWeek,
-      emailsThisMonth,
-      volumeEmails,
-      webhookTotal,
-      webhookSuccess,
-      topUsersRaw,
-      recentFromAddresses,
+      todayEmails,
+      weekEmails,
+      bannedUsers,
+      recentUsers,
+      recentEmails,
+      topUsers,
+      userGrowthRaw,
+      emailVolumeRaw,
+      failedLogins24h,
+      suspiciousUnresolved,
+      highSeverityCount,
+      suspicious,
+      senderEmails,
     ] = await Promise.all([
-      db.user.count(),
-      db.user.count({ where: { createdAt: { gte: today } } }),
-      db.user.count({ where: { createdAt: { gte: weekAgo } } }),
-      db.user.count({ where: { createdAt: { gte: monthAgo } } }),
-      db.user.findMany({ where: { createdAt: { gte: rangeStart } }, select: { createdAt: true } }),
-      db.email.count({ where: { deletedAt: null } }),
-      db.email.count({ where: { deletedAt: null, receivedAt: { gte: today } } }),
-      db.email.count({ where: { deletedAt: null, receivedAt: { gte: weekAgo } } }),
-      db.email.count({ where: { deletedAt: null, receivedAt: { gte: monthAgo } } }),
-      db.email.findMany({
-        where: { deletedAt: null, receivedAt: { gte: rangeStart } },
-        select: { receivedAt: true },
-      }),
-      db.webhookLog.count(),
-      db.webhookLog.count({ where: { status: 'success' } }),
-      db.user.findMany({
-        select: { username: true, email: true, _count: { select: { emails: true } } },
-        orderBy: { emails: { _count: 'desc' } },
+      prisma.user.count(),
+      prisma.user.count({ where: { createdAt: { gte: todayStart } } }),
+      prisma.user.count({ where: { createdAt: { gte: weekStart } } }),
+      prisma.email.count({ where: { deletedAt: null } }),
+      prisma.email.count({ where: { deletedAt: null, receivedAt: { gte: todayStart } } }),
+      prisma.email.count({ where: { deletedAt: null, receivedAt: { gte: weekStart } } }),
+      prisma.user.count({ where: { isBanned: true } }),
+      prisma.user.findMany({
         take: 10,
+        orderBy: { createdAt: 'desc' },
+        include: { _count: { select: { emails: true } } },
       }),
-      db.email.findMany({
+      prisma.email.findMany({
+        take: 10,
+        where: { deletedAt: null },
+        orderBy: { receivedAt: 'desc' },
+        include: { user: { select: { username: true } } },
+      }),
+      prisma.user.findMany({
+        take: 5,
+        orderBy: { emails: { _count: 'desc' } },
+        include: { _count: { select: { emails: true } } },
+      }),
+      prisma.user.findMany({
+        where: { createdAt: { gte: monthStart } },
+        select: { createdAt: true },
+        orderBy: { createdAt: 'asc' },
+      }),
+      prisma.email.findMany({
+        where: { deletedAt: null, receivedAt: { gte: weekStart } },
+        select: { receivedAt: true },
+        orderBy: { receivedAt: 'asc' },
+      }),
+      prisma.failedLoginAttempt.count({ where: { attemptedAt: { gte: last24Hours } } }),
+      prisma.suspiciousActivity.count({ where: { resolved: false } }),
+      prisma.suspiciousActivity.count({ where: { resolved: false, severity: 'high' } }),
+      prisma.suspiciousActivity.findMany({
+        where: { resolved: false },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+      }),
+      prisma.email.findMany({
         where: { deletedAt: null },
         select: { fromAddress: true },
-        take: 20000,
+        take: 10000,
       }),
     ])
 
     const domainCounts = new Map<string, number>()
-    for (const e of recentFromAddresses) {
-      const domain = getEmailDomain(e.fromAddress) || 'unknown'
-      domainCounts.set(domain, (domainCounts.get(domain) ?? 0) + 1)
-    }
-
-    const peakWeekAgo = new Date()
-    peakWeekAgo.setDate(peakWeekAgo.getDate() - 7)
-    const weekEmails = await db.email.findMany({
-      where: { deletedAt: null, receivedAt: { gte: peakWeekAgo } },
-      select: { receivedAt: true },
-    })
-    const peakHours = Array.from({ length: 24 }, (_, hour) => ({ hour, count: 0 }))
-    for (const e of weekEmails) {
-      peakHours[new Date(e.receivedAt).getHours()].count += 1
+    for (const entry of senderEmails) {
+      const domain = getEmailDomain(entry.fromAddress) || 'unknown'
+      domainCounts.set(domain, (domainCounts.get(domain) || 0) + 1)
     }
 
     return NextResponse.json({
       users: {
         total: totalUsers,
-        today: usersToday,
-        thisWeek: usersThisWeek,
-        thisMonth: usersThisMonth,
-        growth: mapDates(growthUsers.map((u) => u.createdAt), days),
+        today: todayUsers,
+        thisWeek: weekUsers,
+        growth: groupByDate(userGrowthRaw as Array<Record<string, Date>>, 'createdAt', 30, (date) =>
+          date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        ),
       },
       emails: {
         total: totalEmails,
-        today: emailsToday,
-        thisWeek: emailsThisWeek,
-        thisMonth: emailsThisMonth,
-        volume: mapDates(volumeEmails.map((e) => e.receivedAt), days),
-        peakHours,
-        avgPerUser: totalUsers > 0 ? Math.round(totalEmails / totalUsers) : 0,
-        avgPerDay: days > 0 ? Math.round(volumeEmails.length / days) : 0,
+        today: todayEmails,
+        thisWeek: weekEmails,
+        volume: groupByDate(emailVolumeRaw as Array<Record<string, Date>>, 'receivedAt', 7, (date) =>
+          date.toLocaleDateString('en-US', { weekday: 'short' })
+        ),
       },
+      bannedUsers,
+      recentUsers,
+      recentEmails,
+      topUsers,
       topSenders: [...domainCounts.entries()]
         .map(([domain, count]) => ({ domain, count }))
         .sort((a, b) => b.count - a.count)
-        .slice(0, 10),
-      topUsers: topUsersRaw.map((u) => ({
-        username: u.username,
-        email: u.email,
-        count: u._count.emails,
-      })),
-      webhookStats: {
-        total: webhookTotal,
-        success: webhookSuccess,
-        error: webhookTotal - webhookSuccess,
-        successRate: webhookTotal > 0 ? Math.round((webhookSuccess / webhookTotal) * 1000) / 10 : 100,
+        .slice(0, 5),
+      alerts: {
+        failedLogins24h,
+        suspiciousUnresolved,
+        highSeverityCount,
+        bannedUsers,
       },
+      suspicious,
     })
   } catch (error) {
-    console.error('Analytics overview error:', error)
+    console.error('Overview error:', error)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }

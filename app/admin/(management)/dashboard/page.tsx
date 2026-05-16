@@ -58,6 +58,33 @@ type DashboardData = {
   }[]
 }
 
+type OverviewResponse = {
+  users?: {
+    total?: number
+    today?: number
+    thisWeek?: number
+    growth?: ChartPoint[]
+  }
+  emails?: {
+    total?: number
+    today?: number
+    thisWeek?: number
+    volume?: ChartPoint[]
+  }
+  bannedUsers?: number
+  recentUsers?: unknown[]
+  recentEmails?: unknown[]
+  alerts?: {
+    failedLogins24h?: number
+    suspiciousUnresolved?: number
+    highSeverityCount?: number
+    bannedUsers?: number
+  }
+  topUsers?: DashboardData['topUsers']
+  topSenders?: DashboardData['topSenders']
+  suspicious?: DashboardData['suspicious']
+}
+
 const statCardStyles = [
   'text-blue-400 bg-blue-500/10 border-blue-500/20',
   'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
@@ -73,6 +100,61 @@ const severityClass: Record<string, string> = {
   high: 'bg-red-500/10 text-red-400 border-red-500/20',
 }
 
+function createFallbackData(): DashboardData {
+  return {
+    stats: {
+      totalUsers: 0,
+      totalEmails: 0,
+      emailsToday: 0,
+      emailsThisWeek: 0,
+      bannedUsers: 0,
+      systemStatus: 'Online',
+    },
+    userGrowth: [],
+    emailVolume: [],
+    recentUsers: [],
+    recentEmails: [],
+    alerts: {
+      failedLogins24h: 0,
+      suspiciousUnresolved: 0,
+      highSeverityCount: 0,
+      bannedUsers: 0,
+    },
+    topUsers: [],
+    topSenders: [],
+    suspicious: [],
+  }
+}
+
+function normalizeDashboardData(payload: OverviewResponse): DashboardData {
+  const fallback = createFallbackData()
+
+  return {
+    stats: {
+      totalUsers: payload.users?.total ?? fallback.stats.totalUsers,
+      totalEmails: payload.emails?.total ?? fallback.stats.totalEmails,
+      emailsToday: payload.emails?.today ?? fallback.stats.emailsToday,
+      emailsThisWeek: payload.emails?.thisWeek ?? fallback.stats.emailsThisWeek,
+      bannedUsers: payload.bannedUsers ?? fallback.stats.bannedUsers,
+      systemStatus: 'Online',
+    },
+    userGrowth: payload.users?.growth ?? fallback.userGrowth,
+    emailVolume: payload.emails?.volume ?? fallback.emailVolume,
+    recentUsers: payload.recentUsers ?? fallback.recentUsers,
+    recentEmails: payload.recentEmails ?? fallback.recentEmails,
+    alerts: {
+      failedLogins24h: payload.alerts?.failedLogins24h ?? fallback.alerts.failedLogins24h,
+      suspiciousUnresolved:
+        payload.alerts?.suspiciousUnresolved ?? fallback.alerts.suspiciousUnresolved,
+      highSeverityCount: payload.alerts?.highSeverityCount ?? fallback.alerts.highSeverityCount,
+      bannedUsers: payload.alerts?.bannedUsers ?? payload.bannedUsers ?? fallback.alerts.bannedUsers,
+    },
+    topUsers: payload.topUsers ?? fallback.topUsers,
+    topSenders: payload.topSenders ?? fallback.topSenders,
+    suspicious: payload.suspicious ?? fallback.suspicious,
+  }
+}
+
 export default function AdminDashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -82,11 +164,13 @@ export default function AdminDashboardPage() {
 
   const fetchDashboard = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/dashboard')
+      const res = await fetch('/api/admin/analytics/overview')
       if (!res.ok) throw new Error('Failed')
-      setData(await res.json())
-    } catch {
-      toast.error('Failed to load dashboard')
+      const payload: OverviewResponse = await res.json()
+      setData(normalizeDashboardData(payload))
+    } catch (error) {
+      console.error('Dashboard error:', error)
+      setData(createFallbackData())
     } finally {
       setLoading(false)
     }
@@ -334,6 +418,5 @@ export default function AdminDashboardPage() {
     </div>
   )
 }
-
 
 

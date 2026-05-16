@@ -14,15 +14,22 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null
 
-        const email = credentials.email.toLowerCase()
-        const user = await prisma.user.findUnique({
-          where: { email },
+        const loginInput = credentials.email.toLowerCase()
+        let user = await prisma.user.findUnique({
+          where: { email: loginInput },
         })
+
+        if (!user) {
+          const username = loginInput.replace(/@.*/, '').toLowerCase()
+          user = await prisma.user.findUnique({
+            where: { username },
+          })
+        }
 
         if (!user) {
           await prisma.failedLoginAttempt.create({
             data: {
-              email,
+              email: loginInput,
             },
           })
           return null
@@ -35,7 +42,7 @@ export const authOptions: NextAuthOptions = {
         if (!isValid) {
           await prisma.failedLoginAttempt.create({
             data: {
-              email,
+              email: loginInput,
             },
           })
           return null

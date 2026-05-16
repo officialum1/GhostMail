@@ -16,6 +16,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
+  const previewEmail = username ? `${username}@${domain}` : `username@${domain}`;
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -126,15 +127,26 @@ export default function RegisterPage() {
                     type="text"
                     required
                     minLength={3}
+                    maxLength={20}
                     value={username}
                     onChange={(event) =>
-                      setUsername(event.target.value.toLowerCase().replace(/\s+/g, ''))
+                      setUsername(
+                        event.target.value
+                          .toLowerCase()
+                          .replace(/@.*/, '')
+                          .replace(/[^a-z0-9_-]/g, '')
+                      )
                     }
                     placeholder="johndoe"
                     className="flex-1 bg-transparent px-4 py-3 text-white outline-none placeholder:text-slate-500"
                   />
-                  <span className="flex items-center pr-4 text-sm text-slate-500">@{domain}</span>
+                  <span className="border-l border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-400">
+                    @{domain}
+                  </span>
                 </div>
+                <p className="mt-2 text-sm text-cyan-400">
+                  Your email will be: {previewEmail}
+                </p>
               </div>
 
               <div>

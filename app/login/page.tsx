@@ -86,15 +86,18 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">Email address</label>
+                <label className="mb-2 block text-sm font-medium text-slate-300">Username or Email</label>
                 <input
-                  type="email"
+                  type="text"
                   required
                   value={email}
                   onChange={(event) => setEmail(event.target.value.toLowerCase())}
-                  placeholder="username@ghostmail.store"
+                  placeholder="username or username@ghostmail.store"
                   className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
                 />
+                <p className="mt-2 text-sm text-slate-400">
+                  You can login with your username or full email address
+                </p>
               </div>
 
               <div>
