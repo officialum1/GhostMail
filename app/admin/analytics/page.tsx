@@ -14,19 +14,69 @@ import {
   YAxis,
 } from 'recharts'
 
+type ChartPoint = { date: string; count: number; label?: string }
+type PeakHour = { hour: number; count: number }
+type TopUser = { username: string; email: string; count?: number; _count?: { emails?: number } }
+
 type Overview = {
-  users: { total: number; today: number; growth: { date: string; count: number }[] }
+  users: { total: number; today: number; growth: ChartPoint[] }
   emails: {
     total: number
     today: number
-    volume: { date: string; count: number }[]
-    peakHours: { hour: number; count: number }[]
+    volume: ChartPoint[]
+    peakHours: PeakHour[]
     avgPerUser: number
     avgPerDay: number
   }
   topSenders: { domain: string; count: number }[]
   topUsers: { username: string; email: string; count: number }[]
   webhookStats: { total: number; success: number; successRate: number }
+}
+
+type OverviewPayload = {
+  users?: Partial<Overview['users']>
+  emails?: Partial<Overview['emails']>
+  topSenders?: Overview['topSenders']
+  topUsers?: TopUser[]
+  webhookStats?: Partial<Overview['webhookStats']>
+}
+
+const emptyPeakHours = Array.from({ length: 24 }, (_, hour) => ({ hour, count: 0 }))
+
+function asArray<T>(value: T[] | undefined) {
+  return Array.isArray(value) ? value : []
+}
+
+function normalizeOverview(payload: OverviewPayload): Overview {
+  const totalEmails = payload.emails?.total ?? 0
+  const totalUsers = payload.users?.total ?? 0
+
+  return {
+    users: {
+      total: totalUsers,
+      today: payload.users?.today ?? 0,
+      growth: asArray(payload.users?.growth),
+    },
+    emails: {
+      total: totalEmails,
+      today: payload.emails?.today ?? 0,
+      volume: asArray(payload.emails?.volume),
+      peakHours: asArray(payload.emails?.peakHours).length > 0 ? asArray(payload.emails?.peakHours) : emptyPeakHours,
+      avgPerUser: payload.emails?.avgPerUser ?? (totalUsers > 0 ? Number((totalEmails / totalUsers).toFixed(1)) : 0),
+      avgPerDay: payload.emails?.avgPerDay ?? 0,
+    },
+    topSenders: asArray(payload.topSenders),
+    topUsers: asArray(payload.topUsers).map((user) => ({
+      username: user.username,
+      email: user.email,
+      count: user.count ?? user._count?.emails ?? 0,
+    })),
+    webhookStats: {
+      total: payload.webhookStats?.total ?? 0,
+      success: payload.webhookStats?.success ?? 0,
+      successRate: payload.webhookStats?.successRate ?? 0,
+    },
+  }
 }
 
 export default function AdminAnalyticsPage() {
@@ -39,9 +89,10 @@ export default function AdminAnalyticsPage() {
     try {
       const res = await fetch(`/api/admin/analytics/overview?days=${days}`)
       if (!res.ok) throw new Error('Failed')
-      setData(await res.json())
+      setData(normalizeOverview(await res.json()))
     } catch {
       toast.error('Failed to load analytics')
+      setData(normalizeOverview({}))
     } finally {
       setLoading(false)
     }
@@ -61,11 +112,11 @@ export default function AdminAnalyticsPage() {
     else toast.error('Failed to block')
   }
 
-  const peakHour = data?.emails.peakHours.reduce((max, h) => (h.count > max.count ? h : max), { hour: 0, count: 0 })
-
   if (loading) return <div className="text-slate-400 py-20 text-center">Loading analytics...</div>
 
   if (!data) return <div className="text-red-400">Analytics unavailable</div>
+
+  const peakHour = data.emails.peakHours.reduce((max, h) => (h.count > max.count ? h : max), { hour: 0, count: 0 })
 
   const userGrowth = data.users.growth.map((g) => ({
     ...g,
@@ -121,7 +172,7 @@ export default function AdminAnalyticsPage() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <h2 className="text-lg font-semibold text-white mb-4">User Growth</h2>
-          <div className="h-72">
+          <div className="h-72 min-h-72 min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={userGrowth}>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
@@ -136,7 +187,7 @@ export default function AdminAnalyticsPage() {
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <h2 className="text-lg font-semibold text-white mb-4">Email Volume</h2>
-          <div className="h-72">
+          <div className="h-72 min-h-72 min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={emailVolume}>
                 <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />
@@ -155,7 +206,7 @@ export default function AdminAnalyticsPage() {
         <p className="text-sm text-slate-400 mb-4">
           Most emails received at {peakHour?.hour ?? 0}:00 ({peakHour?.count ?? 0} in last 7 days)
         </p>
-        <div className="h-64">
+        <div className="h-64 min-h-64 min-w-0">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={peakHours}>
               <CartesianGrid stroke="rgba(255,255,255,0.08)" vertical={false} />

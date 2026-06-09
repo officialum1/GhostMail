@@ -51,11 +51,13 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const requestedDays = Number(req.nextUrl.searchParams.get('days') || 30)
+    const days = Number.isFinite(requestedDays) ? Math.min(90, Math.max(7, requestedDays)) : 30
     const now = new Date()
     const todayStart = new Date(now)
     todayStart.setHours(0, 0, 0, 0)
     const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-    const monthStart = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    const rangeStart = new Date(Date.now() - days * 24 * 60 * 60 * 1000)
     const last24Hours = new Date(Date.now() - 24 * 60 * 60 * 1000)
 
     const [
@@ -76,6 +78,9 @@ export async function GET(req: NextRequest) {
       highSeverityCount,
       suspicious,
       senderEmails,
+      peakHourEmails,
+      totalWebhookLogs,
+      successfulWebhookLogs,
     ] = await Promise.all([
       prisma.user.count(),
       prisma.user.count({ where: { createdAt: { gte: todayStart } } }),
@@ -101,12 +106,12 @@ export async function GET(req: NextRequest) {
         include: { _count: { select: { emails: true } } },
       }),
       prisma.user.findMany({
-        where: { createdAt: { gte: monthStart } },
+        where: { createdAt: { gte: rangeStart } },
         select: { createdAt: true },
         orderBy: { createdAt: 'asc' },
       }),
       prisma.email.findMany({
-        where: { deletedAt: null, receivedAt: { gte: weekStart } },
+        where: { deletedAt: null, receivedAt: { gte: rangeStart } },
         select: { receivedAt: true },
         orderBy: { receivedAt: 'asc' },
       }),
@@ -123,6 +128,12 @@ export async function GET(req: NextRequest) {
         select: { fromAddress: true },
         take: 10000,
       }),
+      prisma.email.findMany({
+        where: { deletedAt: null, receivedAt: { gte: weekStart } },
+        select: { receivedAt: true },
+      }),
+      prisma.webhookLog.count(),
+      prisma.webhookLog.count({ where: { status: 'success' } }),
     ])
 
     const domainCounts = new Map<string, number>()
@@ -131,12 +142,23 @@ export async function GET(req: NextRequest) {
       domainCounts.set(domain, (domainCounts.get(domain) || 0) + 1)
     }
 
+    const peakHours = Array.from({ length: 24 }, (_, hour) => ({ hour, count: 0 }))
+    for (const email of peakHourEmails) {
+      const hour = new Date(email.receivedAt).getHours()
+      peakHours[hour].count += 1
+    }
+
+    const topUsersWithCounts = topUsers.map((user) => ({
+      ...user,
+      count: user._count.emails,
+    }))
+
     return NextResponse.json({
       users: {
         total: totalUsers,
         today: todayUsers,
         thisWeek: weekUsers,
-        growth: groupByDate(userGrowthRaw as Array<Record<string, Date>>, 'createdAt', 30, (date) =>
+        growth: groupByDate(userGrowthRaw as Array<Record<string, Date>>, 'createdAt', days, (date) =>
           date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
         ),
       },
@@ -144,18 +166,26 @@ export async function GET(req: NextRequest) {
         total: totalEmails,
         today: todayEmails,
         thisWeek: weekEmails,
-        volume: groupByDate(emailVolumeRaw as Array<Record<string, Date>>, 'receivedAt', 7, (date) =>
-          date.toLocaleDateString('en-US', { weekday: 'short' })
+        volume: groupByDate(emailVolumeRaw as Array<Record<string, Date>>, 'receivedAt', days, (date) =>
+          date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
         ),
+        peakHours,
+        avgPerUser: totalUsers > 0 ? Number((totalEmails / totalUsers).toFixed(1)) : 0,
+        avgPerDay: Number((totalEmails / days).toFixed(1)),
       },
       bannedUsers,
       recentUsers,
       recentEmails,
-      topUsers,
+      topUsers: topUsersWithCounts,
       topSenders: [...domainCounts.entries()]
         .map(([domain, count]) => ({ domain, count }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 5),
+      webhookStats: {
+        total: totalWebhookLogs,
+        success: successfulWebhookLogs,
+        successRate: totalWebhookLogs > 0 ? Math.round((successfulWebhookLogs / totalWebhookLogs) * 100) : 0,
+      },
       alerts: {
         failedLogins24h,
         suspiciousUnresolved,
