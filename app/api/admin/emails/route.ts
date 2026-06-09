@@ -20,9 +20,9 @@ export async function GET(req: Request) {
       ...(search
         ? {
             OR: [
-              { subject: { contains: search } },
-              { fromAddress: { contains: search } },
-              { toAddress: { contains: search } },
+              { subject: { contains: search, mode: 'insensitive' as const } },
+              { fromAddress: { contains: search, mode: 'insensitive' as const } },
+              { toAddress: { contains: search, mode: 'insensitive' as const } },
             ],
           }
         : {}),

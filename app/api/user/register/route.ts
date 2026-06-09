@@ -68,7 +68,7 @@ export async function POST(req: Request) {
 
     const existingUser = await db.user.findFirst({
       where: {
-        OR: [{ username: normalizedUsername }, { email }],
+        OR: [{ username: normalizedUsername }, { email: { equals: email, mode: 'insensitive' } }],
       },
     })
 

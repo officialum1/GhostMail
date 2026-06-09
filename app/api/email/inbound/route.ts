@@ -92,7 +92,10 @@ export async function POST(req: NextRequest) {
     for (const recipient of recipients.length > 0 ? recipients : [toAddress].filter(Boolean)) {
       const user = await db.user.findFirst({
         where: {
-          email: recipient,
+          email: {
+            equals: recipient,
+            mode: 'insensitive',
+          },
         },
         select: { id: true, isBanned: true },
       })
