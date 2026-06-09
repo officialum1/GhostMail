@@ -1,11 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CheckCircle2, Shield, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import PageLayout from '@/components/PageLayout';
+
+function cleanUsername(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/@.*/, '')
+    .replace(/[^a-z0-9_-]/g, '')
+    .slice(0, 20);
+}
 
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
@@ -17,6 +25,16 @@ export default function RegisterPage() {
   const router = useRouter();
   const domain = process.env.NEXT_PUBLIC_DOMAIN || 'ghostmail.store';
   const previewEmail = username ? `${username}@${domain}` : `username@${domain}`;
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const suggestedUsername =
+      params.get('username') || params.get('email')?.split('@')[0] || '';
+
+    if (suggestedUsername) {
+      setUsername(cleanUsername(suggestedUsername));
+    }
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -62,7 +80,7 @@ export default function RegisterPage() {
       <section className="mx-auto max-w-7xl px-6 py-20 md:py-24">
         <div className="grid gap-8 lg:grid-cols-[1fr_460px]">
           <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
-            <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Create account</p>
+            <p className="text-sm font-semibold uppercase text-cyan-300">Create account</p>
             <h1 className="mt-4 text-4xl font-bold md:text-6xl">
               Claim your private inbox in under a minute.
             </h1>
@@ -130,14 +148,10 @@ export default function RegisterPage() {
                     maxLength={20}
                     value={username}
                     onChange={(event) =>
-                      setUsername(
-                        event.target.value
-                          .toLowerCase()
-                          .replace(/@.*/, '')
-                          .replace(/[^a-z0-9_-]/g, '')
-                      )
+                      setUsername(cleanUsername(event.target.value))
                     }
                     placeholder="johndoe"
+                    autoComplete="username"
                     className="flex-1 bg-transparent px-4 py-3 text-white outline-none placeholder:text-slate-500"
                   />
                   <span className="border-l border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-400">
@@ -156,6 +170,7 @@ export default function RegisterPage() {
                   required
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
+                  autoComplete="new-password"
                   className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
                 />
               </div>
@@ -169,6 +184,7 @@ export default function RegisterPage() {
                   required
                   value={confirmPassword}
                   onChange={(event) => setConfirmPassword(event.target.value)}
+                  autoComplete="new-password"
                   className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
                 />
               </div>

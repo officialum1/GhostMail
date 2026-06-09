@@ -8,7 +8,7 @@ type FAQItem = {
   answer: string;
 };
 
-export default function FAQAccordion({ items }: { items: FAQItem[] }) {
+export default function FAQAccordion({ items }: { items: readonly FAQItem[] }) {
   const [openKey, setOpenKey] = useState(items[0]?.question ?? '');
 
   return (
@@ -38,7 +38,7 @@ export default function FAQAccordion({ items }: { items: FAQItem[] }) {
               />
             </button>
             {isOpen ? (
-              <div className="border-t border-white/8 px-6 pb-6 pt-4">
+              <div className="border-t border-white/10 px-6 pb-6 pt-4">
                 <p className="text-slate-300">{item.answer}</p>
               </div>
             ) : null}

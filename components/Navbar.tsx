@@ -12,6 +12,7 @@ const navLinks = [
   { href: '/faq', label: 'FAQ' },
   { href: '/blog', label: 'Blog' },
   { href: '/pricing', label: 'Pricing' },
+  { href: '/status', label: 'Status' },
   { href: '/contact', label: 'Contact' },
 ];
 
@@ -48,7 +49,7 @@ export default function Navbar() {
             <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-[0_16px_40px_rgba(34,211,238,0.22)]">
               <Mail className="h-5 w-5 text-white" />
             </span>
-            <span className="text-lg font-semibold tracking-tight text-white">
+            <span className="text-lg font-semibold text-white">
               GhostMail
             </span>
           </Link>
