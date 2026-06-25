@@ -740,8 +740,8 @@ ${email.bodyText || 'No plain text content'}`
                   ) : selectedEmail.bodyHtml ? (
                     <iframe
                       title="email-reading-pane"
-                      sandbox="allow-same-origin"
-                      srcDoc={`<html><body style="margin:0;padding:0;background:white;">${selectedEmail.bodyHtml}</body></html>`}
+                      sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+                      srcDoc={`<html><head><base target="_blank"></head><body style="margin:0;padding:0;background:white;">${selectedEmail.bodyHtml}</body></html>`}
                       className="min-h-[420px] w-full rounded-2xl border border-white/10 bg-white"
                     />
                   ) : (
