@@ -16,7 +16,6 @@ export async function GET(req: Request) {
     const take = parseInt(searchParams.get('limit') || '20')
     const skip = (page - 1) * take
     const where = {
-      deletedAt: null,
       ...(search
         ? {
             OR: [
@@ -53,9 +52,9 @@ export async function GET(req: Request) {
         },
       }),
       db.email.count({ where }),
-      db.email.count({ where: { deletedAt: null } }),
-      db.email.count({ where: { deletedAt: null, receivedAt: { gte: today } } }),
-      db.email.count({ where: { deletedAt: null, receivedAt: { gte: weekAgo } } }),
+      db.email.count({ where: {} }),
+      db.email.count({ where: { receivedAt: { gte: today } } }),
+      db.email.count({ where: { receivedAt: { gte: weekAgo } } }),
       db.user.findMany({
         select: { id: true, username: true, email: true },
         orderBy: { username: 'asc' },

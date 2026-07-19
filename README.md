@@ -1,11 +1,11 @@
 # GhostMail
 
-A complete email receiving system built with Next.js 14, NextAuth v5, Prisma, MySQL, and Cloudflare Email Routing.
+A complete email receiving system built with Next.js 14 (App Router), NextAuth.js, Prisma, Postgres, and Cloudflare Email Routing.
 
 ## Tech Stack
 - Next.js 14 (App Router)
-- MySQL via Prisma ORM
-- NextAuth.js v5 (Auth)
+- Postgres via Prisma ORM
+- NextAuth.js (Auth)
 - Cloudflare Email Worker (Webhook)
 - Tailwind CSS
 
@@ -23,9 +23,9 @@ A complete email receiving system built with Next.js 14, NextAuth v5, Prisma, My
    ```
 
 3. **Environment Variables**
-   Fill in `.env`:
+   Create your local `.env` from `.env.example` (never commit `.env`):
    ```env
-   DATABASE_URL="mysql://USER:PASSWORD@HOST:3306/DBNAME"
+   DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DBNAME"
    NEXTAUTH_SECRET="your-secret-here"
    NEXTAUTH_URL="http://localhost:3000"
    DOMAIN="yourdomain.com"

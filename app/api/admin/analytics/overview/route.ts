@@ -85,9 +85,9 @@ export async function GET(req: NextRequest) {
       prisma.user.count(),
       prisma.user.count({ where: { createdAt: { gte: todayStart } } }),
       prisma.user.count({ where: { createdAt: { gte: weekStart } } }),
-      prisma.email.count({ where: { deletedAt: null } }),
-      prisma.email.count({ where: { deletedAt: null, receivedAt: { gte: todayStart } } }),
-      prisma.email.count({ where: { deletedAt: null, receivedAt: { gte: weekStart } } }),
+      prisma.email.count(),
+      prisma.email.count({ where: { receivedAt: { gte: todayStart } } }),
+      prisma.email.count({ where: { receivedAt: { gte: weekStart } } }),
       prisma.user.count({ where: { isBanned: true } }),
       prisma.user.findMany({
         take: 10,
@@ -96,7 +96,6 @@ export async function GET(req: NextRequest) {
       }),
       prisma.email.findMany({
         take: 10,
-        where: { deletedAt: null },
         orderBy: { receivedAt: 'desc' },
         include: { user: { select: { username: true } } },
       }),
@@ -111,7 +110,7 @@ export async function GET(req: NextRequest) {
         orderBy: { createdAt: 'asc' },
       }),
       prisma.email.findMany({
-        where: { deletedAt: null, receivedAt: { gte: rangeStart } },
+        where: { receivedAt: { gte: rangeStart } },
         select: { receivedAt: true },
         orderBy: { receivedAt: 'asc' },
       }),
@@ -124,12 +123,11 @@ export async function GET(req: NextRequest) {
         take: 5,
       }),
       prisma.email.findMany({
-        where: { deletedAt: null },
         select: { fromAddress: true },
         take: 10000,
       }),
       prisma.email.findMany({
-        where: { deletedAt: null, receivedAt: { gte: weekStart } },
+        where: { receivedAt: { gte: weekStart } },
         select: { receivedAt: true },
       }),
       prisma.webhookLog.count(),
