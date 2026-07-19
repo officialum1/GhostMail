@@ -199,7 +199,7 @@ export default function AdminUsersPage() {
         ) : users.length === 0 ? (
           <div className="py-20 text-center text-slate-400">No users found.</div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto min-h-[300px]">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-left text-slate-400">
