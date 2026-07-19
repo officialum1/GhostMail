@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { Ban, ChevronDown, Download, Eye, KeyRound, MoreHorizontal, Search, Trash2, Users } from 'lucide-react'
+import { Ban, ChevronDown, Download, Eye, KeyRound, MoreHorizontal, Search, Trash2, Users, LogIn } from 'lucide-react'
+import { signIn } from 'next-auth/react'
 
 type UserRecord = {
   id: number
@@ -247,6 +248,9 @@ export default function AdminUsersPage() {
                           <div className="absolute right-0 top-12 z-20 w-52 rounded-2xl border border-white/10 bg-[#0f172a] p-2 shadow-2xl">
                             <button onClick={() => { router.push(`/admin/emails?userId=${user.id}`); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-200 hover:bg-white/5">
                               <Eye className="h-4 w-4" /> View Emails
+                            </button>
+                            <button onClick={() => { signIn('impersonation', { userId: String(user.id), callbackUrl: '/dashboard' }); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-cyan-300 hover:bg-cyan-500/10">
+                              <LogIn className="h-4 w-4" /> Login as User
                             </button>
                             <button onClick={() => { setBanModal(user); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-200 hover:bg-white/5">
                               <Ban className="h-4 w-4" /> {user.isBanned ? 'Unban User' : 'Ban User'}

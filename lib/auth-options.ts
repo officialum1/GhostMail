@@ -2,9 +2,44 @@ import { NextAuthOptions } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/db"
+import { cookies } from "next/headers"
+import { jwtVerify } from "jose"
 
 export const authOptions: NextAuthOptions = {
   providers: [
+    CredentialsProvider({
+      id: "impersonation",
+      name: "impersonation",
+      credentials: {
+        userId: { label: "User ID", type: "text" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.userId) return null;
+        
+        // Verify admin token securely server-side
+        const token = cookies().get('admin_token')?.value;
+        if (!token) return null;
+        
+        try {
+          const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'secret');
+          await jwtVerify(token, secret);
+        } catch {
+          return null; // Invalid admin token
+        }
+        
+        const user = await prisma.user.findUnique({
+          where: { id: parseInt(credentials.userId) }
+        });
+        
+        if (!user) return null;
+        
+        return {
+          id: String(user.id),
+          name: user.username,
+          email: user.email,
+        };
+      }
+    }),
     CredentialsProvider({
       name: "credentials",
       credentials: {
