@@ -7,7 +7,7 @@ export default function AdminManagementLayout({ children }: { children: React.Re
       <AdminSidebar />
       <div className="flex-1 overflow-y-auto">
         <Toaster position="top-right" toastOptions={{ style: { background: '#0f172a', color: '#e2e8f0', border: '1px solid rgba(255,255,255,0.08)' } }} />
-        <div className="p-8">
+        <div className="p-4 pt-16 lg:p-8 lg:pt-8">
           {children}
         </div>
       </div>
