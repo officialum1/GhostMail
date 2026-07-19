@@ -191,7 +191,7 @@ export default function AdminUsersPage() {
         </select>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
+      <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
         {loading ? (
           <div className="flex items-center justify-center py-24">
             <div className="h-9 w-9 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
@@ -199,7 +199,7 @@ export default function AdminUsersPage() {
         ) : users.length === 0 ? (
           <div className="py-20 text-center text-slate-400">No users found.</div>
         ) : (
-          <div className="overflow-x-auto min-h-[300px]">
+          <div className="w-full">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/10 text-left text-slate-400">
