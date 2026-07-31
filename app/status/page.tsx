@@ -41,7 +41,7 @@ export default function StatusPage() {
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center rounded-xl border border-slate-200 dark:border-white/10 px-5 py-3 font-semibold text-slate-900 dark:text-white transition hover:bg-white/5"
+                className="inline-flex items-center rounded-xl border border-slate-200 dark:border-white/10 px-5 py-3 font-semibold text-slate-900 dark:text-white transition hover:bg-slate-200 dark:hover:bg-white/5"
               >
                 Contact support
               </Link>
@@ -51,7 +51,7 @@ export default function StatusPage() {
           <div className="rounded-[28px] border border-slate-200 dark:border-white/10 bg-[#0f1627] p-6 shadow-[0_32px_80px_rgba(0,0,0,0.3)]">
             <div className="flex items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-5">
               <div>
-                <p className="text-sm font-semibold uppercase text-cyan-300">
+                <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">
                   Current health
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Operational</h2>
@@ -69,7 +69,7 @@ export default function StatusPage() {
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex gap-3">
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-300">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-600 dark:text-cyan-300">
                           <Icon className="h-5 w-5" aria-hidden="true" />
                         </span>
                         <div>
@@ -94,21 +94,21 @@ export default function StatusPage() {
       <section className="mx-auto max-w-7xl px-6 pb-24">
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
-            <Clock className="h-6 w-6 text-cyan-300" aria-hidden="true" />
+            <Clock className="h-6 w-6 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
             <h2 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">Recent incidents</h2>
             <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
               No active public incidents are reported right now.
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
-            <Activity className="h-6 w-6 text-cyan-300" aria-hidden="true" />
+            <Activity className="h-6 w-6 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
             <h2 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">Delivery monitor</h2>
             <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
               Inbox delivery is monitored through GhostMail admin analytics and routing logs.
             </p>
           </div>
           <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
-            <ShieldCheck className="h-6 w-6 text-cyan-300" aria-hidden="true" />
+            <ShieldCheck className="h-6 w-6 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
             <h2 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">Security contact</h2>
             <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
               Security reports can be sent through the contact page or security.txt.

@@ -12,7 +12,7 @@ type ActivityItem = {
 
 const typeStyles: Record<string, { dot: string; label: string }> = {
   user_registered: { dot: 'bg-emerald-400', label: 'text-emerald-300' },
-  email_received: { dot: 'bg-cyan-400', label: 'text-cyan-300' },
+  email_received: { dot: 'bg-cyan-400', label: 'text-cyan-600 dark:text-cyan-300' },
   user_banned: { dot: 'bg-red-400', label: 'text-red-300' },
   admin_action: { dot: 'bg-purple-400', label: 'text-purple-300' },
   email_deleted: { dot: 'bg-amber-400', label: 'text-amber-300' },

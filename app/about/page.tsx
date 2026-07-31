@@ -22,7 +22,7 @@ export default function AboutPage() {
     <PageLayout>
       <section className="mx-auto max-w-7xl px-6 py-20 md:py-32">
         <div className="max-w-3xl">
-          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">About GhostMail</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">About GhostMail</p>
           <h1 className="mt-4 text-4xl font-bold md:text-6xl">
             We believe everyone deserves email privacy without compromise.
           </h1>
@@ -56,7 +56,7 @@ export default function AboutPage() {
 
       <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-32">
         <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
-          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">How it works</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">How it works</p>
           <h2 className="mt-4 text-3xl font-bold md:text-5xl">A simple pipeline built for trust.</h2>
           <div className="mt-12 grid gap-6 md:grid-cols-4">
             {[
@@ -66,7 +66,7 @@ export default function AboutPage() {
               'Messages are encrypted at rest and isolated per account.',
             ].map((item, index) => (
               <div key={item} className="rounded-3xl border border-slate-200 dark:border-white/10 bg-[#0f1728] p-6">
-                <div className="text-sm font-semibold tracking-[0.25em] text-cyan-300">
+                <div className="text-sm font-semibold tracking-[0.25em] text-cyan-600 dark:text-cyan-300">
                   0{index + 1}
                 </div>
                 <p className="mt-4 text-slate-600 dark:text-slate-300">{item}</p>
@@ -88,7 +88,7 @@ export default function AboutPage() {
       <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-32">
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-8 backdrop-blur md:p-10">
-            <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Team</p>
+            <p className="text-sm uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">Team</p>
             <h2 className="mt-4 text-3xl font-bold md:text-5xl">
               Built by privacy enthusiasts who think the internet should work for users, not advertisers.
             </h2>
@@ -112,7 +112,7 @@ export default function AboutPage() {
                   className="flex items-center gap-4 rounded-[28px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6 backdrop-blur"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-400/10">
-                    <Icon className="h-5 w-5 text-cyan-300" />
+                    <Icon className="h-5 w-5 text-cyan-600 dark:text-cyan-300" />
                   </div>
                   <div>
                     <p className="font-semibold text-slate-900 dark:text-white">{value.title}</p>

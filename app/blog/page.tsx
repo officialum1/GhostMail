@@ -43,7 +43,7 @@ export default function BlogPage() {
     <PageLayout>
       <section className="mx-auto max-w-5xl px-6 py-20 md:py-32">
         <div className="max-w-3xl">
-          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Blog</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">Blog</p>
           <h1 className="mt-4 text-4xl font-bold md:text-6xl">Email privacy tips &amp; guides</h1>
           <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
             Articles on custom email addresses, OTP delivery, and keeping your real inbox
@@ -53,7 +53,7 @@ export default function BlogPage() {
 
         <div className="mt-10 inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-200">
           Coming soon — subscribe via{' '}
-          <Link href="/contact" className="underline hover:text-white">
+          <Link href="/contact" className="underline hover:text-slate-900 dark:hover:text-white">
             contact
           </Link>
         </div>
@@ -69,7 +69,7 @@ export default function BlogPage() {
               <p className="mt-3 text-slate-500 dark:text-slate-400">{post.excerpt}</p>
               <Link
                 href={`/blog/${post.slug}`}
-                className="mt-6 inline-flex text-sm font-medium text-cyan-300 hover:text-white"
+                className="mt-6 inline-flex text-sm font-medium text-cyan-600 dark:text-cyan-300 hover:text-slate-900 dark:hover:text-white"
               >
                 Preview post →
               </Link>

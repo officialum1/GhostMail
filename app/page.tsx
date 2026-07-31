@@ -130,7 +130,7 @@ export default function HomePage() {
 
         <section id="how-it-works" className="mx-auto max-w-7xl px-6 py-20 md:py-28">
           <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase text-cyan-300">How it works</p>
+            <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">How it works</p>
             <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
               A real inbox for the parts of the internet you do not fully trust yet.
             </h2>
@@ -145,7 +145,7 @@ export default function HomePage() {
 
               return (
                 <div key={step.title} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-300">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-600 dark:text-cyan-300">
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
                   <h3 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">{step.title}</h3>
@@ -159,7 +159,7 @@ export default function HomePage() {
         <section id="features" className="mx-auto max-w-7xl px-6 py-20 md:py-28">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <p className="text-sm font-semibold uppercase text-cyan-300">Use cases</p>
+              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">Use cases</p>
               <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
                 Built for sign-ups, OTPs, and everyday privacy.
               </h2>
@@ -171,10 +171,10 @@ export default function HomePage() {
                   href={useCase.href}
                   className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-6 transition hover:border-cyan-400/30"
                 >
-                  <Zap className="h-5 w-5 text-cyan-300" aria-hidden="true" />
+                  <Zap className="h-5 w-5 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
                   <h3 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">{useCase.title}</h3>
                   <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">{useCase.body}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-300">
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 dark:text-cyan-300">
                     Learn more
                     <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" />
                   </span>
@@ -187,14 +187,14 @@ export default function HomePage() {
         <section className="mx-auto max-w-7xl px-6 py-20 md:py-28">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-3xl">
-              <p className="text-sm font-semibold uppercase text-cyan-300">SEO pages</p>
+              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">SEO pages</p>
               <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
                 Search-friendly pages for the terms people already use.
               </h2>
             </div>
             <Link
               href="/faq"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-300 hover:text-cyan-200"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 dark:text-cyan-300 hover:text-cyan-200"
             >
               Read FAQ
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -207,13 +207,13 @@ export default function HomePage() {
                 href={`/${page.slug}`}
                 className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6 transition hover:border-cyan-400/30"
               >
-                <Search className="h-5 w-5 text-cyan-300" aria-hidden="true" />
+                <Search className="h-5 w-5 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
                 <p className="mt-5 text-sm font-semibold uppercase text-cyan-200">
                   {page.kicker}
                 </p>
                 <h3 className="mt-3 text-xl font-semibold text-slate-900 dark:text-white">{page.h1}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">{page.description}</p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-300">
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 dark:text-cyan-300">
                   Open page
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" />
                 </span>
@@ -262,13 +262,13 @@ export default function HomePage() {
         <section className="mx-auto max-w-7xl px-6 py-20 md:py-28">
           <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <p className="text-sm font-semibold uppercase text-cyan-300">FAQ</p>
+              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">FAQ</p>
               <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
                 Clear answers for users before they trust a new inbox.
               </h2>
               <Link
                 href="/faq"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-cyan-300 hover:text-cyan-200"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 dark:text-cyan-300 hover:text-cyan-200"
               >
                 See all questions
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -292,7 +292,7 @@ export default function HomePage() {
                 <p className="text-base leading-7 text-slate-700 dark:text-slate-200">
                   &quot;{item.quote}&quot;
                 </p>
-                <p className="mt-5 text-sm font-semibold text-cyan-300">{item.author}</p>
+                <p className="mt-5 text-sm font-semibold text-cyan-600 dark:text-cyan-300">{item.author}</p>
               </div>
             ))}
           </div>
@@ -301,7 +301,7 @@ export default function HomePage() {
         <section className="mx-auto max-w-7xl px-6 pb-24 md:pb-32">
           <div className="grid gap-8 rounded-[28px] border border-cyan-400/15 bg-white dark:bg-[#101a2d] p-8 md:p-12 lg:grid-cols-[1fr_460px] lg:items-center">
             <div>
-              <p className="text-sm font-semibold uppercase text-cyan-300">Start free</p>
+              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">Start free</p>
               <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
                 Claim your private inbox now.
               </h2>

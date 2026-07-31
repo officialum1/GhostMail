@@ -146,7 +146,7 @@ export default function AdminAnalyticsPage() {
               key={d}
               onClick={() => setDays(d)}
               className={`px-4 py-2 rounded-xl text-sm font-medium border ${
-                days === d ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30' : 'border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400'
+                days === d ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/30' : 'border-slate-200 dark:border-white/10 text-slate-500 dark:text-slate-400'
               }`}
             >
               {d}d
@@ -233,7 +233,7 @@ export default function AdminAnalyticsPage() {
               {data.topSenders.map((s) => (
                 <tr key={s.domain} className="border-b border-slate-200 dark:border-white/5">
                   <td className="py-3 text-slate-900 dark:text-white">{s.domain}</td>
-                  <td className="py-3 text-right text-cyan-300">{s.count}</td>
+                  <td className="py-3 text-right text-cyan-600 dark:text-cyan-300">{s.count}</td>
                   <td className="py-3 text-right">
                     <button onClick={() => blockDomain(s.domain)} className="text-xs text-red-400 hover:underline">
                       Block
@@ -261,7 +261,7 @@ export default function AdminAnalyticsPage() {
                     <p className="text-slate-900 dark:text-white">{u.username}</p>
                     <p className="text-xs text-slate-500">{u.email}</p>
                   </td>
-                  <td className="py-3 text-right text-cyan-300">{u.count}</td>
+                  <td className="py-3 text-right text-cyan-600 dark:text-cyan-300">{u.count}</td>
                 </tr>
               ))}
             </tbody>

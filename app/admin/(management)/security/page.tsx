@@ -161,7 +161,7 @@ export default function AdminSecurityPage() {
   return (
     <div className="space-y-8">
       <div className="flex items-center gap-3">
-        <Shield className="h-8 w-8 text-cyan-400" />
+        <Shield className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
         <div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Security Center</h1>
           <p className="text-slate-500 dark:text-slate-400">Threats, access control, and audit trail.</p>
@@ -293,7 +293,7 @@ export default function AdminSecurityPage() {
       <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Audit Log</h2>
-          <a href="/api/admin/audit?format=csv" className="text-sm text-cyan-400 hover:underline">
+          <a href="/api/admin/audit?format=csv" className="text-sm text-cyan-600 dark:text-cyan-400 hover:underline">
             Export CSV
           </a>
         </div>
@@ -311,7 +311,7 @@ export default function AdminSecurityPage() {
             {auditLogs.map((log) => (
               <tr key={log.id} className="border-b border-slate-200 dark:border-white/5">
                 <td className="py-3 text-slate-900 dark:text-white">{log.admin.email}</td>
-                <td className="py-3 text-cyan-300">{log.action}</td>
+                <td className="py-3 text-cyan-600 dark:text-cyan-300">{log.action}</td>
                 <td className="py-3 text-slate-500 dark:text-slate-400">{log.target || '—'}</td>
                 <td className="py-3 text-slate-500 dark:text-slate-400">{log.ip || '—'}</td>
                 <td className="py-3 text-slate-500 dark:text-slate-400">{new Date(log.createdAt).toLocaleString()}</td>
@@ -325,7 +325,7 @@ export default function AdminSecurityPage() {
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Admin 2FA (Google Authenticator)</h2>
         {!twoFactorEnabled ? (
           <div className="space-y-4">
-            <button onClick={setup2FA} className="rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-4 py-2 text-sm">
+            <button onClick={setup2FA} className="rounded-xl bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border border-cyan-500/30 px-4 py-2 text-sm">
               Generate QR Code
             </button>
             {qrCode && (

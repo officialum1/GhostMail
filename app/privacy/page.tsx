@@ -61,7 +61,7 @@ export default function PrivacyPage() {
     <PageLayout>
       <section className="mx-auto max-w-5xl px-6 py-20 md:py-32">
         <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-8 backdrop-blur md:p-12">
-          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Privacy</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">Privacy</p>
           <h1 className="mt-4 text-4xl font-bold md:text-6xl">Privacy Policy</h1>
           <p className="mt-4 text-slate-500 dark:text-slate-400">Last updated: May 2025</p>
 

@@ -134,7 +134,7 @@ export default function AdminSidebar() {
       href: '/admin/emails',
       icon: Mail,
       badge: todayEmails > 0 ? String(todayEmails) : null,
-      badgeClass: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+      badgeClass: 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 border-cyan-500/30',
     },
     { name: 'Analytics', href: '/admin/analytics', icon: BarChart2 },
     {
@@ -166,7 +166,7 @@ export default function AdminSidebar() {
       {/* Header */}
       <div className="relative flex items-center border-b border-slate-200 dark:border-white/10">
         <div className={`flex items-center gap-3 flex-1 min-w-0 ${collapsed ? 'p-4 justify-center' : 'p-6'}`}>
-          <Mail className="w-6 h-6 text-cyan-400 shrink-0" />
+          <Mail className="w-6 h-6 text-cyan-600 dark:text-cyan-400 shrink-0" />
           {!collapsed && (
             <>
               <span className="text-xl font-bold truncate">GhostMail</span>
@@ -179,7 +179,7 @@ export default function AdminSidebar() {
         {/* Collapse toggle — hidden on mobile, visible on desktop */}
         <button
           onClick={toggleCollapsed}
-          className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-6 h-6 rounded-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-white hover:bg-slate-700 transition-colors shadow-lg"
+          className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-6 h-6 rounded-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-700 transition-colors shadow-lg"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
@@ -198,8 +198,8 @@ export default function AdminSidebar() {
                 href={link.href}
                 className={`relative flex items-center gap-3 px-3 py-3 rounded-xl transition-all font-medium ${
                   isActive
-                    ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                    : 'text-slate-500 dark:text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+                    ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/50 dark:border-cyan-500/20'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 border border-transparent'
                 } ${collapsed ? 'justify-center' : ''}`}
               >
                 <Icon className="w-5 h-5 shrink-0" />
@@ -274,7 +274,7 @@ export default function AdminSidebar() {
     >
       {/* Header */}
       <div className="flex items-center gap-3 p-6 border-b border-slate-200 dark:border-white/10">
-        <Mail className="w-6 h-6 text-cyan-400 shrink-0" />
+        <Mail className="w-6 h-6 text-cyan-600 dark:text-cyan-400 shrink-0" />
         <span className="text-xl font-bold truncate">GhostMail</span>
         <span className="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30 uppercase tracking-wider font-bold ml-auto shrink-0">
           Admin
@@ -293,8 +293,8 @@ export default function AdminSidebar() {
               onClick={closeMobile}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${
                 isActive
-                  ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+                  ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/50 dark:border-cyan-500/20'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/5 border border-transparent'
               }`}
             >
               <Icon className="w-5 h-5" />

@@ -31,7 +31,7 @@ export default function FAQAccordion({ items }: { items: readonly FAQItem[] }) {
             >
               <h3 className="text-lg font-medium text-slate-900 dark:text-white">{item.question}</h3>
               <ChevronDown
-                className={`h-5 w-5 flex-none text-cyan-300 transition-transform ${
+                className={`h-5 w-5 flex-none text-cyan-600 dark:text-cyan-300 transition-transform ${
                   isOpen ? 'rotate-180' : ''
                 }`}
                 aria-hidden="true"

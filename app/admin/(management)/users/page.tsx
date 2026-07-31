@@ -139,7 +139,7 @@ export default function AdminUsersPage() {
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h1 className="flex items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white">
-            <Users className="h-8 w-8 text-cyan-400" />
+            <Users className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
             Users
           </h1>
           <p className="mt-2 text-slate-500 dark:text-slate-400">Search, moderate, export, and manage registered users.</p>
@@ -215,7 +215,7 @@ export default function AdminUsersPage() {
               </thead>
               <tbody>
                 {users.map((user) => (
-                  <tr key={user.id} className="border-b border-slate-200 dark:border-white/5 hover:bg-white/5">
+                  <tr key={user.id} className="border-b border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/5">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 font-semibold text-slate-900 dark:text-white">
@@ -227,7 +227,7 @@ export default function AdminUsersPage() {
                     <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{user.email}</td>
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{formatRelativeDate(user.createdAt)}</td>
                     <td className="px-6 py-4">
-                      <span className="rounded-full bg-cyan-400/10 px-2 py-0.5 text-xs text-cyan-300">{user._count.emails}</span>
+                      <span className="rounded-full bg-cyan-400/10 px-2 py-0.5 text-xs text-cyan-600 dark:text-cyan-300">{user._count.emails}</span>
                     </td>
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{formatRelativeDate(user.lastActive)}</td>
                     <td className="px-6 py-4">
@@ -239,23 +239,23 @@ export default function AdminUsersPage() {
                       <div className="relative inline-flex justify-end">
                         <button
                           onClick={() => setMenuOpenFor(menuOpenFor === user.id ? null : user.id)}
-                          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-2 text-slate-900 dark:text-white hover:bg-white/10"
+                          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-2 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/10"
                         >
                           <MoreHorizontal className="h-4 w-4" />
                           <ChevronDown className="h-4 w-4" />
                         </button>
                         {menuOpenFor === user.id ? (
                           <div className="absolute right-0 top-12 z-20 w-52 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] p-2 shadow-2xl">
-                            <button onClick={() => { router.push(`/admin/emails?userId=${user.id}`); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-white/5">
+                            <button onClick={() => { router.push(`/admin/emails?userId=${user.id}`); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/5">
                               <Eye className="h-4 w-4" /> View Emails
                             </button>
-                            <button onClick={() => { signIn('impersonation', { userId: String(user.id), callbackUrl: '/dashboard' }); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-cyan-300 hover:bg-cyan-500/10">
+                            <button onClick={() => { signIn('impersonation', { userId: String(user.id), callbackUrl: '/dashboard' }); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500/10">
                               <LogIn className="h-4 w-4" /> Login as User
                             </button>
-                            <button onClick={() => { setBanModal(user); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-white/5">
+                            <button onClick={() => { setBanModal(user); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/5">
                               <Ban className="h-4 w-4" /> {user.isBanned ? 'Unban User' : 'Ban User'}
                             </button>
-                            <button onClick={() => handleResetPassword(user)} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-white/5">
+                            <button onClick={() => handleResetPassword(user)} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/5">
                               <KeyRound className="h-4 w-4" /> Reset Password
                             </button>
                             <button onClick={() => { setDeleteModal(user); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-red-300 hover:bg-red-500/10">
@@ -337,7 +337,7 @@ export default function AdminUsersPage() {
           <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#0a0f1e] p-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Password Reset</h2>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Copy this password now. It will only be shown once for {passwordModal.user.username}.</p>
-            <div className="mt-4 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 font-mono text-cyan-300">
+            <div className="mt-4 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 font-mono text-cyan-600 dark:text-cyan-300">
               {passwordModal.password}
             </div>
             <div className="mt-6 flex justify-end">

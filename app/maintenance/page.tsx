@@ -30,7 +30,7 @@ export default function MaintenancePage() {
         <span className="text-2xl font-bold text-slate-900 dark:text-white">GhostMail</span>
       </div>
 
-      <Wrench className="h-20 w-20 text-cyan-400 animate-spin mb-8" style={{ animationDuration: '3s' }} />
+      <Wrench className="h-20 w-20 text-cyan-600 dark:text-cyan-400 animate-spin mb-8" style={{ animationDuration: '3s' }} />
 
       <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-4">Under Maintenance</h1>
       <p className="text-slate-500 dark:text-slate-400 max-w-md mb-8">{message}</p>

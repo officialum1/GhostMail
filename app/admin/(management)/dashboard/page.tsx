@@ -87,7 +87,7 @@ type OverviewResponse = {
 
 const statCardStyles = [
   'text-blue-400 bg-blue-500/10 border-blue-500/20',
-  'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
+  'text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border-cyan-500/50 dark:border-cyan-500/20',
   'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
   'text-purple-400 bg-purple-500/10 border-purple-500/20',
   'text-red-400 bg-red-500/10 border-red-500/20',
@@ -286,16 +286,16 @@ export default function AdminDashboardPage() {
       <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-5">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Quick Actions</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <button onClick={runCleanup} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-white/5">
+          <button onClick={runCleanup} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/5">
             <Trash2 className="h-4 w-4 text-red-400" /> Clean Old Emails
           </button>
-          <button onClick={() => window.open('/api/admin/users/export')} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-white/5">
-            <Download className="h-4 w-4 text-cyan-400" /> Export Users CSV
+          <button onClick={() => window.open('/api/admin/users/export')} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/5">
+            <Download className="h-4 w-4 text-cyan-600 dark:text-cyan-400" /> Export Users CSV
           </button>
-          <button onClick={() => setShowAnnouncement(true)} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-white/5">
+          <button onClick={() => setShowAnnouncement(true)} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/5">
             <Megaphone className="h-4 w-4 text-purple-400" /> Send Announcement
           </button>
-          <button onClick={fetchDashboard} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-white/5">
+          <button onClick={fetchDashboard} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/5">
             <RefreshCw className="h-4 w-4 text-emerald-400" /> Refresh Stats
           </button>
         </div>
@@ -312,7 +312,7 @@ export default function AdminDashboardPage() {
                   <AlertTriangle className="h-5 w-5" />
                   <h2 className="font-semibold">{data.suspicious.length} Suspicious Alerts</h2>
                 </div>
-                <Link href="/admin/security" className="text-sm text-cyan-400 hover:underline">
+                <Link href="/admin/security" className="text-sm text-cyan-600 dark:text-cyan-400 hover:underline">
                   View All
                 </Link>
               </div>
@@ -350,7 +350,7 @@ export default function AdminDashboardPage() {
                         {user.lastActive ? new Date(user.lastActive).toLocaleDateString() : 'Never active'}
                       </p>
                     </div>
-                    <span className="rounded-full bg-cyan-500/10 text-cyan-300 text-xs px-2 py-1 border border-cyan-500/20">
+                    <span className="rounded-full bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 text-xs px-2 py-1 border border-cyan-500/50 dark:border-cyan-500/20">
                       {user._count.emails}
                     </span>
                   </div>

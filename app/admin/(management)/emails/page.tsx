@@ -128,7 +128,7 @@ export default function AdminEmailsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="flex items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white">
-          <Mail className="h-8 w-8 text-cyan-400" />
+          <Mail className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
           Emails
         </h1>
         <p className="mt-2 text-slate-500 dark:text-slate-400">Search, review, and clean up inbound and outbound email activity.</p>
@@ -141,7 +141,7 @@ export default function AdminEmailsPage() {
         </div>
         <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-5">
           <p className="text-sm text-slate-500 dark:text-slate-400">Today</p>
-          <p className="mt-2 text-3xl font-bold text-cyan-300">{stats.today}</p>
+          <p className="mt-2 text-3xl font-bold text-cyan-600 dark:text-cyan-300">{stats.today}</p>
         </div>
         <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-5">
           <p className="text-sm text-slate-500 dark:text-slate-400">This week</p>
@@ -192,10 +192,10 @@ export default function AdminEmailsPage() {
               </thead>
               <tbody>
                 {emails.map((email) => (
-                  <tr key={email.id} className="border-b border-slate-200 dark:border-white/5 hover:bg-white/5">
+                  <tr key={email.id} className="border-b border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/5">
                     <td className="px-6 py-4"><input type="checkbox" checked={selectedIds.includes(email.id)} onChange={() => toggleSelected(email.id)} /></td>
                     <td className="px-6 py-4 text-slate-900 dark:text-white max-w-[220px] truncate">{email.fromAddress}</td>
-                    <td className="px-6 py-4 text-cyan-300 max-w-[220px] truncate">{email.toAddress}</td>
+                    <td className="px-6 py-4 text-cyan-600 dark:text-cyan-300 max-w-[220px] truncate">{email.toAddress}</td>
                     <td className="px-6 py-4 text-slate-600 dark:text-slate-300 max-w-[300px] truncate">{email.subject.slice(0, 50)}</td>
                     <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{relativeTime(email.receivedAt)}</td>
                     <td className="px-6 py-4">
@@ -205,7 +205,7 @@ export default function AdminEmailsPage() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex justify-end gap-2">
-                        <button onClick={() => setSelectedEmail(email)} className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-2 text-slate-900 dark:text-white hover:bg-white/10">
+                        <button onClick={() => setSelectedEmail(email)} className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-2 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/10">
                           <Eye className="h-4 w-4" />
                         </button>
                         <button onClick={() => handleDelete(email.id)} className="rounded-xl border border-red-500/20 bg-red-500/10 p-2 text-red-300 hover:bg-red-500/20">
@@ -240,7 +240,7 @@ export default function AdminEmailsPage() {
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{selectedEmail.subject || '(No Subject)'}</h2>
                 <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{selectedEmail.fromAddress} → {selectedEmail.toAddress}</p>
               </div>
-              <button onClick={() => setSelectedEmail(null)} className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-2 text-slate-900 dark:text-white hover:bg-white/10">
+              <button onClick={() => setSelectedEmail(null)} className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-2 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/10">
                 <X className="h-4 w-4" />
               </button>
             </div>

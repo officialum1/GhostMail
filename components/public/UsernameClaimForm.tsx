@@ -58,7 +58,7 @@ export default function UsernameClaimForm({
         }`}
       >
         <label className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 dark:border-white/10 bg-[#0d1628] px-4 py-3 focus-within:border-cyan-400/40">
-          <Mail className="h-5 w-5 shrink-0 text-cyan-300" aria-hidden="true" />
+          <Mail className="h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
           <span className="sr-only">Choose your GhostMail username</span>
           <input
             ref={inputRef}

@@ -330,7 +330,7 @@ export default function AdminSettingsPage() {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             <section className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-6 space-y-4">
               <div className="flex items-center gap-3">
-                <Server className="h-5 w-5 text-cyan-400" />
+                <Server className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">General Settings</h2>
               </div>
               <input value={settings.siteName} onChange={(event) => setSettings((current) => ({ ...current, siteName: event.target.value }))} placeholder="Site name" className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white outline-none" />
@@ -453,7 +453,7 @@ export default function AdminSettingsPage() {
 
             <section className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-6 space-y-4">
               <div className="flex items-center gap-3">
-                <Webhook className="h-5 w-5 text-cyan-400" />
+                <Webhook className="h-5 w-5 text-cyan-600 dark:text-cyan-400" />
                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Webhook Logs</h2>
               </div>
               <div className="space-y-2 max-h-80 overflow-y-auto">

@@ -16,7 +16,7 @@ export default function PricingPage() {
     <PageLayout>
       <section className="mx-auto max-w-6xl px-6 py-20 md:py-32">
         <div className="max-w-3xl">
-          <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Pricing</p>
+          <p className="text-sm uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">Pricing</p>
           <h1 className="mt-4 text-4xl font-bold md:text-6xl">
             Free at the core, built to feel premium from day one.
           </h1>
@@ -40,7 +40,7 @@ export default function PricingPage() {
                 'No credit card required',
               ].map((feature) => (
                 <div key={feature} className="flex items-center gap-3 text-slate-700 dark:text-slate-200">
-                  <Check className="h-5 w-5 text-cyan-300" />
+                  <Check className="h-5 w-5 text-cyan-600 dark:text-cyan-300" />
                   {feature}
                 </div>
               ))}
@@ -62,7 +62,7 @@ export default function PricingPage() {
               foundation, and any future paid layer would expand on that without
               removing the core experience.
             </p>
-            <Link href="/contact" className="mt-10 inline-flex text-cyan-300 hover:text-cyan-200">
+            <Link href="/contact" className="mt-10 inline-flex text-cyan-600 dark:text-cyan-300 hover:text-cyan-200">
               Ask about business plans →
             </Link>
           </div>

@@ -67,7 +67,7 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={`text-sm font-medium transition-colors ${
-                    active ? 'text-cyan-400' : 'text-slate-600 dark:text-slate-300 hover:text-white'
+                    active ? 'text-cyan-600 dark:text-cyan-400' : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
                   {link.label}
@@ -98,7 +98,7 @@ export default function Navbar() {
                 <ThemeToggle />
                 <Link
                   href="/login"
-                  className="text-sm font-medium text-slate-600 dark:text-slate-300 transition hover:text-white"
+                  className="text-sm font-medium text-slate-600 dark:text-slate-300 transition hover:text-slate-900 dark:hover:text-white"
                 >
                   Login
                 </Link>
@@ -138,7 +138,7 @@ export default function Navbar() {
                   href={link.href}
                   className={`rounded-2xl border px-5 py-4 text-lg font-medium transition ${
                     active
-                      ? 'border-cyan-400/30 bg-cyan-400/10 text-cyan-300'
+                      ? 'border-cyan-400/30 bg-cyan-400/10 text-cyan-600 dark:text-cyan-300'
                       : 'border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white'
                   }`}
                 >
@@ -158,7 +158,7 @@ export default function Navbar() {
                     <p className="truncate font-medium text-slate-900 dark:text-white">
                       {session.user?.name || 'User'}
                     </p>
-                    <p className="truncate text-sm text-cyan-300">
+                    <p className="truncate text-sm text-cyan-600 dark:text-cyan-300">
                       {session.user?.email}
                     </p>
                   </div>

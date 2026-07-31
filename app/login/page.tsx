@@ -48,7 +48,7 @@ export default function LoginPage() {
       <section className="mx-auto max-w-7xl px-6 py-20 md:py-24">
         <div className="grid gap-8 lg:grid-cols-[1fr_440px]">
           <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
-            <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Login</p>
+            <p className="text-sm uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">Login</p>
             <h1 className="mt-4 text-4xl font-bold md:text-6xl">
               Step back into your private GhostMail inbox.
             </h1>
@@ -58,14 +58,14 @@ export default function LoginPage() {
             </p>
             <div className="mt-10 grid gap-4 md:grid-cols-2">
               <div className="rounded-3xl border border-slate-200 dark:border-white/10 bg-[#0f1728] p-6">
-                <Mail className="h-6 w-6 text-cyan-300" />
+                <Mail className="h-6 w-6 text-cyan-600 dark:text-cyan-300" />
                 <p className="mt-4 text-lg font-semibold text-slate-900 dark:text-white">Fast inbox access</p>
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Open your messages quickly with a dashboard tuned for readability.
                 </p>
               </div>
               <div className="rounded-3xl border border-slate-200 dark:border-white/10 bg-[#0f1728] p-6">
-                <Lock className="h-6 w-6 text-cyan-300" />
+                <Lock className="h-6 w-6 text-cyan-600 dark:text-cyan-300" />
                 <p className="mt-4 text-lg font-semibold text-slate-900 dark:text-white">Private by default</p>
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   Credentials stay hashed and inbox access stays tied to your account.
@@ -124,7 +124,7 @@ export default function LoginPage() {
             <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
               Don&apos;t have an account?
               {' '}
-              <Link href="/register" className="text-cyan-300 hover:text-cyan-200">
+              <Link href="/register" className="text-cyan-600 dark:text-cyan-300 hover:text-cyan-200">
                 Register
               </Link>
             </p>

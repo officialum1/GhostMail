@@ -80,7 +80,7 @@ export default function RegisterPage() {
       <section className="mx-auto max-w-7xl px-6 py-20 md:py-24">
         <div className="grid gap-8 lg:grid-cols-[1fr_460px]">
           <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
-            <p className="text-sm font-semibold uppercase text-cyan-300">Create account</p>
+            <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">Create account</p>
             <h1 className="mt-4 text-4xl font-bold md:text-6xl">
               Claim your private inbox in under a minute.
             </h1>
@@ -109,7 +109,7 @@ export default function RegisterPage() {
                 const Icon = item.icon;
                 return (
                   <div key={item.title} className="rounded-3xl border border-slate-200 dark:border-white/10 bg-[#0f1728] p-5">
-                    <Icon className="h-5 w-5 text-cyan-300" />
+                    <Icon className="h-5 w-5 text-cyan-600 dark:text-cyan-300" />
                     <p className="mt-4 font-semibold text-slate-900 dark:text-white">{item.title}</p>
                     <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{item.body}</p>
                   </div>
@@ -123,7 +123,7 @@ export default function RegisterPage() {
             <p className="mt-2 text-slate-500 dark:text-slate-400">
               Your address will look like
               {' '}
-              <span className="text-cyan-300">username@{domain}</span>
+              <span className="text-cyan-600 dark:text-cyan-300">username@{domain}</span>
             </p>
 
             {error ? (
@@ -158,7 +158,7 @@ export default function RegisterPage() {
                     @{domain}
                   </span>
                 </div>
-                <p className="mt-2 text-sm text-cyan-400">
+                <p className="mt-2 text-sm text-cyan-600 dark:text-cyan-400">
                   Your email will be: {previewEmail}
                 </p>
               </div>
@@ -202,7 +202,7 @@ export default function RegisterPage() {
             <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
               Already have an account?
               {' '}
-              <Link href="/login" className="text-cyan-300 hover:text-cyan-200">
+              <Link href="/login" className="text-cyan-600 dark:text-cyan-300 hover:text-cyan-200">
                 Log in
               </Link>
             </p>

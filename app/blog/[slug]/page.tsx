@@ -64,7 +64,7 @@ export default function BlogPostPage({ params }: Props) {
     <PageLayout>
       <ArticleSchema post={post} />
       <article className="mx-auto max-w-3xl px-6 py-20 md:py-32">
-        <Link href="/blog" className="text-sm text-cyan-300 hover:text-white">
+        <Link href="/blog" className="text-sm text-cyan-600 dark:text-cyan-300 hover:text-slate-900 dark:hover:text-white">
           ← Back to blog
         </Link>
         <p className="mt-8 text-sm uppercase tracking-[0.2em] text-slate-500">

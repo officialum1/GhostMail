@@ -18,7 +18,7 @@ export default function FAQPage() {
       <FaqSchemaMarkup />
       <section className="mx-auto max-w-5xl px-6 py-20 md:py-32">
         <div className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase text-cyan-300">FAQ</p>
+          <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">FAQ</p>
           <h1 className="mt-4 text-4xl font-bold leading-tight text-slate-900 dark:text-white md:text-6xl">
             Answers before you trust a new inbox.
           </h1>

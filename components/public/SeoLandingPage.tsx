@@ -53,7 +53,7 @@ export default function SeoLandingPage({ page }: SeoLandingPageProps) {
         <section className="relative mx-auto max-w-7xl px-6 py-16">
           <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
-              <p className="text-sm font-semibold uppercase text-cyan-300">Why it helps</p>
+              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">Why it helps</p>
               <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
                 {page.proof}
               </h2>
@@ -61,7 +61,7 @@ export default function SeoLandingPage({ page }: SeoLandingPageProps) {
             <div className="grid gap-4 md:grid-cols-3">
               {page.useCases.map((useCase) => (
                 <div key={useCase} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-5">
-                  <ShieldCheck className="h-5 w-5 text-cyan-300" aria-hidden="true" />
+                  <ShieldCheck className="h-5 w-5 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
                   <p className="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300">{useCase}</p>
                 </div>
               ))}
@@ -74,7 +74,7 @@ export default function SeoLandingPage({ page }: SeoLandingPageProps) {
         <section className="relative mx-auto max-w-7xl px-6 py-20">
           <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
             <div>
-              <p className="text-sm font-semibold uppercase text-cyan-300">FAQ</p>
+              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">FAQ</p>
               <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
                 Quick answers
               </h2>
@@ -83,7 +83,7 @@ export default function SeoLandingPage({ page }: SeoLandingPageProps) {
               {page.faq.map((item) => (
                 <div key={item.question} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
                   <div className="flex items-start gap-3">
-                    <HelpCircle className="mt-1 h-5 w-5 shrink-0 text-cyan-300" aria-hidden="true" />
+                    <HelpCircle className="mt-1 h-5 w-5 shrink-0 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
                     <div>
                       <h3 className="font-semibold text-slate-900 dark:text-white">{item.question}</h3>
                       <p className="mt-2 leading-7 text-slate-500 dark:text-slate-400">{item.answer}</p>
@@ -103,12 +103,12 @@ export default function SeoLandingPage({ page }: SeoLandingPageProps) {
                 href={`/${related.slug}`}
                 className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-6 transition hover:border-cyan-400/30"
               >
-                <p className="text-sm font-semibold uppercase text-cyan-300">
+                <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">
                   {related.kicker}
                 </p>
                 <h3 className="mt-4 text-xl font-semibold text-slate-900 dark:text-white">{related.h1}</h3>
                 <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">{related.description}</p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-300">
+                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 dark:text-cyan-300">
                   Open page
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" />
                 </span>

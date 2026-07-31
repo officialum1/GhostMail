@@ -133,7 +133,7 @@ export default function AdminLoginPage() {
                   setAdminId(null)
                   setTotpToken('')
                 }}
-                className="w-full text-sm text-slate-500 dark:text-slate-400 hover:text-white"
+                className="w-full text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
                 ← Back to login
               </button>
