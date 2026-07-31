@@ -69,21 +69,21 @@ export default function TermsPage() {
   return (
     <PageLayout>
       <section className="mx-auto max-w-5xl px-6 py-20 md:py-32">
-        <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur md:p-12">
+        <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-8 backdrop-blur md:p-12">
           <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Legal</p>
           <h1 className="mt-4 text-4xl font-bold md:text-6xl">Terms of Service</h1>
-          <p className="mt-4 text-slate-400">Last updated: May 2025</p>
+          <p className="mt-4 text-slate-500 dark:text-slate-400">Last updated: May 2025</p>
 
-          <div className="mt-10 space-y-8 text-slate-300">
+          <div className="mt-10 space-y-8 text-slate-600 dark:text-slate-300">
             {sections.map((section) => (
               <section key={section.title}>
-                <h2 className="text-2xl font-semibold text-white">{section.title}</h2>
+                <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">{section.title}</h2>
                 <p className="mt-3 leading-8">{section.body}</p>
               </section>
             ))}
           </div>
 
-          <p className="mt-10 text-slate-400">
+          <p className="mt-10 text-slate-500 dark:text-slate-400">
             You should also review our
             {' '}
             <Link href="/privacy" className="text-cyan-300 hover:text-cyan-200">

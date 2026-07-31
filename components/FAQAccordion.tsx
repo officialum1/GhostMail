@@ -19,7 +19,7 @@ export default function FAQAccordion({ items }: { items: readonly FAQItem[] }) {
         return (
           <div
             key={item.question}
-            className="rounded-[24px] border border-white/10 bg-white/5 backdrop-blur"
+            className="rounded-[24px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 backdrop-blur"
           >
             <button
               type="button"
@@ -29,7 +29,7 @@ export default function FAQAccordion({ items }: { items: readonly FAQItem[] }) {
               className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
               aria-expanded={isOpen}
             >
-              <h3 className="text-lg font-medium text-white">{item.question}</h3>
+              <h3 className="text-lg font-medium text-slate-900 dark:text-white">{item.question}</h3>
               <ChevronDown
                 className={`h-5 w-5 flex-none text-cyan-300 transition-transform ${
                   isOpen ? 'rotate-180' : ''
@@ -38,8 +38,8 @@ export default function FAQAccordion({ items }: { items: readonly FAQItem[] }) {
               />
             </button>
             {isOpen ? (
-              <div className="border-t border-white/10 px-6 pb-6 pt-4">
-                <p className="text-slate-300">{item.answer}</p>
+              <div className="border-t border-slate-200 dark:border-white/10 px-6 pb-6 pt-4">
+                <p className="text-slate-600 dark:text-slate-300">{item.answer}</p>
               </div>
             ) : null}
           </div>

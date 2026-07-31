@@ -45,7 +45,7 @@ export default function BlogPage() {
         <div className="max-w-3xl">
           <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Blog</p>
           <h1 className="mt-4 text-4xl font-bold md:text-6xl">Email privacy tips &amp; guides</h1>
-          <p className="mt-6 text-lg leading-8 text-slate-300">
+          <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
             Articles on custom email addresses, OTP delivery, and keeping your real inbox
             spam-free. Full posts are coming soon.
           </p>
@@ -62,11 +62,11 @@ export default function BlogPage() {
           {upcomingPosts.map((post) => (
             <article
               key={post.slug}
-              className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur"
+              className="rounded-[28px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-8 backdrop-blur"
             >
               <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Coming soon</p>
-              <h2 className="mt-4 text-2xl font-semibold text-white">{post.title}</h2>
-              <p className="mt-3 text-slate-400">{post.excerpt}</p>
+              <h2 className="mt-4 text-2xl font-semibold text-slate-900 dark:text-white">{post.title}</h2>
+              <p className="mt-3 text-slate-500 dark:text-slate-400">{post.excerpt}</p>
               <Link
                 href={`/blog/${post.slug}`}
                 className="mt-6 inline-flex text-sm font-medium text-cyan-300 hover:text-white"
@@ -78,13 +78,13 @@ export default function BlogPage() {
         </div>
 
         <div className="mt-16 rounded-[28px] border border-cyan-400/20 bg-cyan-400/5 p-8 text-center">
-          <h2 className="text-2xl font-semibold text-white">Ready for your own address?</h2>
-          <p className="mt-3 text-slate-400">
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">Ready for your own address?</h2>
+          <p className="mt-3 text-slate-500 dark:text-slate-400">
             Create a free @ghostmail.store inbox and start receiving OTPs in seconds.
           </p>
           <Link
             href="/register"
-            className="mt-6 inline-flex rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3 font-semibold text-white"
+            className="mt-6 inline-flex rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3 font-semibold text-slate-900 dark:text-white"
           >
             Create free account
           </Link>

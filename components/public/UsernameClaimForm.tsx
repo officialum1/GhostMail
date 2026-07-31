@@ -50,14 +50,14 @@ export default function UsernameClaimForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`w-full rounded-2xl border border-white/10 bg-white/5 p-2 shadow-[0_24px_70px_rgba(0,0,0,0.22)] backdrop-blur ${className}`}
+      className={`w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-2 shadow-[0_24px_70px_rgba(0,0,0,0.22)] backdrop-blur ${className}`}
     >
       <div
         className={`grid gap-2 ${
           compact ? 'md:grid-cols-[1fr_auto]' : 'lg:grid-cols-[1fr_auto]'
         }`}
       >
-        <label className="flex min-w-0 items-center gap-3 rounded-xl border border-white/10 bg-[#0d1628] px-4 py-3 focus-within:border-cyan-400/40">
+        <label className="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 dark:border-white/10 bg-[#0d1628] px-4 py-3 focus-within:border-cyan-400/40">
           <Mail className="h-5 w-5 shrink-0 text-cyan-300" aria-hidden="true" />
           <span className="sr-only">Choose your GhostMail username</span>
           <input
@@ -67,18 +67,18 @@ export default function UsernameClaimForm({
             onBlur={() => setTouched(true)}
             onChange={(event) => setUsername(cleanUsername(event.target.value))}
             placeholder="yourname"
-            className="min-w-0 flex-1 bg-transparent text-base font-semibold text-white outline-none placeholder:text-slate-500"
+            className="min-w-0 flex-1 bg-transparent text-base font-semibold text-slate-900 dark:text-white outline-none placeholder:text-slate-500"
             autoComplete="username"
             minLength={3}
             maxLength={20}
           />
-          <span className="hidden shrink-0 text-sm text-slate-400 sm:inline">
+          <span className="hidden shrink-0 text-sm text-slate-500 dark:text-slate-400 sm:inline">
             @{PUBLIC_DOMAIN}
           </span>
         </label>
         <button
           type="submit"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-3 font-semibold text-white transition hover:scale-[1.01]"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-3 font-semibold text-slate-900 dark:text-white transition hover:scale-[1.01]"
         >
           {buttonLabel}
           <ArrowRight className="h-4 w-4" aria-hidden="true" />

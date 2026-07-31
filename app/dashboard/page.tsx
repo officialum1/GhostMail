@@ -393,7 +393,7 @@ ${email.bodyText || 'No plain text content'}`
 
   if (status === 'loading') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0a0f1e] text-white">
+      <div className="flex min-h-screen items-center justify-center bg-[#0a0f1e] text-slate-900 dark:text-white">
         <div className="h-10 w-10 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
       </div>
     )
@@ -402,7 +402,7 @@ ${email.bodyText || 'No plain text content'}`
   if (status === 'unauthenticated') return null
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0a0f1e] text-white" style={cssVars}>
+    <div className="flex h-screen overflow-hidden bg-[#0a0f1e] text-slate-900 dark:text-white" style={cssVars}>
       <Toaster position="bottom-right" toastOptions={{ style: { background: '#111827', color: '#fff', border: '1px solid rgba(255,255,255,0.08)' } }} />
 
       {isMobileSidebarOpen ? (
@@ -413,14 +413,14 @@ ${email.bodyText || 'No plain text content'}`
         />
       ) : null}
 
-      <aside className={`fixed inset-y-0 left-0 z-40 flex w-[280px] flex-col border-r border-white/10 bg-[#0d1117] transition-transform md:static md:translate-x-0 ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed inset-y-0 left-0 z-40 flex w-[280px] flex-col border-r border-slate-200 dark:border-white/10 bg-[#0d1117] transition-transform md:static md:translate-x-0 ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6">
           <div className="flex items-center gap-3">
             <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-[0_18px_38px_rgba(34,211,238,0.18)]">
-              <Mail className="h-5 w-5 text-white" />
+              <Mail className="h-5 w-5 text-slate-900 dark:text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-white">GhostMail</h1>
+              <h1 className="text-xl font-semibold text-slate-900 dark:text-white">GhostMail</h1>
               <p className="text-xs text-slate-500">Private inbox</p>
             </div>
           </div>
@@ -430,7 +430,7 @@ ${email.bodyText || 'No plain text content'}`
               setIsComposeOpen(true)
               setIsComposeMinimized(false)
             }}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-3 font-semibold text-white shadow-[0_20px_40px_rgba(59,130,246,0.25)] transition hover:scale-[1.01]"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-3 font-semibold text-slate-900 dark:text-white shadow-[0_20px_40px_rgba(59,130,246,0.25)] transition hover:scale-[1.01]"
           >
             <PenSquare className="h-4 w-4" />
             Compose
@@ -456,33 +456,33 @@ ${email.bodyText || 'No plain text content'}`
                 }}
                 className={`mb-1 flex w-full items-center gap-3 rounded-xl border-l-2 px-4 py-3 text-left transition ${
                   active
-                    ? 'border-cyan-400 bg-white/10 text-white'
-                    : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-white'
+                    ? 'border-cyan-400 bg-slate-200 dark:bg-white/10 text-slate-900 dark:text-white'
+                    : 'border-transparent text-slate-500 dark:text-slate-400 hover:bg-white/5 hover:text-white'
                 }`}
               >
                 <Icon className="h-5 w-5" />
                 <span className="flex-1 capitalize">{item.key}</span>
-                <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-slate-200">{item.count}</span>
+                <span className="rounded-full bg-slate-200 dark:bg-white/10 px-2 py-0.5 text-xs text-slate-700 dark:text-slate-200">{item.count}</span>
               </button>
             )
           })}
         </nav>
 
-        <div className="border-t border-white/10 p-4">
-          <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <div className="border-t border-slate-200 dark:border-white/10 p-4">
+          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-sm font-bold text-white">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 text-sm font-bold text-slate-900 dark:text-white">
                 {session?.user?.name?.[0]?.toUpperCase() || 'U'}
               </div>
               <div className="min-w-0">
-                <p className="truncate font-semibold text-white">{session?.user?.name || 'User'}</p>
+                <p className="truncate font-semibold text-slate-900 dark:text-white">{session?.user?.name || 'User'}</p>
                 <p className="truncate text-xs text-cyan-300">{session?.user?.email}</p>
               </div>
-              <button onClick={copyEmail} className="rounded-lg p-2 text-slate-400 transition hover:bg-white/10 hover:text-white">
+              <button onClick={copyEmail} className="rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-white/10 hover:text-white">
                 {copied ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
               </button>
             </div>
-            <div className="my-4 h-px bg-white/10" />
+            <div className="my-4 h-px bg-slate-200 dark:bg-white/10" />
             <button
               onClick={() => signOut({ callbackUrl: '/login' })}
               className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-red-400 transition hover:bg-red-500/10 hover:text-red-300"
@@ -495,29 +495,29 @@ ${email.bodyText || 'No plain text content'}`
       </aside>
 
       <main className="flex min-w-0 flex-1 flex-col">
-        <div className="border-b border-white/10 bg-[#0a0f1e]/90 px-4 py-4 backdrop-blur md:px-6">
+        <div className="border-b border-slate-200 dark:border-white/10 bg-[#0a0f1e]/90 px-4 py-4 backdrop-blur md:px-6">
           <div className="flex items-center gap-3">
             <button
-              className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-300 md:hidden"
+              className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-2 text-slate-600 dark:text-slate-300 md:hidden"
               onClick={() => setIsMobileSidebarOpen(true)}
             >
               <MoreVertical className="h-4 w-4" />
             </button>
 
-            <div className="flex flex-1 items-center gap-3 rounded-xl border border-white/10 bg-[#0f1623] px-4 py-3">
+            <div className="flex flex-1 items-center gap-3 rounded-xl border border-slate-200 dark:border-white/10 bg-[#0f1623] px-4 py-3">
               <Search className="h-4 w-4 text-slate-500" />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
                 placeholder="Search emails..."
-                className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
+                className="w-full bg-transparent text-sm text-slate-900 dark:text-white outline-none placeholder:text-slate-500"
               />
               <Filter className="h-4 w-4 text-slate-500" />
             </div>
 
             <button
               onClick={() => fetchInbox()}
-              className="rounded-xl border border-white/10 bg-white/5 p-3 text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-3 text-slate-600 dark:text-slate-300 transition hover:bg-white/10 hover:text-white"
             >
               <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin text-cyan-400' : ''}`} />
             </button>
@@ -525,11 +525,11 @@ ${email.bodyText || 'No plain text content'}`
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-semibold text-white">{selectedMailboxLabel}</h2>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{selectedMailboxLabel}</h2>
               <span className="rounded-full bg-cyan-400/10 px-2.5 py-1 text-xs font-medium text-cyan-300">{unreadCount} unread</span>
             </div>
-            <div className="flex items-center gap-3 text-sm text-slate-400">
-              <span className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3 py-1.5">
+            <div className="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+              <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 dark:bg-white/5 px-3 py-1.5">
                 <Bell className="h-4 w-4 text-cyan-400" />
                 Auto refresh in {refreshCountdown}s
               </span>
@@ -538,17 +538,17 @@ ${email.bodyText || 'No plain text content'}`
         </div>
 
         <div className="flex min-h-0 flex-1">
-          <section className={`${selectedEmail ? 'hidden md:flex' : 'flex'} w-full flex-col border-r border-white/10 bg-[#0f1623] md:w-[380px]`}>
+          <section className={`${selectedEmail ? 'hidden md:flex' : 'flex'} w-full flex-col border-r border-slate-200 dark:border-white/10 bg-[#0f1623] md:w-[380px]`}>
             {loading ? (
               <div className="space-y-4 px-4 py-5">
                 {Array.from({ length: 6 }).map((_, index) => (
-                  <div key={index} className="animate-pulse rounded-2xl border border-white/5 bg-white/[0.03] p-4">
+                  <div key={index} className="animate-pulse rounded-2xl border border-slate-200 dark:border-white/5 bg-white/[0.03] p-4">
                     <div className="flex items-start gap-3">
-                      <div className="h-9 w-9 rounded-full bg-white/10" />
+                      <div className="h-9 w-9 rounded-full bg-slate-200 dark:bg-white/10" />
                       <div className="flex-1 space-y-2">
-                        <div className="h-3 w-1/2 rounded bg-white/10" />
-                        <div className="h-3 w-2/3 rounded bg-white/10" />
-                        <div className="h-3 w-full rounded bg-white/10" />
+                        <div className="h-3 w-1/2 rounded bg-slate-200 dark:bg-white/10" />
+                        <div className="h-3 w-2/3 rounded bg-slate-200 dark:bg-white/10" />
+                        <div className="h-3 w-full rounded bg-slate-200 dark:bg-white/10" />
                       </div>
                     </div>
                   </div>
@@ -559,8 +559,8 @@ ${email.bodyText || 'No plain text content'}`
                 <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-cyan-400/15 to-blue-500/15">
                   {search ? <Search className="h-10 w-10 text-cyan-300" /> : <Mail className="h-10 w-10 text-cyan-300" />}
                 </div>
-                <h3 className="mt-6 text-xl font-semibold text-white">{search ? 'No emails match your search' : 'Your inbox is empty'}</h3>
-                <p className="mt-2 max-w-xs text-sm text-slate-400">
+                <h3 className="mt-6 text-xl font-semibold text-slate-900 dark:text-white">{search ? 'No emails match your search' : 'Your inbox is empty'}</h3>
+                <p className="mt-2 max-w-xs text-sm text-slate-500 dark:text-slate-400">
                   {search ? 'Try different keywords' : 'Share your address to start receiving emails'}
                 </p>
                 {!search && session?.user?.email ? (
@@ -581,21 +581,21 @@ ${email.bodyText || 'No plain text content'}`
                     <button
                       key={email.id}
                       onClick={() => openEmail(email.id)}
-                      className={`group relative mb-2 flex w-full items-start gap-3 rounded-2xl border-l-2 px-4 py-4 text-left transition ${selected ? 'border-cyan-400 bg-white/10' : 'border-transparent hover:bg-white/5'} ${index < 1 ? 'animate-[fadeInUp_0.4s_ease-out]' : ''}`}
+                      className={`group relative mb-2 flex w-full items-start gap-3 rounded-2xl border-l-2 px-4 py-4 text-left transition ${selected ? 'border-cyan-400 bg-slate-200 dark:bg-white/10' : 'border-transparent hover:bg-white/5'} ${index < 1 ? 'animate-[fadeInUp_0.4s_ease-out]' : ''}`}
                     >
                       <div className={`mt-3 h-2 w-2 rounded-full ${unread ? 'bg-cyan-400 animate-pulse' : 'bg-transparent'}`} />
                       <div
-                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-slate-900 dark:text-white"
                         style={{ backgroundColor: senderAvatarColor(email.fromAddress) }}
                       >
                         {email.fromAddress[0]?.toUpperCase()}
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center justify-between gap-3">
-                          <p className={`truncate text-sm ${unread ? 'font-semibold text-white' : 'text-slate-300'}`}>{email.fromAddress}</p>
+                          <p className={`truncate text-sm ${unread ? 'font-semibold text-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-300'}`}>{email.fromAddress}</p>
                           <span className="shrink-0 text-xs text-slate-500">{formatMailboxTime(email.receivedAt)}</span>
                         </div>
-                        <p className={`mt-1 truncate text-sm ${unread ? 'font-semibold text-slate-100' : 'text-slate-300'}`}>{email.subject || '(No Subject)'}</p>
+                        <p className={`mt-1 truncate text-sm ${unread ? 'font-semibold text-slate-800 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`}>{email.subject || '(No Subject)'}</p>
                         <p className="mt-1 truncate text-xs text-slate-500">{extractPreview(email)}</p>
                       </div>
                     </button>
@@ -614,25 +614,25 @@ ${email.bodyText || 'No plain text content'}`
                     <Shield className="h-5 w-5 text-cyan-300" />
                   </div>
                 </div>
-                <h3 className="mt-8 text-2xl font-semibold text-white">Your inbox is ready</h3>
-                <p className="mt-3 text-sm text-slate-400">Select a message to read</p>
+                <h3 className="mt-8 text-2xl font-semibold text-slate-900 dark:text-white">Your inbox is ready</h3>
+                <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Select a message to read</p>
               </div>
             ) : (
               <div className="flex h-full flex-col">
-                <div className="border-b border-white/10 px-5 py-5 md:px-8">
+                <div className="border-b border-slate-200 dark:border-white/10 px-5 py-5 md:px-8">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <div className="mb-3 flex items-center gap-2 md:hidden">
                         <button
                           onClick={() => setSelectedEmail(null)}
-                          className="rounded-xl border border-white/10 bg-white/5 p-2 text-slate-300"
+                          className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-2 text-slate-600 dark:text-slate-300"
                         >
                           <ChevronLeft className="h-4 w-4" />
                         </button>
                         <span className="text-sm text-slate-500">Back to list</span>
                       </div>
-                      <h2 className="text-2xl font-semibold text-white md:text-3xl">{selectedEmail.subject || '(No Subject)'}</h2>
-                      <div className="mt-4 space-y-1 text-sm text-slate-400">
+                      <h2 className="text-2xl font-semibold text-slate-900 dark:text-white md:text-3xl">{selectedEmail.subject || '(No Subject)'}</h2>
+                      <div className="mt-4 space-y-1 text-sm text-slate-500 dark:text-slate-400">
                         <p><span className="text-slate-500">From:</span> {selectedEmail.fromAddress}</p>
                         <p><span className="text-slate-500">To:</span> {session?.user?.email || selectedEmail.toAddress}</p>
                         <p><span className="text-slate-500">Date:</span> {new Date(selectedEmail.receivedAt).toLocaleString()}</p>
@@ -641,13 +641,13 @@ ${email.bodyText || 'No plain text content'}`
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => toggleStar(selectedEmail)}
-                        className="rounded-xl border border-white/10 bg-white/5 p-3 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-3 text-slate-600 dark:text-slate-300 transition hover:bg-white/10 hover:text-white"
                       >
                         <Star className={`h-4 w-4 ${selectedEmailStarred ? 'fill-current text-amber-300' : ''}`} />
                       </button>
                       <button
                         onClick={() => toast('Archive is not configured yet')}
-                        className="rounded-xl border border-white/10 bg-white/5 p-3 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                        className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-3 text-slate-600 dark:text-slate-300 transition hover:bg-white/10 hover:text-white"
                       >
                         <Archive className="h-4 w-4" />
                       </button>
@@ -663,19 +663,19 @@ ${email.bodyText || 'No plain text content'}`
                             event.stopPropagation()
                             setShowMoreMenu((current) => !current)
                           }}
-                          className="rounded-xl border border-white/10 bg-white/5 p-3 text-slate-300 transition hover:bg-white/10 hover:text-white"
+                          className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-3 text-slate-600 dark:text-slate-300 transition hover:bg-white/10 hover:text-white"
                         >
                           <MoreVertical className="h-4 w-4" />
                         </button>
 
                         {showMoreMenu ? (
-                          <div className="absolute right-0 top-14 z-50 w-48 rounded-xl border border-white/10 bg-[#1a2035] py-2 shadow-2xl">
+                          <div className="absolute right-0 top-14 z-50 w-48 rounded-xl border border-slate-200 dark:border-white/10 bg-[#1a2035] py-2 shadow-2xl">
                             <button
                               onClick={() => {
                                 toggleRead(selectedEmail)
                                 setShowMoreMenu(false)
                               }}
-                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-600 dark:text-slate-300 transition hover:bg-white/5 hover:text-white"
                             >
                               <Eye className="h-4 w-4" />
                               Mark as {selectedEmail.isRead ? 'Unread' : 'Read'}
@@ -685,7 +685,7 @@ ${email.bodyText || 'No plain text content'}`
                                 toggleStar(selectedEmail)
                                 setShowMoreMenu(false)
                               }}
-                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-600 dark:text-slate-300 transition hover:bg-white/5 hover:text-white"
                             >
                               <Star className="h-4 w-4" />
                               {selectedEmailStarred ? 'Unstar' : 'Star'} email
@@ -696,18 +696,18 @@ ${email.bodyText || 'No plain text content'}`
                                 setShowMoreMenu(false)
                                 toast.success('Copied!')
                               }}
-                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-600 dark:text-slate-300 transition hover:bg-white/5 hover:text-white"
                             >
                               <Copy className="h-4 w-4" />
                               Copy sender email
                             </button>
-                            <hr className="my-1 border-white/10" />
+                            <hr className="my-1 border-slate-200 dark:border-white/10" />
                             <button
                               onClick={() => {
                                 downloadEmail(selectedEmail)
                                 setShowMoreMenu(false)
                               }}
-                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-300 transition hover:bg-white/5 hover:text-white"
+                              className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm text-slate-600 dark:text-slate-300 transition hover:bg-white/5 hover:text-white"
                             >
                               <Download className="h-4 w-4" />
                               Download .txt
@@ -732,7 +732,7 @@ ${email.bodyText || 'No plain text content'}`
                 <div className="flex-1 overflow-y-auto px-5 py-6 md:px-8">
                   {loadingEmail ? (
                     <div className="flex h-full items-center justify-center">
-                      <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-5 py-4 text-slate-300">
+                      <div className="flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-5 py-4 text-slate-600 dark:text-slate-300">
                         <RefreshCw className="h-4 w-4 animate-spin text-cyan-400" />
                         Loading email...
                       </div>
@@ -742,14 +742,14 @@ ${email.bodyText || 'No plain text content'}`
                       title="email-reading-pane"
                       sandbox="allow-same-origin allow-popups allow-popups-to-escape-sandbox"
                       srcDoc={`<html><head><base target="_blank"></head><body style="margin:0;padding:0;background:white;">${selectedEmail.bodyHtml}</body></html>`}
-                      className="min-h-[420px] w-full rounded-2xl border border-white/10 bg-white"
+                      className="min-h-[420px] w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white"
                     />
                   ) : (
-                    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm leading-7 text-slate-200">
+                    <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6 text-sm leading-7 text-slate-700 dark:text-slate-200">
                       {selectedEmail.bodyText ? (
                         <div className="whitespace-pre-wrap font-sans">{selectedEmail.bodyText}</div>
                       ) : (
-                        <div className="flex items-center gap-3 text-slate-400">
+                        <div className="flex items-center gap-3 text-slate-500 dark:text-slate-400">
                           <AlertCircle className="h-4 w-4 text-amber-300" />
                           This email has no plain text body.
                         </div>
@@ -758,17 +758,17 @@ ${email.bodyText || 'No plain text content'}`
                   )}
                 </div>
 
-                <div className="border-t border-white/10 px-5 py-4 md:px-8">
+                <div className="border-t border-slate-200 dark:border-white/10 px-5 py-4 md:px-8">
                   <div className="flex flex-wrap items-center gap-3">
                     <button
                       onClick={handleReply}
-                      className="rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-3 text-sm font-medium text-white"
+                      className="rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-3 text-sm font-medium text-slate-900 dark:text-white"
                     >
                       Reply
                     </button>
                     <button
                       onClick={handleForward}
-                      className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-white hover:bg-white/10"
+                      className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-sm font-medium text-slate-900 dark:text-white hover:bg-white/10"
                     >
                       Forward
                     </button>
@@ -789,18 +789,18 @@ ${email.bodyText || 'No plain text content'}`
       {isComposeOpen ? (
         <div className="pointer-events-none fixed bottom-0 right-0 z-50 p-4 md:p-6">
           <div className={`pointer-events-auto flex w-[min(520px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-white/15 bg-[#1a2035] shadow-[0_25px_50px_rgba(0,0,0,0.5)] transition-all ${isComposeMinimized ? 'h-[70px]' : 'h-[480px]'}`}>
-            <div className="flex items-center justify-between border-b border-white/10 px-4 py-4">
-              <h3 className="text-sm font-semibold text-white">New Message</h3>
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 px-4 py-4">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-white">New Message</h3>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsComposeMinimized((value) => !value)}
-                  className="rounded-lg p-2 text-slate-400 transition hover:bg-white/10 hover:text-white"
+                  className="rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-white/10 hover:text-white"
                 >
                   {isComposeMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
                 </button>
                 <button
                   onClick={() => setIsComposeOpen(false)}
-                  className="rounded-lg p-2 text-slate-400 transition hover:bg-white/10 hover:text-white"
+                  className="rounded-lg p-2 text-slate-500 dark:text-slate-400 transition hover:bg-white/10 hover:text-white"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -810,25 +810,25 @@ ${email.bodyText || 'No plain text content'}`
             {!isComposeMinimized ? (
               <form onSubmit={handleSend} className="flex flex-1 flex-col">
                 <div className="space-y-3 px-4 py-4">
-                  <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-2.5">
                     <label className="mb-1 block text-[11px] uppercase tracking-[0.2em] text-slate-500">To</label>
                     <input
                       required
                       type="email"
                       value={composeTo}
                       onChange={(event) => setComposeTo(event.target.value)}
-                      className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
+                      className="w-full bg-transparent text-sm text-slate-900 dark:text-white outline-none placeholder:text-slate-500"
                       placeholder="recipient@example.com"
                     />
                   </div>
-                  <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2.5">
+                  <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-2.5">
                     <label className="mb-1 block text-[11px] uppercase tracking-[0.2em] text-slate-500">Subject</label>
                     <input
                       required
                       type="text"
                       value={composeSubject}
                       onChange={(event) => setComposeSubject(event.target.value)}
-                      className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
+                      className="w-full bg-transparent text-sm text-slate-900 dark:text-white outline-none placeholder:text-slate-500"
                       placeholder="Subject"
                     />
                   </div>
@@ -839,17 +839,17 @@ ${email.bodyText || 'No plain text content'}`
                     required
                     value={composeBody}
                     onChange={(event) => setComposeBody(event.target.value)}
-                    className="h-full min-h-[200px] w-full resize-none rounded-xl border border-white/10 bg-white/5 px-3 py-3 text-sm text-white outline-none placeholder:text-slate-500"
+                    className="h-full min-h-[200px] w-full resize-none rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-3 text-sm text-slate-900 dark:text-white outline-none placeholder:text-slate-500"
                     placeholder="Write your message..."
                   />
                 </div>
 
-                <div className="flex items-center justify-between border-t border-white/10 px-4 py-4">
+                <div className="flex items-center justify-between border-t border-slate-200 dark:border-white/10 px-4 py-4">
                   <div className="flex items-center gap-3">
                     <button
                       disabled={isSending}
                       type="submit"
-                      className="rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                      className="rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-4 py-2.5 text-sm font-semibold text-slate-900 dark:text-white disabled:opacity-60"
                     >
                       <span className="inline-flex items-center gap-2">
                         <Send className="h-4 w-4" />

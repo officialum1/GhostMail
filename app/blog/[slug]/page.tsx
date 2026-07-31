@@ -71,20 +71,20 @@ export default function BlogPostPage({ params }: Props) {
           {post.publishedAt} · {post.author}
         </p>
         <h1 className="mt-4 text-4xl font-bold md:text-5xl">{post.title}</h1>
-        <p className="mt-6 text-lg text-slate-300">{post.description}</p>
-        <div className="prose prose-invert mt-10 max-w-none space-y-6 text-slate-300">
+        <p className="mt-6 text-lg text-slate-600 dark:text-slate-300">{post.description}</p>
+        <div className="prose prose-invert mt-10 max-w-none space-y-6 text-slate-600 dark:text-slate-300">
           {post.body.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
         <div className="mt-12 rounded-[28px] border border-cyan-400/20 bg-cyan-400/5 p-8">
-          <h2 className="text-xl font-semibold text-white">Get your free custom email</h2>
-          <p className="mt-2 text-slate-400">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Get your free custom email</h2>
+          <p className="mt-2 text-slate-500 dark:text-slate-400">
             Create an account and receive OTPs at your @ghostmail.store address.
           </p>
           <Link
             href="/register"
-            className="mt-4 inline-flex rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-2.5 font-semibold text-white"
+            className="mt-4 inline-flex rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-2.5 font-semibold text-slate-900 dark:text-white"
           >
             Create free account
           </Link>

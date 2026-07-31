@@ -68,9 +68,9 @@ export default function ActivityFeed() {
   }, [fetchActivity])
 
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-5 h-full flex flex-col">
+    <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-5 h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-white">Live Activity</h2>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Live Activity</h2>
         <div className="flex items-center gap-2 text-xs text-emerald-400">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -85,7 +85,7 @@ export default function ActivityFeed() {
           <p className="text-sm text-slate-500 text-center py-8">No activity yet</p>
         ) : (
           items.map((item) => {
-            const style = typeStyles[item.type] || { dot: 'bg-slate-400', label: 'text-slate-300' }
+            const style = typeStyles[item.type] || { dot: 'bg-slate-400', label: 'text-slate-600 dark:text-slate-300' }
             const isNew = !prevIds.current.has(item.id)
             if (items[0]?.id === item.id) {
               prevIds.current = new Set(items.map((i) => i.id))
@@ -93,7 +93,7 @@ export default function ActivityFeed() {
             return (
               <div
                 key={item.id}
-                className={`flex gap-3 rounded-xl border border-white/5 bg-black/20 px-3 py-2.5 transition-all ${
+                className={`flex gap-3 rounded-xl border border-slate-200 dark:border-white/5 bg-black/20 px-3 py-2.5 transition-all ${
                   isNew ? 'animate-[fadeIn_0.4s_ease-out]' : ''
                 }`}
               >

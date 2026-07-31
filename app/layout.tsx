@@ -100,7 +100,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href={SITE_URL} />
       </head>
-      <body className={`${inter.variable} bg-[#0a0f1e] font-sans text-white antialiased`}>
+      <body className={`${inter.variable} bg-[#0a0f1e] font-sans text-slate-900 dark:text-white antialiased`}>
         <GoogleAnalytics />
         <SchemaMarkup />
         <Providers>

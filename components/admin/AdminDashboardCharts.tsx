@@ -27,8 +27,8 @@ export default function AdminDashboardCharts({
 }) {
   return (
     <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-      <div className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-6">
-        <h2 className="text-lg font-semibold text-white mb-4">User Growth</h2>
+      <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">User Growth</h2>
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={userGrowth}>
@@ -51,8 +51,8 @@ export default function AdminDashboardCharts({
         </div>
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl backdrop-blur p-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Email Volume</h2>
+      <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Email Volume</h2>
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={emailVolume}>

@@ -79,12 +79,12 @@ export default function RegisterPage() {
     <PageLayout>
       <section className="mx-auto max-w-7xl px-6 py-20 md:py-24">
         <div className="grid gap-8 lg:grid-cols-[1fr_460px]">
-          <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
+          <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
             <p className="text-sm font-semibold uppercase text-cyan-300">Create account</p>
             <h1 className="mt-4 text-4xl font-bold md:text-6xl">
               Claim your private inbox in under a minute.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
               Pick a username, create a password, and your GhostMail address is ready
               instantly for verifications, receipts, newsletters, and testing workflows.
             </p>
@@ -108,19 +108,19 @@ export default function RegisterPage() {
               ].map((item) => {
                 const Icon = item.icon;
                 return (
-                  <div key={item.title} className="rounded-3xl border border-white/10 bg-[#0f1728] p-5">
+                  <div key={item.title} className="rounded-3xl border border-slate-200 dark:border-white/10 bg-[#0f1728] p-5">
                     <Icon className="h-5 w-5 text-cyan-300" />
-                    <p className="mt-4 font-semibold text-white">{item.title}</p>
-                    <p className="mt-2 text-sm text-slate-400">{item.body}</p>
+                    <p className="mt-4 font-semibold text-slate-900 dark:text-white">{item.title}</p>
+                    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{item.body}</p>
                   </div>
                 );
               })}
             </div>
           </div>
 
-          <div className="rounded-[32px] border border-white/10 bg-[#0f1627] p-8 shadow-[0_32px_80px_rgba(0,0,0,0.35)] backdrop-blur">
-            <h2 className="text-2xl font-semibold text-white">Start free</h2>
-            <p className="mt-2 text-slate-400">
+          <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-[#0f1627] p-8 shadow-[0_32px_80px_rgba(0,0,0,0.35)] backdrop-blur">
+            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">Start free</h2>
+            <p className="mt-2 text-slate-500 dark:text-slate-400">
               Your address will look like
               {' '}
               <span className="text-cyan-300">username@{domain}</span>
@@ -139,8 +139,8 @@ export default function RegisterPage() {
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">Username</label>
-                <div className="flex rounded-2xl border border-white/10 bg-white/5 focus-within:border-cyan-400/30">
+                <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">Username</label>
+                <div className="flex rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 focus-within:border-cyan-400/30">
                   <input
                     type="text"
                     required
@@ -152,9 +152,9 @@ export default function RegisterPage() {
                     }
                     placeholder="johndoe"
                     autoComplete="username"
-                    className="flex-1 bg-transparent px-4 py-3 text-white outline-none placeholder:text-slate-500"
+                    className="flex-1 bg-transparent px-4 py-3 text-slate-900 dark:text-white outline-none placeholder:text-slate-500"
                   />
-                  <span className="border-l border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-400">
+                  <span className="border-l border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-sm text-slate-500 dark:text-slate-400">
                     @{domain}
                   </span>
                 </div>
@@ -164,19 +164,19 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">Password</label>
+                <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">Password</label>
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   autoComplete="new-password"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
+                  className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
                 />
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-300">
+                <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">
                   Confirm password
                 </label>
                 <input
@@ -185,21 +185,21 @@ export default function RegisterPage() {
                   value={confirmPassword}
                   onChange={(event) => setConfirmPassword(event.target.value)}
                   autoComplete="new-password"
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
+                  className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3.5 font-semibold text-white transition hover:scale-[1.01] disabled:opacity-60"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3.5 font-semibold text-slate-900 dark:text-white transition hover:scale-[1.01] disabled:opacity-60"
               >
                 {loading ? 'Creating account...' : 'Create Free Account'}
                 <ArrowRight className="h-4 w-4" />
               </button>
             </form>
 
-            <p className="mt-6 text-sm text-slate-400">
+            <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
               Already have an account?
               {' '}
               <Link href="/login" className="text-cyan-300 hover:text-cyan-200">

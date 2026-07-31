@@ -38,7 +38,7 @@ export default function ContactPage() {
         <div className="max-w-3xl">
           <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Contact</p>
           <h1 className="mt-4 text-4xl font-bold md:text-6xl">Get In Touch</h1>
-          <p className="mt-6 text-lg leading-8 text-slate-300">
+          <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
             We built GhostMail to feel fast and dependable, and we try to offer the
             same experience when you need to reach us.
           </p>
@@ -50,13 +50,13 @@ export default function ContactPage() {
             return (
               <div
                 key={contact.title}
-                className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur"
+                className="rounded-[28px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-8 backdrop-blur"
               >
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400/10">
                   <Icon className="h-6 w-6 text-cyan-300" />
                 </div>
-                <h2 className="mt-6 text-2xl font-semibold text-white">{contact.title}</h2>
-                <p className="mt-3 text-slate-400">{contact.body}</p>
+                <h2 className="mt-6 text-2xl font-semibold text-slate-900 dark:text-white">{contact.title}</h2>
+                <p className="mt-3 text-slate-500 dark:text-slate-400">{contact.body}</p>
                 <a
                   href={`mailto:${contact.email}`}
                   className="mt-6 inline-flex text-base font-medium text-cyan-300 transition hover:text-cyan-200"
@@ -68,9 +68,9 @@ export default function ContactPage() {
           })}
         </div>
 
-        <div className="mt-12 rounded-[28px] border border-white/10 bg-[#10182a] p-8 backdrop-blur">
-          <p className="text-lg font-semibold text-white">We typically respond within 24 hours.</p>
-          <p className="mt-3 text-slate-400">
+        <div className="mt-12 rounded-[28px] border border-slate-200 dark:border-white/10 bg-[#10182a] p-8 backdrop-blur">
+          <p className="text-lg font-semibold text-slate-900 dark:text-white">We typically respond within 24 hours.</p>
+          <p className="mt-3 text-slate-500 dark:text-slate-400">
             Before reaching out, you might find a faster answer in the FAQ.
           </p>
           <a href="/faq" className="mt-6 inline-flex text-cyan-300 hover:text-cyan-200">

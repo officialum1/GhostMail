@@ -56,16 +56,16 @@ export default function AdminLoginPage() {
             <div className="w-10 h-10 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
               ✉️
             </div>
-            <span className="text-2xl font-bold text-white">GhostMail</span>
+            <span className="text-2xl font-bold text-slate-900 dark:text-white">GhostMail</span>
           </div>
-          <p className="text-slate-400">Admin Portal</p>
+          <p className="text-slate-500 dark:text-slate-400">Admin Portal</p>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur-xl">
-          <h1 className="text-2xl font-bold text-white text-center mb-2">
+        <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-8 backdrop-blur-xl">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white text-center mb-2">
             {requires2FA ? 'Two-Factor Auth' : 'Sign In'}
           </h1>
-          <p className="text-slate-400 text-center mb-8 text-sm">
+          <p className="text-slate-500 dark:text-slate-400 text-center mb-8 text-sm">
             {requires2FA ? 'Enter the 6-digit code from your authenticator app' : 'Access the GhostMail admin dashboard'}
           </p>
 
@@ -73,31 +73,31 @@ export default function AdminLoginPage() {
             {!requires2FA ? (
               <>
                 <div>
-                  <label className="text-slate-300 text-sm mb-2 block">Email Address</label>
+                  <label className="text-slate-600 dark:text-slate-300 text-sm mb-2 block">Email Address</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="admin@ghostmail.store"
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                    className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
                   />
                 </div>
                 <div>
-                  <label className="text-slate-300 text-sm mb-2 block">Password</label>
+                  <label className="text-slate-600 dark:text-slate-300 text-sm mb-2 block">Password</label>
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
                     required
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                    className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400"
                   />
                 </div>
               </>
             ) : (
               <div>
-                <label className="text-slate-300 text-sm mb-2 block">Authentication Code</label>
+                <label className="text-slate-600 dark:text-slate-300 text-sm mb-2 block">Authentication Code</label>
                 <input
                   type="text"
                   inputMode="numeric"
@@ -106,7 +106,7 @@ export default function AdminLoginPage() {
                   onChange={(e) => setTotpToken(e.target.value.replace(/\D/g, ''))}
                   placeholder="000000"
                   required
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-center text-2xl tracking-widest placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                  className="w-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-slate-900 dark:text-white text-center text-2xl tracking-widest placeholder-slate-500 focus:outline-none focus:border-cyan-400"
                 />
               </div>
             )}
@@ -120,7 +120,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-white font-semibold py-3 rounded-xl hover:opacity-90 disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-900 dark:text-white font-semibold py-3 rounded-xl hover:opacity-90 disabled:opacity-50"
             >
               {loading ? 'Signing in...' : requires2FA ? 'Verify' : 'Sign In'}
             </button>
@@ -133,7 +133,7 @@ export default function AdminLoginPage() {
                   setAdminId(null)
                   setTotpToken('')
                 }}
-                className="w-full text-sm text-slate-400 hover:text-white"
+                className="w-full text-sm text-slate-500 dark:text-slate-400 hover:text-white"
               >
                 ← Back to login
               </button>

@@ -26,7 +26,7 @@ export default function AboutPage() {
           <h1 className="mt-4 text-4xl font-bold md:text-6xl">
             We believe everyone deserves email privacy without compromise.
           </h1>
-          <p className="mt-6 text-lg leading-8 text-slate-300">
+          <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
             GhostMail was created for people who are tired of turning their real
             inbox into a permanent marketing database every time they sign up for
             something online.
@@ -35,18 +35,18 @@ export default function AboutPage() {
       </section>
 
       <section className="mx-auto grid max-w-7xl gap-6 px-6 pb-20 md:grid-cols-2 md:pb-32">
-        <div className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur">
-          <h2 className="text-2xl font-semibold text-white">Our Mission</h2>
-          <p className="mt-4 leading-8 text-slate-300">
+        <div className="rounded-[28px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-8 backdrop-blur">
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">Our Mission</h2>
+          <p className="mt-4 leading-8 text-slate-600 dark:text-slate-300">
             In a world where your email address is your digital identity,
             protecting it should not be a luxury. GhostMail gives everyone a free,
             private address they can use anywhere without exposing their real inbox
             to spam, tracking, or data brokers.
           </p>
         </div>
-        <div className="rounded-[28px] border border-white/10 bg-white/5 p-8 backdrop-blur">
-          <h2 className="text-2xl font-semibold text-white">Why We Built This</h2>
-          <p className="mt-4 leading-8 text-slate-300">
+        <div className="rounded-[28px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-8 backdrop-blur">
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">Why We Built This</h2>
+          <p className="mt-4 leading-8 text-slate-600 dark:text-slate-300">
             Every sign-up asks for a piece of your identity. Too often that address
             is sold, spammed forever, or shared far beyond what you agreed to. We
             got tired of that tradeoff, so we built GhostMail.
@@ -55,7 +55,7 @@ export default function AboutPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-32">
-        <div className="rounded-[32px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
+        <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
           <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">How it works</p>
           <h2 className="mt-4 text-3xl font-bold md:text-5xl">A simple pipeline built for trust.</h2>
           <div className="mt-12 grid gap-6 md:grid-cols-4">
@@ -65,11 +65,11 @@ export default function AboutPage() {
               'You access them through a private dashboard.',
               'Messages are encrypted at rest and isolated per account.',
             ].map((item, index) => (
-              <div key={item} className="rounded-3xl border border-white/10 bg-[#0f1728] p-6">
+              <div key={item} className="rounded-3xl border border-slate-200 dark:border-white/10 bg-[#0f1728] p-6">
                 <div className="text-sm font-semibold tracking-[0.25em] text-cyan-300">
                   0{index + 1}
                 </div>
-                <p className="mt-4 text-slate-300">{item}</p>
+                <p className="mt-4 text-slate-600 dark:text-slate-300">{item}</p>
               </div>
             ))}
           </div>
@@ -78,21 +78,21 @@ export default function AboutPage() {
 
       <section className="mx-auto grid max-w-7xl gap-6 px-6 pb-20 md:grid-cols-4 md:pb-32">
         {stats.map((stat) => (
-          <div key={stat.label} className="rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur">
-            <p className="text-4xl font-bold text-white">{stat.value}</p>
-            <p className="mt-2 text-sm uppercase tracking-[0.2em] text-slate-400">{stat.label}</p>
+          <div key={stat.label} className="rounded-[28px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6 backdrop-blur">
+            <p className="text-4xl font-bold text-slate-900 dark:text-white">{stat.value}</p>
+            <p className="mt-2 text-sm uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{stat.label}</p>
           </div>
         ))}
       </section>
 
       <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-32">
         <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-[32px] border border-white/10 bg-white/5 p-8 backdrop-blur md:p-10">
+          <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-8 backdrop-blur md:p-10">
             <p className="text-sm uppercase tracking-[0.3em] text-cyan-300">Team</p>
             <h2 className="mt-4 text-3xl font-bold md:text-5xl">
               Built by privacy enthusiasts who think the internet should work for users, not advertisers.
             </h2>
-            <p className="mt-6 leading-8 text-slate-300">
+            <p className="mt-6 leading-8 text-slate-600 dark:text-slate-300">
               We care about design, security, and making privacy tools feel premium.
               GhostMail exists because privacy products should not look or feel like
               a compromise.
@@ -109,14 +109,14 @@ export default function AboutPage() {
               return (
                 <div
                   key={value.title}
-                  className="flex items-center gap-4 rounded-[28px] border border-white/10 bg-white/5 p-6 backdrop-blur"
+                  className="flex items-center gap-4 rounded-[28px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6 backdrop-blur"
                 >
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-400/10">
                     <Icon className="h-5 w-5 text-cyan-300" />
                   </div>
                   <div>
-                    <p className="font-semibold text-white">{value.title}</p>
-                    <p className="text-sm text-slate-400">
+                    <p className="font-semibold text-slate-900 dark:text-white">{value.title}</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">
                       Embedded into product decisions, not added as a slogan later.
                     </p>
                   </div>

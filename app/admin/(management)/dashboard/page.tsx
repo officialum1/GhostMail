@@ -218,7 +218,7 @@ export default function AdminDashboardPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-[400px] text-slate-400">Loading dashboard...</div>
+    return <div className="flex items-center justify-center min-h-[400px] text-slate-500 dark:text-slate-400">Loading dashboard...</div>
   }
 
   if (!data) return <div className="text-red-400">Dashboard unavailable</div>
@@ -238,27 +238,27 @@ export default function AdminDashboardPage() {
 
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white">Admin Dashboard</h1>
-          <p className="mt-2 text-slate-400">Live metrics, activity feed, and quick actions.</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Admin Dashboard</h1>
+          <p className="mt-2 text-slate-500 dark:text-slate-400">Live metrics, activity feed, and quick actions.</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className={`rounded-2xl border p-4 ${data.alerts.failedLogins24h > 10 ? 'border-red-500/30 bg-red-500/10' : 'border-white/10 bg-white/5'}`}>
-          <p className="text-sm text-slate-400">Failed Logins (24h)</p>
-          <p className={`text-2xl font-bold mt-1 ${data.alerts.failedLogins24h > 10 ? 'text-red-400' : 'text-white'}`}>
+        <div className={`rounded-2xl border p-4 ${data.alerts.failedLogins24h > 10 ? 'border-red-500/30 bg-red-500/10' : 'border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5'}`}>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Failed Logins (24h)</p>
+          <p className={`text-2xl font-bold mt-1 ${data.alerts.failedLogins24h > 10 ? 'text-red-400' : 'text-slate-900 dark:text-white'}`}>
             {data.alerts.failedLogins24h}
           </p>
         </div>
-        <div className={`rounded-2xl border p-4 ${data.alerts.highSeverityCount > 0 ? 'border-red-500/30 bg-red-500/10' : 'border-white/10 bg-white/5'}`}>
-          <p className="text-sm text-slate-400">Suspicious Alerts</p>
-          <p className={`text-2xl font-bold mt-1 ${data.alerts.suspiciousUnresolved > 0 ? 'text-orange-400' : 'text-white'}`}>
+        <div className={`rounded-2xl border p-4 ${data.alerts.highSeverityCount > 0 ? 'border-red-500/30 bg-red-500/10' : 'border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5'}`}>
+          <p className="text-sm text-slate-500 dark:text-slate-400">Suspicious Alerts</p>
+          <p className={`text-2xl font-bold mt-1 ${data.alerts.suspiciousUnresolved > 0 ? 'text-orange-400' : 'text-slate-900 dark:text-white'}`}>
             {data.alerts.suspiciousUnresolved}
           </p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-          <p className="text-sm text-slate-400">Banned Users</p>
-          <p className="text-2xl font-bold mt-1 text-white">{data.alerts.bannedUsers}</p>
+        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-4">
+          <p className="text-sm text-slate-500 dark:text-slate-400">Banned Users</p>
+          <p className="text-2xl font-bold mt-1 text-slate-900 dark:text-white">{data.alerts.bannedUsers}</p>
         </div>
       </div>
 
@@ -266,11 +266,11 @@ export default function AdminDashboardPage() {
         {stats.map((stat, index) => {
           const Icon = stat.icon
           return (
-            <div key={stat.label} className="bg-white/5 border border-white/10 rounded-2xl p-5">
+            <div key={stat.label} className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">{stat.label}</p>
-                  <p className="mt-2 text-3xl font-bold text-white">
+                  <p className="text-sm text-slate-500 dark:text-slate-400">{stat.label}</p>
+                  <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
                     {typeof stat.value === 'number' ? stat.value.toLocaleString() : stat.value}
                   </p>
                 </div>
@@ -283,19 +283,19 @@ export default function AdminDashboardPage() {
         })}
       </div>
 
-      <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-        <h2 className="text-lg font-semibold text-white mb-4">Quick Actions</h2>
+      <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-5">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Quick Actions</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <button onClick={runCleanup} className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white hover:bg-white/5">
+          <button onClick={runCleanup} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-white/5">
             <Trash2 className="h-4 w-4 text-red-400" /> Clean Old Emails
           </button>
-          <button onClick={() => window.open('/api/admin/users/export')} className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white hover:bg-white/5">
+          <button onClick={() => window.open('/api/admin/users/export')} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-white/5">
             <Download className="h-4 w-4 text-cyan-400" /> Export Users CSV
           </button>
-          <button onClick={() => setShowAnnouncement(true)} className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white hover:bg-white/5">
+          <button onClick={() => setShowAnnouncement(true)} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-white/5">
             <Megaphone className="h-4 w-4 text-purple-400" /> Send Announcement
           </button>
-          <button onClick={fetchDashboard} className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-white hover:bg-white/5">
+          <button onClick={fetchDashboard} className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-900 dark:text-white hover:bg-white/5">
             <RefreshCw className="h-4 w-4 text-emerald-400" /> Refresh Stats
           </button>
         </div>
@@ -323,7 +323,7 @@ export default function AdminDashboardPage() {
                       <span className={`text-xs px-2 py-0.5 rounded-full border ${severityClass[item.severity] || severityClass.low}`}>
                         {item.severity}
                       </span>
-                      <p className="text-sm text-white mt-1">{item.description}</p>
+                      <p className="text-sm text-slate-900 dark:text-white mt-1">{item.description}</p>
                     </div>
                     <button onClick={() => resolveSuspicious(item.id)} className="text-xs text-emerald-400 hover:underline">
                       Resolve
@@ -335,8 +335,8 @@ export default function AdminDashboardPage() {
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-              <h2 className="text-lg font-semibold text-white mb-4">Top Users</h2>
+            <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-5">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Top Users</h2>
               <div className="space-y-3">
                 {data.topUsers.map((user, i) => (
                   <div key={user.id} className="flex items-center gap-3">
@@ -345,7 +345,7 @@ export default function AdminDashboardPage() {
                       {user.username[0]?.toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-white font-medium truncate">{user.username}</p>
+                      <p className="text-slate-900 dark:text-white font-medium truncate">{user.username}</p>
                       <p className="text-xs text-slate-500">
                         {user.lastActive ? new Date(user.lastActive).toLocaleDateString() : 'Never active'}
                       </p>
@@ -358,13 +358,13 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
-              <h2 className="text-lg font-semibold text-white mb-4">Top Senders</h2>
+            <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-5">
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Top Senders</h2>
               <div className="space-y-3">
                 {data.topSenders.map((sender) => (
                   <div key={sender.domain} className="flex items-center justify-between gap-2">
                     <div>
-                      <p className="text-white font-medium">{sender.domain}</p>
+                      <p className="text-slate-900 dark:text-white font-medium">{sender.domain}</p>
                       <p className="text-xs text-slate-500">{sender.count} emails</p>
                     </div>
                     <button
@@ -385,19 +385,19 @@ export default function AdminDashboardPage() {
 
       {showAnnouncement && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#0d1425] p-6">
-            <h3 className="text-lg font-bold text-white mb-4">Send Announcement</h3>
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0d1425] p-6">
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Send Announcement</h3>
             <textarea
               value={announcementMsg}
               onChange={(e) => setAnnouncementMsg(e.target.value)}
               rows={3}
-              className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white mb-3"
+              className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-black/30 px-4 py-3 text-slate-900 dark:text-white mb-3"
               placeholder="Announcement message..."
             />
             <select
               value={announcementColor}
               onChange={(e) => setAnnouncementColor(e.target.value)}
-              className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-white mb-4"
+              className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-black/30 px-4 py-3 text-slate-900 dark:text-white mb-4"
             >
               <option value="blue">Blue</option>
               <option value="green">Green</option>
@@ -405,10 +405,10 @@ export default function AdminDashboardPage() {
               <option value="red">Red</option>
             </select>
             <div className="flex gap-3">
-              <button onClick={saveAnnouncement} className="flex-1 rounded-xl bg-cyan-500 py-2 text-white font-medium">
+              <button onClick={saveAnnouncement} className="flex-1 rounded-xl bg-cyan-500 py-2 text-slate-900 dark:text-white font-medium">
                 Publish
               </button>
-              <button onClick={() => setShowAnnouncement(false)} className="flex-1 rounded-xl border border-white/10 py-2 text-slate-300">
+              <button onClick={() => setShowAnnouncement(false)} className="flex-1 rounded-xl border border-slate-200 dark:border-white/10 py-2 text-slate-600 dark:text-slate-300">
                 Cancel
               </button>
             </div>

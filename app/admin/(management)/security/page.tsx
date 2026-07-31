@@ -163,18 +163,18 @@ export default function AdminSecurityPage() {
       <div className="flex items-center gap-3">
         <Shield className="h-8 w-8 text-cyan-400" />
         <div>
-          <h1 className="text-3xl font-bold text-white">Security Center</h1>
-          <p className="text-slate-400">Threats, access control, and audit trail.</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Security Center</h1>
+          <p className="text-slate-500 dark:text-slate-400">Threats, access control, and audit trail.</p>
         </div>
       </div>
 
-      <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-          <h2 className="text-lg font-semibold text-white">Suspicious Activity</h2>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Suspicious Activity</h2>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-sm text-white"
+            className="rounded-lg border border-slate-200 dark:border-white/10 bg-black/30 px-3 py-2 text-sm text-slate-900 dark:text-white"
           >
             <option value="all">All</option>
             <option value="unresolved">Unresolved</option>
@@ -184,7 +184,7 @@ export default function AdminSecurityPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-slate-400 border-b border-white/10">
+              <tr className="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-white/10">
                 <th className="pb-3 text-left">Severity</th>
                 <th className="pb-3 text-left">Type</th>
                 <th className="pb-3 text-left">Description</th>
@@ -195,16 +195,16 @@ export default function AdminSecurityPage() {
             </thead>
             <tbody>
               {filtered.map((item) => (
-                <tr key={item.id} className="border-b border-white/5">
+                <tr key={item.id} className="border-b border-slate-200 dark:border-white/5">
                   <td className="py-3">
                     <span className={`text-xs px-2 py-0.5 rounded-full border ${severityClass[item.severity]}`}>
                       {item.severity}
                     </span>
                   </td>
-                  <td className="py-3 text-slate-300">{item.type}</td>
-                  <td className="py-3 text-white max-w-xs truncate">{item.description}</td>
-                  <td className="py-3 text-slate-400">{item.ip || '—'}</td>
-                  <td className="py-3 text-slate-400">{new Date(item.createdAt).toLocaleString()}</td>
+                  <td className="py-3 text-slate-600 dark:text-slate-300">{item.type}</td>
+                  <td className="py-3 text-slate-900 dark:text-white max-w-xs truncate">{item.description}</td>
+                  <td className="py-3 text-slate-500 dark:text-slate-400">{item.ip || '—'}</td>
+                  <td className="py-3 text-slate-500 dark:text-slate-400">{new Date(item.createdAt).toLocaleString()}</td>
                   <td className="py-3 text-right">
                     {!item.resolved ? (
                       <button onClick={() => resolve(item.id)} className="text-emerald-400 text-xs hover:underline">
@@ -221,16 +221,16 @@ export default function AdminSecurityPage() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">Failed Login Attempts</h2>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Failed Login Attempts</h2>
           <button onClick={clearFailed} className="text-sm text-red-400 hover:underline">
             Clear all
           </button>
         </div>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-slate-400 border-b border-white/10">
+            <tr className="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-white/10">
               <th className="pb-3 text-left">Email</th>
               <th className="pb-3 text-left">IP</th>
               <th className="pb-3 text-left">Time</th>
@@ -239,10 +239,10 @@ export default function AdminSecurityPage() {
           </thead>
           <tbody>
             {failedLogins.map((f) => (
-              <tr key={f.id} className="border-b border-white/5">
-                <td className="py-3 text-white">{f.email}</td>
-                <td className="py-3 text-slate-400">{f.ip || '—'}</td>
-                <td className="py-3 text-slate-400">{new Date(f.attemptedAt).toLocaleString()}</td>
+              <tr key={f.id} className="border-b border-slate-200 dark:border-white/5">
+                <td className="py-3 text-slate-900 dark:text-white">{f.email}</td>
+                <td className="py-3 text-slate-500 dark:text-slate-400">{f.ip || '—'}</td>
+                <td className="py-3 text-slate-500 dark:text-slate-400">{new Date(f.attemptedAt).toLocaleString()}</td>
                 <td className="py-3 text-right">
                   {f.ip ? (
                     <button onClick={() => blockIp(f.ip!)} className="text-xs text-red-400 hover:underline">
@@ -256,20 +256,20 @@ export default function AdminSecurityPage() {
         </table>
       </section>
 
-      <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h2 className="text-lg font-semibold text-white mb-4">IP Blacklist</h2>
+      <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">IP Blacklist</h2>
         <div className="flex flex-wrap gap-3 mb-4">
           <input
             value={newIp}
             onChange={(e) => setNewIp(e.target.value)}
             placeholder="IP address"
-            className="rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-white text-sm"
+            className="rounded-xl border border-slate-200 dark:border-white/10 bg-black/30 px-4 py-2 text-slate-900 dark:text-white text-sm"
           />
           <input
             value={newIpReason}
             onChange={(e) => setNewIpReason(e.target.value)}
             placeholder="Reason"
-            className="rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-white text-sm flex-1 min-w-[200px]"
+            className="rounded-xl border border-slate-200 dark:border-white/10 bg-black/30 px-4 py-2 text-slate-900 dark:text-white text-sm flex-1 min-w-[200px]"
           />
           <button onClick={addIp} className="rounded-xl bg-red-500/20 text-red-300 border border-red-500/30 px-4 py-2 text-sm">
             Add
@@ -279,7 +279,7 @@ export default function AdminSecurityPage() {
           {ipList.map((ip) => (
             <div key={ip.id} className="flex items-center justify-between rounded-xl bg-black/20 px-4 py-3">
               <div>
-                <p className="text-white font-mono">{ip.ip}</p>
+                <p className="text-slate-900 dark:text-white font-mono">{ip.ip}</p>
                 <p className="text-xs text-slate-500">{ip.reason || 'No reason'}</p>
               </div>
               <button onClick={() => removeIp(ip.id)} className="text-xs text-red-400 hover:underline">
@@ -290,16 +290,16 @@ export default function AdminSecurityPage() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
+      <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-white">Audit Log</h2>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Audit Log</h2>
           <a href="/api/admin/audit?format=csv" className="text-sm text-cyan-400 hover:underline">
             Export CSV
           </a>
         </div>
         <table className="w-full text-sm">
           <thead>
-            <tr className="text-slate-400 border-b border-white/10">
+            <tr className="text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-white/10">
               <th className="pb-3 text-left">Admin</th>
               <th className="pb-3 text-left">Action</th>
               <th className="pb-3 text-left">Target</th>
@@ -309,20 +309,20 @@ export default function AdminSecurityPage() {
           </thead>
           <tbody>
             {auditLogs.map((log) => (
-              <tr key={log.id} className="border-b border-white/5">
-                <td className="py-3 text-white">{log.admin.email}</td>
+              <tr key={log.id} className="border-b border-slate-200 dark:border-white/5">
+                <td className="py-3 text-slate-900 dark:text-white">{log.admin.email}</td>
                 <td className="py-3 text-cyan-300">{log.action}</td>
-                <td className="py-3 text-slate-400">{log.target || '—'}</td>
-                <td className="py-3 text-slate-400">{log.ip || '—'}</td>
-                <td className="py-3 text-slate-400">{new Date(log.createdAt).toLocaleString()}</td>
+                <td className="py-3 text-slate-500 dark:text-slate-400">{log.target || '—'}</td>
+                <td className="py-3 text-slate-500 dark:text-slate-400">{log.ip || '—'}</td>
+                <td className="py-3 text-slate-500 dark:text-slate-400">{new Date(log.createdAt).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
 
-      <section className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h2 className="text-lg font-semibold text-white mb-4">Admin 2FA (Google Authenticator)</h2>
+      <section className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Admin 2FA (Google Authenticator)</h2>
         {!twoFactorEnabled ? (
           <div className="space-y-4">
             <button onClick={setup2FA} className="rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 px-4 py-2 text-sm">
@@ -330,13 +330,13 @@ export default function AdminSecurityPage() {
             </button>
             {qrCode && (
               <div className="flex flex-col items-start gap-4">
-                <img src={qrCode} alt="2FA QR" className="w-48 h-48 rounded-xl border border-white/10" />
+                <img src={qrCode} alt="2FA QR" className="w-48 h-48 rounded-xl border border-slate-200 dark:border-white/10" />
                 <input
                   value={totpToken}
                   onChange={(e) => setTotpToken(e.target.value.replace(/\D/g, ''))}
                   maxLength={6}
                   placeholder="6-digit code"
-                  className="rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-white w-40"
+                  className="rounded-xl border border-slate-200 dark:border-white/10 bg-black/30 px-4 py-2 text-slate-900 dark:text-white w-40"
                 />
                 <button onClick={verify2FA} className="rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-4 py-2 text-sm">
                   Enable 2FA
@@ -352,7 +352,7 @@ export default function AdminSecurityPage() {
               onChange={(e) => setTotpToken(e.target.value.replace(/\D/g, ''))}
               maxLength={6}
               placeholder="Code to disable"
-              className="rounded-xl border border-white/10 bg-black/30 px-4 py-2 text-white w-40"
+              className="rounded-xl border border-slate-200 dark:border-white/10 bg-black/30 px-4 py-2 text-slate-900 dark:text-white w-40"
             />
             <button onClick={disable2FA} className="rounded-xl bg-red-500/20 text-red-300 border border-red-500/30 px-4 py-2 text-sm">
               Disable 2FA

@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Code2, Mail, Send } from 'lucide-react'
+import { Mail, Send } from 'lucide-react'
 
 const footerGroups = [
   {
@@ -44,34 +44,27 @@ const footerGroups = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/5 bg-[#060d1a]">
+    <footer className="border-t border-slate-200 dark:border-white/5 bg-[#060d1a]">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-12 md:grid-cols-[1.35fr_repeat(4,1fr)]">
           <div className="space-y-5">
             <Link href="/" className="flex items-center gap-3">
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500">
-                <Mail className="h-5 w-5 text-white" />
+                <Mail className="h-5 w-5 text-slate-900 dark:text-white" />
               </span>
-              <span className="text-xl font-semibold text-white">GhostMail</span>
+              <span className="text-xl font-semibold text-slate-900 dark:text-white">GhostMail</span>
             </Link>
-            <p className="max-w-sm text-sm leading-7 text-slate-400">
+            <p className="max-w-sm text-sm leading-7 text-slate-500 dark:text-slate-400">
               Privacy-first email for the modern web. Claim your personal
               GhostMail address and keep your real inbox clean.
             </p>
             <div className="flex items-center gap-3">
               <Link
                 href="https://twitter.com/ghostmailstore"
-                className="rounded-full border border-white/10 p-2.5 text-slate-400 transition hover:border-cyan-400/40 hover:text-cyan-300"
+                className="rounded-full border border-slate-200 dark:border-white/10 p-2.5 text-slate-500 dark:text-slate-400 transition hover:border-cyan-400/40 hover:text-cyan-300"
                 aria-label="GhostMail on X"
               >
                 <Send className="h-4 w-4" />
-              </Link>
-              <Link
-                href="https://github.com/officialum1/GhostMail"
-                className="rounded-full border border-white/10 p-2.5 text-slate-400 transition hover:border-cyan-400/40 hover:text-cyan-300"
-                aria-label="GhostMail on GitHub"
-              >
-                <Code2 className="h-4 w-4" />
               </Link>
             </div>
           </div>
@@ -86,7 +79,7 @@ export default function Footer() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="block text-sm text-slate-400 transition hover:text-cyan-300"
+                    className="block text-sm text-slate-500 dark:text-slate-400 transition hover:text-cyan-300"
                   >
                     {link.label}
                   </Link>
@@ -96,10 +89,10 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-white/10 pt-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+        <div className="mt-14 flex flex-col gap-4 border-t border-slate-200 dark:border-white/10 pt-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
           <p>Copyright 2026 GhostMail. All rights reserved.</p>
           <p>Built for privacy-focused sign-ups and OTP delivery.</p>
-          <div className="flex items-center gap-2 text-slate-300">
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
             All systems operational
           </div>

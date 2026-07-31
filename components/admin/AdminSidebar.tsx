@@ -16,6 +16,7 @@ import {
   Users,
   X,
 } from 'lucide-react'
+import { ThemeToggle } from '../ThemeToggle'
 
 const SIDEBAR_COLLAPSED_KEY = 'ghostmail_sidebar_collapsed'
 const SIDEBAR_EXPANDED = 'w-64'
@@ -34,7 +35,7 @@ function SidebarTooltip({
   return (
     <div className="group/tooltip relative">
       {children}
-      <div className="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 rounded-lg bg-slate-800 px-2.5 py-1.5 text-xs text-white opacity-0 shadow-xl transition-opacity group-hover/tooltip:opacity-100 border border-white/10 max-w-[200px] truncate">
+      <div className="pointer-events-none absolute left-full top-1/2 z-50 ml-3 -translate-y-1/2 rounded-lg bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 text-xs text-slate-900 dark:text-white opacity-0 shadow-xl transition-opacity group-hover/tooltip:opacity-100 border border-slate-200 dark:border-white/10 max-w-[200px] truncate">
         {label}
       </div>
     </div>
@@ -158,12 +159,12 @@ export default function AdminSidebar() {
   // Desktop sidebar content — respects collapsed state
   const desktopSidebar = (
     <div
-      className={`flex flex-col h-full text-white transition-all duration-300 ease-in-out ${
+      className={`flex flex-col h-full text-slate-900 dark:text-white transition-all duration-300 ease-in-out ${
         collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED
-      } bg-slate-900 border-r border-white/10`}
+      } bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-white/10`}
     >
       {/* Header */}
-      <div className="relative flex items-center border-b border-white/10">
+      <div className="relative flex items-center border-b border-slate-200 dark:border-white/10">
         <div className={`flex items-center gap-3 flex-1 min-w-0 ${collapsed ? 'p-4 justify-center' : 'p-6'}`}>
           <Mail className="w-6 h-6 text-cyan-400 shrink-0" />
           {!collapsed && (
@@ -178,7 +179,7 @@ export default function AdminSidebar() {
         {/* Collapse toggle — hidden on mobile, visible on desktop */}
         <button
           onClick={toggleCollapsed}
-          className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-6 h-6 rounded-full border border-white/10 bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors shadow-lg"
+          className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 hidden lg:flex items-center justify-center w-6 h-6 rounded-full border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-white hover:bg-slate-700 transition-colors shadow-lg"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
@@ -198,7 +199,7 @@ export default function AdminSidebar() {
                 className={`relative flex items-center gap-3 px-3 py-3 rounded-xl transition-all font-medium ${
                   isActive
                     ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
                 } ${collapsed ? 'justify-center' : ''}`}
               >
                 <Icon className="w-5 h-5 shrink-0" />
@@ -213,7 +214,7 @@ export default function AdminSidebar() {
                   </>
                 )}
                 {collapsed && link.badge && (
-                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 border-2 border-slate-900 flex items-center justify-center text-[8px] font-bold text-white">
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 border-2 border-slate-900 flex items-center justify-center text-[8px] font-bold text-slate-900 dark:text-white">
                     {link.badge}
                   </span>
                 )}
@@ -224,7 +225,7 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-white/10">
+      <div className="border-t border-slate-200 dark:border-white/10">
         {collapsed ? (
           <div className="p-3 flex flex-col items-center gap-3">
             <SidebarTooltip label={adminEmail || 'Admin'} collapsed={collapsed}>
@@ -243,18 +244,23 @@ export default function AdminSidebar() {
           </div>
         ) : (
           <div className="p-4 space-y-4">
-            <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+            <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3">
               <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Admin</p>
-              <p className="mt-1 truncate text-sm font-medium text-white">{adminEmail || 'Unknown admin'}</p>
+              <p className="mt-1 truncate text-sm font-medium text-slate-900 dark:text-white">{adminEmail || 'Unknown admin'}</p>
               <p className="mt-2 text-xs text-slate-500">GhostMail v2.0</p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all font-medium border border-transparent hover:border-red-500/20"
-            >
-              <LogOut className="w-5 h-5" />
-              Logout
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleLogout}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all font-medium border border-transparent hover:border-red-500/20"
+              >
+                <LogOut className="w-5 h-5" />
+                Logout
+              </button>
+              <div className="flex items-center justify-center border border-slate-200 dark:border-white/10 rounded-xl bg-slate-100 dark:bg-white/5 p-1">
+                <ThemeToggle />
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -264,10 +270,10 @@ export default function AdminSidebar() {
   // Mobile sidebar — always rendered expanded on mobile for better usability
   const mobileSidebar = (
     <div
-      className={`flex flex-col h-full text-white bg-slate-900 border-r border-white/10 w-64`}
+      className={`flex flex-col h-full text-slate-900 dark:text-white bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-white/10 w-64`}
     >
       {/* Header */}
-      <div className="flex items-center gap-3 p-6 border-b border-white/10">
+      <div className="flex items-center gap-3 p-6 border-b border-slate-200 dark:border-white/10">
         <Mail className="w-6 h-6 text-cyan-400 shrink-0" />
         <span className="text-xl font-bold truncate">GhostMail</span>
         <span className="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full border border-blue-500/30 uppercase tracking-wider font-bold ml-auto shrink-0">
@@ -288,7 +294,7 @@ export default function AdminSidebar() {
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium ${
                 isActive
                   ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -304,19 +310,24 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-white/10 space-y-4">
-        <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+      <div className="p-4 border-t border-slate-200 dark:border-white/10 space-y-4">
+        <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3">
           <p className="text-xs uppercase tracking-[0.2em] text-slate-500">Admin</p>
-          <p className="mt-1 truncate text-sm font-medium text-white">{adminEmail || 'Unknown admin'}</p>
+          <p className="mt-1 truncate text-sm font-medium text-slate-900 dark:text-white">{adminEmail || 'Unknown admin'}</p>
           <p className="mt-2 text-xs text-slate-500">GhostMail v2.0</p>
         </div>
-        <button
-          onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all font-medium border border-transparent hover:border-red-500/20"
-        >
-          <LogOut className="w-5 h-5" />
-          Logout
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={handleLogout}
+            className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all font-medium border border-transparent hover:border-red-500/20"
+          >
+            <LogOut className="w-5 h-5" />
+            Logout
+          </button>
+          <div className="flex items-center justify-center border border-slate-200 dark:border-white/10 rounded-xl bg-slate-100 dark:bg-white/5 p-1">
+            <ThemeToggle />
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -326,7 +337,7 @@ export default function AdminSidebar() {
       {/* Mobile hamburger — visible on small screens */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="fixed top-4 left-4 z-40 lg:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 border border-white/10 text-white shadow-lg hover:bg-slate-800 transition-colors"
+        className="fixed top-4 left-4 z-40 lg:hidden flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white shadow-lg hover:bg-slate-800 transition-colors"
         aria-label="Open sidebar"
       >
         <Menu className="w-5 h-5" />
@@ -350,7 +361,7 @@ export default function AdminSidebar() {
               {mobileSidebar}
               <button
                 onClick={closeMobile}
-                className="absolute top-4 -right-12 flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 border border-white/10 text-white hover:bg-slate-800 transition-colors"
+                className="absolute top-4 -right-12 flex items-center justify-center w-10 h-10 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white hover:bg-slate-800 transition-colors"
                 aria-label="Close sidebar"
               >
                 <X className="w-5 h-5" />
