@@ -26,7 +26,7 @@ export default function TrustGrid() {
             return (
               <div
                 key={signal.title}
-                className="flex gap-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0e1728] p-5"
+                className="flex gap-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-5"
               >
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-300">
                   <Icon className="h-5 w-5" aria-hidden="true" />

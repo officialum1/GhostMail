@@ -41,8 +41,8 @@ export default function Navbar() {
       <header
         className={`sticky top-0 z-50 border-b transition-all ${
           scrolled
-            ? 'border-slate-200 dark:border-white/10 bg-[#09101c]/90 backdrop-blur-xl'
-            : 'border-transparent bg-[#09101c]/60 backdrop-blur-lg'
+            ? 'border-slate-200 dark:border-white/10 bg-white/90 dark:bg-[#09101c]/90 backdrop-blur-xl'
+            : 'border-transparent bg-white/60 dark:bg-[#09101c]/60 backdrop-blur-lg'
         }`}
       >
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
@@ -124,7 +124,7 @@ export default function Navbar() {
       </header>
 
       {mobileOpen ? (
-        <div className="fixed inset-0 z-40 bg-[#060c17]/98 px-6 pt-28 md:hidden">
+        <div className="fixed inset-0 z-40 bg-white/98 dark:bg-[#060c17]/98 px-6 pt-28 md:hidden">
           <nav className="mx-auto flex max-w-xl flex-col gap-4">
             {navLinks.map((link) => {
               const active =

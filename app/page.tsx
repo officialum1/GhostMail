@@ -93,7 +93,7 @@ const faqPreview = expandedFaqCategories
 export default function HomePage() {
   return (
     <PageLayout>
-      <div className="bg-[#0a0f1e]">
+      <div className="bg-slate-50 dark:bg-[#0a0f1e]">
         <section className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl gap-12 px-6 py-16 md:py-24 lg:grid-cols-[1fr_0.95fr] lg:items-center">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-200">
@@ -169,7 +169,7 @@ export default function HomePage() {
                 <Link
                   key={useCase.title}
                   href={useCase.href}
-                  className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0e1728] p-6 transition hover:border-cyan-400/30"
+                  className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-6 transition hover:border-cyan-400/30"
                 >
                   <Zap className="h-5 w-5 text-cyan-300" aria-hidden="true" />
                   <h3 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">{useCase.title}</h3>
@@ -223,7 +223,7 @@ export default function HomePage() {
         </section>
 
         <section className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-          <div className="grid gap-8 rounded-[28px] border border-slate-200 dark:border-white/10 bg-[#0e1728] p-8 md:p-10 lg:grid-cols-[1fr_420px] lg:items-center">
+          <div className="grid gap-8 rounded-[28px] border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-8 md:p-10 lg:grid-cols-[1fr_420px] lg:items-center">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-200">
                 <span className="h-2 w-2 rounded-full bg-emerald-300" />
@@ -288,7 +288,7 @@ export default function HomePage() {
         <section className="mx-auto max-w-7xl px-6 py-20 md:py-28">
           <div className="grid gap-5 md:grid-cols-3">
             {testimonials.map((item) => (
-              <div key={item.author} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0e1728] p-6">
+              <div key={item.author} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-6">
                 <p className="text-base leading-7 text-slate-700 dark:text-slate-200">
                   &quot;{item.quote}&quot;
                 </p>
@@ -299,7 +299,7 @@ export default function HomePage() {
         </section>
 
         <section className="mx-auto max-w-7xl px-6 pb-24 md:pb-32">
-          <div className="grid gap-8 rounded-[28px] border border-cyan-400/15 bg-[#101a2d] p-8 md:p-12 lg:grid-cols-[1fr_460px] lg:items-center">
+          <div className="grid gap-8 rounded-[28px] border border-cyan-400/15 bg-white dark:bg-[#101a2d] p-8 md:p-12 lg:grid-cols-[1fr_460px] lg:items-center">
             <div>
               <p className="text-sm font-semibold uppercase text-cyan-300">Start free</p>
               <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">

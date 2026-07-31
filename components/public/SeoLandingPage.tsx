@@ -19,7 +19,7 @@ export default function SeoLandingPage({ page }: SeoLandingPageProps) {
 
   return (
     <PageLayout>
-      <div className="relative overflow-hidden bg-[#0a0f1e]">
+      <div className="relative overflow-hidden bg-slate-50 dark:bg-[#0a0f1e]">
         <section className="relative mx-auto grid max-w-7xl gap-12 px-6 py-20 md:py-28 lg:grid-cols-[1fr_0.9fr] lg:items-center">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm font-medium text-cyan-200">
@@ -101,7 +101,7 @@ export default function SeoLandingPage({ page }: SeoLandingPageProps) {
               <Link
                 key={related.slug}
                 href={`/${related.slug}`}
-                className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0e1728] p-6 transition hover:border-cyan-400/30"
+                className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-6 transition hover:border-cyan-400/30"
               >
                 <p className="text-sm font-semibold uppercase text-cyan-300">
                   {related.kicker}

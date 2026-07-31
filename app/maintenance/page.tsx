@@ -24,7 +24,7 @@ export default function MaintenancePage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#0a0f1e] flex flex-col items-center justify-center p-6 text-center">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1e] flex flex-col items-center justify-center p-6 text-center">
       <div className="mb-8 flex items-center gap-3">
         <span className="text-3xl">✉️</span>
         <span className="text-2xl font-bold text-slate-900 dark:text-white">GhostMail</span>

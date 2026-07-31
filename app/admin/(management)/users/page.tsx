@@ -245,7 +245,7 @@ export default function AdminUsersPage() {
                           <ChevronDown className="h-4 w-4" />
                         </button>
                         {menuOpenFor === user.id ? (
-                          <div className="absolute right-0 top-12 z-20 w-52 rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0f172a] p-2 shadow-2xl">
+                          <div className="absolute right-0 top-12 z-20 w-52 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] p-2 shadow-2xl">
                             <button onClick={() => { router.push(`/admin/emails?userId=${user.id}`); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-white/5">
                               <Eye className="h-4 w-4" /> View Emails
                             </button>
@@ -290,7 +290,7 @@ export default function AdminUsersPage() {
 
       {banModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0a0f1e] p-6">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#0a0f1e] p-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{banModal.isBanned ? 'Unban user' : 'Ban user'}</h2>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Update moderation status for {banModal.username}.</p>
             {!banModal.isBanned ? (
@@ -313,7 +313,7 @@ export default function AdminUsersPage() {
 
       {deleteModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0a0f1e] p-6">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#0a0f1e] p-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Delete {deleteModal.username}?</h2>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">This will delete user and ALL their emails. Type the username to confirm.</p>
             <input
@@ -334,7 +334,7 @@ export default function AdminUsersPage() {
 
       {passwordModal ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0a0f1e] p-6">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#0a0f1e] p-6">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Password Reset</h2>
             <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Copy this password now. It will only be shown once for {passwordModal.user.username}.</p>
             <div className="mt-4 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 font-mono text-cyan-300">

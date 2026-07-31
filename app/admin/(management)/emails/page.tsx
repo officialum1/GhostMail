@@ -234,7 +234,7 @@ export default function AdminEmailsPage() {
 
       {selectedEmail ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur">
-          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 bg-[#0a0f1e]">
+          <div className="flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#0a0f1e]">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 px-6 py-4">
               <div>
                 <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{selectedEmail.subject || '(No Subject)'}</h2>

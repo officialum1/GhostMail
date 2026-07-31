@@ -393,7 +393,7 @@ ${email.bodyText || 'No plain text content'}`
 
   if (status === 'loading') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0a0f1e] text-slate-900 dark:text-white">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-[#0a0f1e] text-slate-900 dark:text-white">
         <div className="h-10 w-10 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
       </div>
     )
@@ -402,7 +402,7 @@ ${email.bodyText || 'No plain text content'}`
   if (status === 'unauthenticated') return null
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0a0f1e] text-slate-900 dark:text-white" style={cssVars}>
+    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#0a0f1e] text-slate-900 dark:text-white" style={cssVars}>
       <Toaster position="bottom-right" toastOptions={{ style: { background: '#111827', color: '#fff', border: '1px solid rgba(255,255,255,0.08)' } }} />
 
       {isMobileSidebarOpen ? (
@@ -495,7 +495,7 @@ ${email.bodyText || 'No plain text content'}`
       </aside>
 
       <main className="flex min-w-0 flex-1 flex-col">
-        <div className="border-b border-slate-200 dark:border-white/10 bg-[#0a0f1e]/90 px-4 py-4 backdrop-blur md:px-6">
+        <div className="border-b border-slate-200 dark:border-white/10 bg-slate-50/90 dark:bg-[#0a0f1e]/90 px-4 py-4 backdrop-blur md:px-6">
           <div className="flex items-center gap-3">
             <button
               className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-2 text-slate-600 dark:text-slate-300 md:hidden"
@@ -605,7 +605,7 @@ ${email.bodyText || 'No plain text content'}`
             )}
           </section>
 
-          <section className={`${selectedEmail ? 'flex' : 'hidden md:flex'} min-w-0 flex-1 flex-col bg-[#0a0f1e]`}>
+          <section className={`${selectedEmail ? 'flex' : 'hidden md:flex'} min-w-0 flex-1 flex-col bg-slate-50 dark:bg-[#0a0f1e]`}>
             {!selectedEmail ? (
               <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
                 <div className="relative flex h-32 w-32 items-center justify-center rounded-[2rem] bg-gradient-to-br from-cyan-400/10 to-blue-500/10">

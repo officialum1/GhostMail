@@ -49,7 +49,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0f1e] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1e] flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
