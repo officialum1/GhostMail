@@ -2,17 +2,26 @@ import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { requireAdmin } from '@/lib/admin-auth'
 
+const DEFAULT_LIMIT = 20
+const MAX_LIMIT = 100
+
+/** Keeps `take`/`skip` inside sane bounds: a negative skip makes Prisma throw. */
+function clampInt(raw: string | null, fallback: number, min: number, max: number) {
+  const parsed = Number.parseInt(raw ?? '', 10)
+  if (!Number.isFinite(parsed)) return fallback
+  return Math.min(max, Math.max(min, parsed))
+}
+
 export async function GET(req: Request) {
   try {
     const authError = await requireAdmin()
     if (authError) return authError
 
     const { searchParams } = new URL(req.url)
-    const search = searchParams.get('search') || ''
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '20')
+    const search = (searchParams.get('search') || '').slice(0, 200)
+    const page = clampInt(searchParams.get('page'), 1, 1, 100_000)
+    const take = clampInt(searchParams.get('limit'), DEFAULT_LIMIT, 1, MAX_LIMIT)
     const sort = searchParams.get('sort') || 'newest'
-    const take = Number.isNaN(limit) ? 20 : limit
     const skip = (page - 1) * take
     const orderBy =
       sort === 'oldest'

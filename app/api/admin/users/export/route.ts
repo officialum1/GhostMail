@@ -8,7 +8,15 @@ export async function GET() {
     const authError = await requireAdmin()
     if (authError) return authError
     const users = await db.user.findMany({
-      include: { _count: { select: { emails: true } } },
+      // Explicit select: `include` alone also loads every bcrypt hash.
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        createdAt: true,
+        isBanned: true,
+        _count: { select: { emails: true } },
+      },
       orderBy: { createdAt: 'desc' },
     })
 
@@ -24,10 +32,11 @@ export async function GET() {
       ].join(',')
     )
 
-    return new NextResponse([header.join(','), ...rows].join('\n'), {
+    return new NextResponse([header.join(','), ...rows].join('\r\n'), {
       headers: {
-        'Content-Type': 'text/csv',
+        'Content-Type': 'text/csv; charset=utf-8',
         'Content-Disposition': `attachment; filename="ghostmail-users-${new Date().toISOString().slice(0, 10)}.csv"`,
+        'Cache-Control': 'no-store',
       },
     })
   } catch (error) {

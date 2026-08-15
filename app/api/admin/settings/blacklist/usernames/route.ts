@@ -36,13 +36,27 @@ export async function POST(req: Request) {
     const authError = await requireAdmin()
     if (authError) return authError
     const { username } = await req.json()
-    if (!username) {
+    if (typeof username !== 'string' || !username.trim()) {
       return NextResponse.json({ error: 'Username is required' }, { status: 400 })
     }
 
-    const created = await db.blacklistedUsername.create({
-      data: { username: String(username).toLowerCase() },
-    })
+    // Same charset as registration, so a blacklist entry can actually match a
+    // username someone could have registered.
+    const normalized = username.trim().toLowerCase()
+    if (!/^[a-z0-9]{1,20}$/.test(normalized)) {
+      return NextResponse.json(
+        { error: 'Username must be 1-20 lowercase letters or digits' },
+        { status: 400 }
+      )
+    }
+
+    const created = await db.blacklistedUsername
+      .create({ data: { username: normalized } })
+      .catch(() => null)
+
+    if (!created) {
+      return NextResponse.json({ error: 'That username is already blacklisted' }, { status: 409 })
+    }
 
     return NextResponse.json(created)
   } catch (error) {
@@ -56,9 +70,13 @@ export async function DELETE(req: Request) {
     const authError = await requireAdmin()
     if (authError) return authError
     const { id } = await req.json()
-    await db.blacklistedUsername.delete({
-      where: { id: Number(id) },
-    })
+    const numericId = Number(id)
+    if (!Number.isSafeInteger(numericId) || numericId <= 0) {
+      return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
+    }
+
+    const deleted = await db.blacklistedUsername.delete({ where: { id: numericId } }).catch(() => null)
+    if (!deleted) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
     return NextResponse.json({ success: true })
   } catch (error) {

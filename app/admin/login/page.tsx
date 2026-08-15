@@ -6,7 +6,7 @@ export default function AdminLoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [totpToken, setTotpToken] = useState('')
-  const [adminId, setAdminId] = useState<number | null>(null)
+  const [pendingToken, setPendingToken] = useState<string | null>(null)
   const [requires2FA, setRequires2FA] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
 
     try {
       const body = requires2FA
-        ? { adminId, token: totpToken }
+        ? { pendingToken, token: totpToken }
         : { email, password }
 
       const res = await fetch('/api/admin/auth/login', {
@@ -31,7 +31,7 @@ export default function AdminLoginPage() {
 
       if (data.requires2FA) {
         setRequires2FA(true)
-        setAdminId(data.adminId)
+        setPendingToken(data.pendingToken)
         setLoading(false)
         return
       }
@@ -130,7 +130,7 @@ export default function AdminLoginPage() {
                 type="button"
                 onClick={() => {
                   setRequires2FA(false)
-                  setAdminId(null)
+                  setPendingToken(null)
                   setTotpToken('')
                 }}
                 className="w-full text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"

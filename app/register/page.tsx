@@ -168,11 +168,15 @@ export default function RegisterPage() {
                 <input
                   type="password"
                   required
+                  minLength={10}
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   autoComplete="new-password"
                   className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
                 />
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  At least 10 characters.
+                </p>
               </div>
 
               <div>
@@ -182,6 +186,7 @@ export default function RegisterPage() {
                 <input
                   type="password"
                   required
+                  minLength={10}
                   value={confirmPassword}
                   onChange={(event) => setConfirmPassword(event.target.value)}
                   autoComplete="new-password"

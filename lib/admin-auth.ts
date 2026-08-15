@@ -1,15 +1,16 @@
 import { cookies } from 'next/headers'
 import { jwtVerify } from 'jose'
 import { NextResponse } from 'next/server'
+import { getJwtSecret } from '@/lib/jwtSecret'
 
 export async function verifyAdminToken(): Promise<boolean> {
   const token = cookies().get('admin_token')?.value
   if (!token) return false
 
   try {
-    const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'secret')
-    await jwtVerify(token, secret)
-    return true
+    const { payload } = await jwtVerify(token, getJwtSecret())
+    // The 2FA-pending token is signed with the same key but must not grant access.
+    return payload.scope === 'admin'
   } catch {
     return false
   }

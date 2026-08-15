@@ -1,19 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { jwtVerify } from 'jose'
 import { prisma } from '@/lib/db'
+import { requireAdmin } from '@/lib/admin-auth'
 import { getEmailDomain } from '@/lib/emailAddress'
-
-async function verifyAdmin(req: NextRequest) {
-  const token = req.cookies.get('admin_token')?.value
-  if (!token) return false
-  try {
-    const secret = new TextEncoder().encode(process.env.NEXTAUTH_SECRET || 'secret')
-    await jwtVerify(token, secret)
-    return true
-  } catch {
-    return false
-  }
-}
 
 function groupByDate(
   items: Array<Record<string, Date | string>>,
@@ -46,10 +34,8 @@ function groupByDate(
 
 export async function GET(req: NextRequest) {
   try {
-    const isAdmin = await verifyAdmin(req)
-    if (!isAdmin) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    const authError = await requireAdmin()
+    if (authError) return authError
 
     const requestedDays = Number(req.nextUrl.searchParams.get('days') || 30)
     const days = Number.isFinite(requestedDays) ? Math.min(90, Math.max(7, requestedDays)) : 30
@@ -92,17 +78,40 @@ export async function GET(req: NextRequest) {
       prisma.user.findMany({
         take: 10,
         orderBy: { createdAt: 'desc' },
-        include: { _count: { select: { emails: true } } },
+        // Explicit select: `include` alone returns the bcrypt password hash.
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          createdAt: true,
+          isBanned: true,
+          lastActive: true,
+          _count: { select: { emails: true } },
+        },
       }),
       prisma.email.findMany({
         take: 10,
         orderBy: { receivedAt: 'desc' },
-        include: { user: { select: { username: true } } },
+        select: {
+          id: true,
+          fromAddress: true,
+          toAddress: true,
+          subject: true,
+          receivedAt: true,
+          isRead: true,
+          user: { select: { username: true } },
+        },
       }),
       prisma.user.findMany({
         take: 5,
         orderBy: { emails: { _count: 'desc' } },
-        include: { _count: { select: { emails: true } } },
+        select: {
+          id: true,
+          username: true,
+          email: true,
+          createdAt: true,
+          _count: { select: { emails: true } },
+        },
       }),
       prisma.user.findMany({
         where: { createdAt: { gte: rangeStart } },

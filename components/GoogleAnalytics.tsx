@@ -4,8 +4,12 @@ import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import Script from 'next/script'
 
-const measurementId =
-  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || 'G-0TQ5RRS797'
+// No hardcoded fallback: a baked-in property id sends every fork/self-host's
+// traffic to someone else's GA account. Unset the env var to disable analytics.
+const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+
+/** GA property ids look like `G-XXXXXXXX`; anything else is a misconfiguration. */
+const isValidId = typeof measurementId === 'string' && /^G-[A-Z0-9]{6,20}$/.test(measurementId)
 
 declare global {
   interface Window {
@@ -19,7 +23,7 @@ export default function GoogleAnalytics() {
   const trackedPath = useRef<string | null>(null)
 
   useEffect(() => {
-    if (!measurementId || typeof window === 'undefined') return
+    if (!isValidId || typeof window === 'undefined') return
 
     const pagePath = `${pathname}${window.location.search}`
     if (trackedPath.current === null) {
@@ -35,7 +39,7 @@ export default function GoogleAnalytics() {
     }
   }, [pathname])
 
-  if (!measurementId) return null
+  if (!isValidId) return null
 
   return (
     <>

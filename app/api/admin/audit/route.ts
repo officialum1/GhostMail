@@ -9,8 +9,12 @@ export async function GET(req: Request) {
     if (authError) return authError
 
     const { searchParams } = new URL(req.url)
-    const page = parseInt(searchParams.get('page') || '1', 10) || 1
-    const limit = Math.min(100, parseInt(searchParams.get('limit') || '50', 10) || 50)
+    const rawPage = Number.parseInt(searchParams.get('page') || '', 10)
+    const rawLimit = Number.parseInt(searchParams.get('limit') || '', 10)
+    // `|| 1` already caught NaN, but not a negative page: that produced a
+    // negative `skip`, which Prisma rejects at runtime.
+    const page = Number.isFinite(rawPage) ? Math.min(100_000, Math.max(1, rawPage)) : 1
+    const limit = Number.isFinite(rawLimit) ? Math.min(100, Math.max(1, rawLimit)) : 50
     const format = searchParams.get('format')
     const skip = (page - 1) * limit
 
@@ -25,18 +29,17 @@ export async function GET(req: Request) {
     ])
 
     if (format === 'csv') {
-      const header = 'id,admin_email,action,target,details,ip,created_at\n'
-      const rows = logs
-        .map(
-          (l) =>
-            `${l.id},${csvEscape(l.admin.email)},${csvEscape(l.action)},${csvEscape(l.target)},${csvEscape(l.details)},${csvEscape(l.ip)},${l.createdAt.toISOString()}`
-        )
-        .join('\n')
+      const header = 'id,admin_email,action,target,details,ip,created_at'
+      const rows = logs.map(
+        (l) =>
+          `${l.id},${csvEscape(l.admin.email)},${csvEscape(l.action)},${csvEscape(l.target)},${csvEscape(l.details)},${csvEscape(l.ip)},${l.createdAt.toISOString()}`
+      )
 
-      return new NextResponse(header + rows, {
+      return new NextResponse([header, ...rows].join('\r\n'), {
         headers: {
-          'Content-Type': 'text/csv',
+          'Content-Type': 'text/csv; charset=utf-8',
           'Content-Disposition': 'attachment; filename="audit-log.csv"',
+          'Cache-Control': 'no-store',
         },
       })
     }

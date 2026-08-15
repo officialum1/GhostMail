@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/admin-auth'
+import { getAdminFromToken } from '@/lib/adminSession'
+import { getClientIp } from '@/lib/clientIp'
+import { logAudit } from '@/lib/audit'
 import { db } from '@/lib/db'
 
 export async function GET() {
   try {
-    const authError = await requireAdmin()
-    if (authError) return authError
+    const admin = await getAdminFromToken()
+    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
     const attempts = await db.failedLoginAttempt.findMany({
       orderBy: { attemptedAt: 'desc' },
       take: 20,
@@ -18,12 +21,22 @@ export async function GET() {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(req: Request) {
   try {
-    const authError = await requireAdmin()
-    if (authError) return authError
-    await db.failedLoginAttempt.deleteMany()
-    return NextResponse.json({ success: true })
+    const admin = await getAdminFromToken()
+    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    // Wiping the attempt log destroys brute-force evidence, so record who did it.
+    const result = await db.failedLoginAttempt.deleteMany()
+    await logAudit(
+      admin.adminId,
+      'failed_logins_clear',
+      undefined,
+      `Cleared ${result.count} failed login attempt record(s)`,
+      getClientIp(req)
+    )
+
+    return NextResponse.json({ success: true, deleted: result.count })
   } catch (error) {
     console.error('Failed to clear failed logins:', error)
     return NextResponse.json({ error: 'Failed to clear failed logins' }, { status: 500 })

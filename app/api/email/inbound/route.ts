@@ -1,18 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
+import crypto from 'node:crypto'
 import { getAdminSettingsMap, parseSettingNumber } from '@/lib/admin'
 import { logActivity } from '@/lib/activity'
 import { db } from '@/lib/db'
 import { notifyNewEmail } from '@/lib/emailEvents'
 import { extractEmailAddresses, getEmailDomain, normalizeEmailAddress } from '@/lib/emailAddress'
 import { parseRawEmail } from '@/lib/parseEmail'
+import { sanitizeEmailHtml } from '@/lib/sanitizeHtml'
+
+/** Length-safe, timing-safe bearer token comparison. */
+function isAuthorized(authHeader: string | null) {
+  const expected = process.env.WEBHOOK_SECRET
+
+  // Fail closed: an unset secret previously made `Bearer undefined` a valid key.
+  if (!expected || expected.length < 16) {
+    console.error('WEBHOOK_SECRET is not configured; rejecting inbound mail.')
+    return false
+  }
+  if (!authHeader) return false
+
+  const provided = Buffer.from(authHeader)
+  const want = Buffer.from(`Bearer ${expected}`)
+  if (provided.length !== want.length) return false
+  return crypto.timingSafeEqual(provided, want)
+}
 
 export async function POST(req: NextRequest) {
   try {
-    const authHeader = req.headers.get('authorization')
-    const expectedSecret = process.env.WEBHOOK_SECRET
-
-    if (!authHeader || authHeader !== `Bearer ${expectedSecret}`) {
-      console.log('Unauthorized webhook attempt')
+    if (!isAuthorized(req.headers.get('authorization'))) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -25,8 +40,8 @@ export async function POST(req: NextRequest) {
     let bodyText = ''
     let bodyHtml = ''
     let rawHeaders = ''
-    let toAddress = to || ''
-    let fromAddress = from || ''
+    let toAddress = typeof to === 'string' ? to : ''
+    let fromAddress = typeof from === 'string' ? from : ''
     let allRecipients: string[] = []
 
     if (raw) {
@@ -35,20 +50,20 @@ export async function POST(req: NextRequest) {
         subject = parsed.subject
         bodyText = parsed.text
         bodyHtml = parsed.html
-        fromAddress = parsed.from || from || ''
-        toAddress = parsed.to || to || ''
+        fromAddress = parsed.from || fromAddress
+        toAddress = parsed.to || toAddress
         allRecipients = parsed.toAll
         rawHeaders = parsed.headers
       } catch (parseError) {
         console.error('Email parse error:', parseError)
-        subject = body.subject || 'No Subject'
-        bodyText = body.text || body.body || ''
-        bodyHtml = body.html || ''
+        subject = String(body.subject || 'No Subject')
+        bodyText = String(body.text || body.body || '')
+        bodyHtml = String(body.html || '')
       }
     } else {
-      subject = body.subject || 'No Subject'
-      bodyText = body.text || body.body || ''
-      bodyHtml = body.html || ''
+      subject = String(body.subject || 'No Subject')
+      bodyText = String(body.text || body.body || '')
+      bodyHtml = String(body.html || '')
     }
 
     toAddress = normalizeEmailAddress(toAddress)
@@ -57,12 +72,17 @@ export async function POST(req: NextRequest) {
     const recipients = [
       ...new Set([
         ...allRecipients.map((addr) => normalizeEmailAddress(addr)).filter(Boolean),
-        ...extractEmailAddresses(to),
+        ...extractEmailAddresses(typeof to === 'string' ? to : ''),
         ...(toAddress ? [toAddress] : []),
       ]),
     ]
 
-    console.log('Parsed - To:', recipients.join(', '), 'From:', fromAddress, 'Subject:', subject)
+    // Cap stored sizes so a single message can't bloat the table or the inbox
+    // response payload.
+    subject = subject.slice(0, 500)
+    bodyText = bodyText.slice(0, 256 * 1024)
+    rawHeaders = rawHeaders.slice(0, 64 * 1024)
+    const safeBodyHtml = sanitizeEmailHtml(bodyHtml)
 
     const settings = await getAdminSettingsMap()
     const maxEmails = parseSettingNumber(settings.maxEmailsPerUser, 1000)
@@ -73,7 +93,6 @@ export async function POST(req: NextRequest) {
         where: { domain: senderDomain },
       })
       if (blacklisted) {
-        console.log('Blacklisted domain:', senderDomain)
         await db.webhookLog.create({
           data: {
             toAddress: recipients[0] || 'unknown',
@@ -89,7 +108,15 @@ export async function POST(req: NextRequest) {
     let matchedUser: { id: number; isBanned: boolean } | null = null
     let matchedTo = ''
 
-    for (const recipient of recipients.length > 0 ? recipients : [toAddress].filter(Boolean)) {
+    // Only ever deliver to an address on our own domain. Without this, a
+    // recipient header naming any user's address could be used to inject mail
+    // into their inbox regardless of who the message was actually routed to.
+    const ownDomain = (process.env.DOMAIN || '').toLowerCase()
+    const deliverable = (recipients.length > 0 ? recipients : [toAddress].filter(Boolean)).filter(
+      (recipient) => !ownDomain || getEmailDomain(recipient) === ownDomain
+    )
+
+    for (const recipient of deliverable) {
       const user = await db.user.findFirst({
         where: {
           email: {
@@ -108,7 +135,6 @@ export async function POST(req: NextRequest) {
     }
 
     if (!matchedUser) {
-      console.log('No user found for:', recipients.join(', ') || toAddress)
       await db.webhookLog.create({
         data: {
           toAddress: recipients[0] || toAddress || 'unknown',
@@ -120,7 +146,6 @@ export async function POST(req: NextRequest) {
     }
 
     if (matchedUser.isBanned) {
-      console.log('User is banned:', matchedTo)
       await db.webhookLog.create({
         data: {
           toAddress: matchedTo,
@@ -136,7 +161,6 @@ export async function POST(req: NextRequest) {
     })
 
     if (maxEmails > 0 && emailCount >= maxEmails) {
-      console.log('User exceeded email limit:', matchedTo)
       await db.webhookLog.create({
         data: {
           toAddress: matchedTo,
@@ -154,7 +178,7 @@ export async function POST(req: NextRequest) {
         fromAddress,
         subject: subject || 'No Subject',
         bodyText: bodyText || '',
-        bodyHtml: bodyHtml || null,
+        bodyHtml: safeBodyHtml,
         rawHeaders: rawHeaders || null,
         userId: matchedUser.id,
         isRead: false,
@@ -205,7 +229,6 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    console.log('Email saved successfully, id:', savedEmail.id)
     return NextResponse.json({ success: true, emailId: savedEmail.id })
   } catch (error) {
     console.error('Inbound email error:', error)
@@ -216,11 +239,13 @@ export async function POST(req: NextRequest) {
           toAddress: 'unknown',
           fromAddress: 'unknown',
           status: 'error',
-          error: String(error),
+          error: String(error).slice(0, 1000),
         },
       })
     } catch {}
 
-    return NextResponse.json({ success: true, error: 'Internal error logged' })
+    // 500 so Cloudflare's Email Worker logs the failure and the message isn't
+    // silently dropped. Previously this returned 200 for genuine errors.
+    return NextResponse.json({ success: false, error: 'Internal error logged' }, { status: 500 })
   }
 }

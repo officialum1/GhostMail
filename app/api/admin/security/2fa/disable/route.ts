@@ -1,18 +1,21 @@
 import { NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/admin-auth'
 import { logAudit } from '@/lib/audit'
 import { getAdminFromToken } from '@/lib/adminSession'
 import { getClientIp } from '@/lib/clientIp'
+import { checkRateLimit } from '@/lib/rateLimit'
 import { verifyTotpToken } from '@/lib/totp'
 import { db } from '@/lib/db'
 
 export async function POST(req: Request) {
   try {
-    const authError = await requireAdmin()
-    if (authError) return authError
-
     const session = await getAdminFromToken()
     if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
+    // Guessing the code here removes the second factor entirely.
+    const limit = checkRateLimit(`2fa-disable:${session.adminId}`, 10, 15 * 60 * 1000)
+    if (!limit.allowed) {
+      return NextResponse.json({ error: 'Too many attempts. Try again later.' }, { status: 429 })
+    }
 
     const { token } = await req.json()
     if (!token) return NextResponse.json({ error: 'Token required' }, { status: 400 })

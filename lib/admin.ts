@@ -57,17 +57,40 @@ export function parseSettingNumber(value: string | undefined, fallback: number) 
 }
 
 export function csvEscape(value: string | number | null | undefined) {
-  const stringValue = String(value ?? '')
-  if (/[",\n]/.test(stringValue)) {
+  let stringValue = String(value ?? '')
+
+  // Neutralise spreadsheet formula injection. Usernames and email addresses are
+  // user-controlled, so a cell like `=HYPERLINK(...)` would execute when an
+  // admin opens the export in Excel/Sheets. Prefixing with a tab keeps the text
+  // readable while forcing the cell to be parsed as a string.
+  if (/^[=+\-@\t\r]/.test(stringValue)) {
+    stringValue = `\t${stringValue}`
+  }
+
+  if (/[",\n\r]/.test(stringValue)) {
     return `"${stringValue.replace(/"/g, '""')}"`
   }
   return stringValue
 }
 
-export function generateRandomPassword(length = 12) {
-  return crypto
-    .randomBytes(length * 2)
-    .toString('base64')
-    .replace(/[^a-zA-Z0-9]/g, '')
-    .slice(0, length)
+export function generateRandomPassword(length = 16) {
+  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789'
+  const bytes = crypto.randomBytes(length * 2)
+  let out = ''
+
+  // Rejection sampling keeps every character equally likely; `% alphabet.length`
+  // would bias toward the start of the alphabet.
+  for (let i = 0; i < bytes.length && out.length < length; i += 1) {
+    const byte = bytes[i]
+    if (byte < 256 - (256 % alphabet.length)) {
+      out += alphabet[byte % alphabet.length]
+    }
+  }
+
+  // Astronomically unlikely, but never return a short password.
+  while (out.length < length) {
+    out += alphabet[crypto.randomInt(alphabet.length)]
+  }
+
+  return out
 }

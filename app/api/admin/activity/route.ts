@@ -9,7 +9,10 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url)
     const type = searchParams.get('type')
-    const limit = Math.min(50, parseInt(searchParams.get('limit') || '50', 10) || 50)
+    const requested = Number.parseInt(searchParams.get('limit') || '', 10)
+    // Clamp low as well as high: Prisma reads a negative `take` as "walk
+    // backwards from the cursor", which silently returns the wrong page.
+    const limit = Number.isFinite(requested) ? Math.min(50, Math.max(1, requested)) : 50
 
     const activities = await db.activityLog.findMany({
       where: type ? { type } : undefined,

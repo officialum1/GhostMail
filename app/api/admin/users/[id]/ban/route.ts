@@ -1,24 +1,31 @@
 import { NextResponse } from 'next/server'
 import { logActivity } from '@/lib/activity'
 import { logAudit } from '@/lib/audit'
-import { requireAdmin } from '@/lib/admin-auth'
 import { getAdminFromToken } from '@/lib/adminSession'
 import { getClientIp } from '@/lib/clientIp'
 import { db } from '@/lib/db'
 
+const MAX_REASON_LENGTH = 500
+
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   try {
-    const authError = await requireAdmin()
-    if (authError) return authError
+    const admin = await getAdminFromToken()
+    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
     const id = Number.parseInt(params.id, 10)
-    if (Number.isNaN(id)) {
+    if (!Number.isSafeInteger(id) || id <= 0) {
       return NextResponse.json({ error: 'Invalid user id' }, { status: 400 })
     }
 
-    const { reason } = await req.json()
+    const body = await req.json().catch(() => ({}))
+    const reason =
+      typeof body?.reason === 'string' && body.reason.trim()
+        ? body.reason.trim().slice(0, MAX_REASON_LENGTH)
+        : null
+
     const user = await db.user.findUnique({
       where: { id },
-      include: { bannedUser: true },
+      select: { id: true, username: true, isBanned: true },
     })
 
     if (!user) {
@@ -43,8 +50,8 @@ export async function POST(req: Request, { params }: { params: { id: string } })
         }),
         db.bannedUser.upsert({
           where: { userId: id },
-          create: { userId: id, reason: reason || null },
-          update: { reason: reason || null },
+          create: { userId: id, reason },
+          update: { reason },
         }),
       ])
 
@@ -56,16 +63,13 @@ export async function POST(req: Request, { params }: { params: { id: string } })
       })
     }
 
-    const admin = await getAdminFromToken()
-    if (admin) {
-      await logAudit(
-        admin.adminId,
-        user.isBanned ? 'user_unban' : 'user_ban',
-        user.username,
-        reason,
-        getClientIp(req)
-      )
-    }
+    await logAudit(
+      admin.adminId,
+      user.isBanned ? 'user_unban' : 'user_ban',
+      user.username,
+      reason ?? undefined,
+      getClientIp(req)
+    )
 
     return NextResponse.json({ success: true, banned: !user.isBanned })
   } catch (error) {

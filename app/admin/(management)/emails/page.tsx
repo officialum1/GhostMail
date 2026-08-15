@@ -255,7 +255,8 @@ export default function AdminEmailsPage() {
                 <iframe
                   title="email-body"
                   sandbox="allow-popups"
-                  srcDoc={selectedEmail.bodyHtml}
+                  referrerPolicy="no-referrer"
+                  srcDoc={`<html><head><meta name="referrer" content="no-referrer"></head><body style="margin:0;background:white;">${selectedEmail.bodyHtml}</body></html>`}
                   className="h-[500px] w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white"
                 />
               ) : (

@@ -17,6 +17,10 @@ model User {
   lastActive DateTime?
   emails     Email[]
   bannedUser BannedUser?
+
+  // Analytics groups signups by day over a trailing range.
+  @@index([createdAt])
+  @@index([isBanned])
 }
 
 model Email {
@@ -35,6 +39,12 @@ model Email {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  // Inbox listing: filter by owner + not-deleted, sort by date.
+  @@index([userId, deletedAt, receivedAt])
+  // Admin listing and retention cleanup both scan on date alone.
+  @@index([receivedAt])
+  // Inbound delivery resolves the mailbox by recipient address.
+  @@index([toAddress])
 }
 
 model Admin {
@@ -74,6 +84,9 @@ model WebhookLog {
   status      String
   error       String?
   receivedAt  DateTime @default(now())
+
+  @@index([status])
+  @@index([receivedAt])
 }
 
 model FailedLoginAttempt {
@@ -81,6 +94,10 @@ model FailedLoginAttempt {
   email       String
   ip          String?
   attemptedAt DateTime @default(now())
+
+  // The security dashboard counts attempts in a trailing window.
+  @@index([attemptedAt])
+  @@index([email, attemptedAt])
 }
 
 model AdminSetting {

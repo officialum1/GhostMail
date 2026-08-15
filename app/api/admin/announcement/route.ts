@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server'
-import { requireAdmin } from '@/lib/admin-auth'
 import { logAudit } from '@/lib/audit'
 import { getAdminFromToken } from '@/lib/adminSession'
 import { getClientIp } from '@/lib/clientIp'
 import { db } from '@/lib/db'
 
+const MAX_MESSAGE_LENGTH = 500
+/** Mirrors the keys of `colorClasses` in components/AnnouncementBanner.tsx. */
+const ALLOWED_COLORS = ['blue', 'green', 'yellow', 'red'] as const
+
 export async function GET() {
   try {
-    const authError = await requireAdmin()
-    if (authError) return authError
+    const admin = await getAdminFromToken()
+    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     const announcement = await db.announcementBanner.findFirst({
       where: { isActive: true },
@@ -24,29 +27,29 @@ export async function GET() {
 
 export async function POST(req: Request) {
   try {
-    const authError = await requireAdmin()
-    if (authError) return authError
+    const admin = await getAdminFromToken()
+    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const { message, color, isActive } = await req.json()
+    const body = await req.json()
+    const message = typeof body?.message === 'string' ? body.message.trim() : ''
+    const isActive = Boolean(body?.isActive)
 
     if (!message) return NextResponse.json({ error: 'Message required' }, { status: 400 })
-
-    if (isActive) {
-      await db.announcementBanner.updateMany({ data: { isActive: false } })
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return NextResponse.json({ error: 'Message is too long' }, { status: 400 })
     }
 
-    const announcement = await db.announcementBanner.create({
-      data: {
-        message: String(message),
-        color: color || 'blue',
-        isActive: Boolean(isActive),
-      },
+    // Allow-list the colour: it is interpolated into a Tailwind class name.
+    const color = ALLOWED_COLORS.includes(body?.color) ? body.color : 'blue'
+
+    const announcement = await db.$transaction(async (tx) => {
+      if (isActive) {
+        await tx.announcementBanner.updateMany({ data: { isActive: false } })
+      }
+      return tx.announcementBanner.create({ data: { message, color, isActive } })
     })
 
-    const admin = await getAdminFromToken()
-    if (admin) {
-      await logAudit(admin.adminId, 'announcement_update', undefined, message, getClientIp(req))
-    }
+    await logAudit(admin.adminId, 'announcement_update', undefined, message, getClientIp(req))
 
     return NextResponse.json(announcement)
   } catch (error) {
@@ -55,12 +58,14 @@ export async function POST(req: Request) {
   }
 }
 
-export async function DELETE() {
+export async function DELETE(req: Request) {
   try {
-    const authError = await requireAdmin()
-    if (authError) return authError
+    const admin = await getAdminFromToken()
+    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
     await db.announcementBanner.updateMany({ data: { isActive: false } })
+    await logAudit(admin.adminId, 'announcement_clear', undefined, 'Deactivated all banners', getClientIp(req))
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Announcement DELETE error:', error)
