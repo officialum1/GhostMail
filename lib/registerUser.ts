@@ -54,9 +54,9 @@ export async function registerUser(opts: { username: unknown; password: unknown;
 
   const username = opts.username.toLowerCase().trim()
 
-  if (!/^[a-z0-9]+$/.test(username) || username.length < minLen || username.length > 20) {
+  if (!/^[a-z0-9_-]+$/.test(username) || username.length < minLen || username.length > 20) {
     return NextResponse.json(
-      { error: `Username must be lowercase letters/numbers only, ${minLen}-20 characters` },
+      { error: `Username can only contain letters, numbers, hyphens, and underscores (${minLen}-20 characters)` },
       { status: 400 }
     )
   }

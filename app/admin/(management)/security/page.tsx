@@ -46,11 +46,12 @@ export default function AdminSecurityPage() {
 
   const load = useCallback(async () => {
     try {
-      const [sRes, fRes, ipRes, aRes] = await Promise.all([
+      const [sRes, fRes, ipRes, aRes, meRes] = await Promise.all([
         fetch('/api/admin/suspicious'),
         fetch('/api/admin/settings/failed-logins'),
         fetch('/api/admin/security/ip-blacklist'),
         fetch('/api/admin/audit?limit=50'),
+        fetch('/api/admin/me'),
       ])
       if (sRes.ok) setSuspicious(await sRes.json())
       if (fRes.ok) setFailedLogins(await fRes.json())
@@ -58,6 +59,10 @@ export default function AdminSecurityPage() {
       if (aRes.ok) {
         const data = await aRes.json()
         setAuditLogs(data.logs || [])
+      }
+      if (meRes.ok) {
+        const me = await meRes.json()
+        setTwoFactorEnabled(Boolean(me.twoFactorEnabled))
       }
     } catch {
       toast.error('Failed to load security data')
@@ -120,36 +125,59 @@ export default function AdminSecurityPage() {
   }
 
   const setup2FA = async () => {
-    const res = await fetch('/api/admin/security/2fa/setup')
-    if (res.ok) {
+    try {
+      const res = await fetch('/api/admin/security/2fa/setup')
       const data = await res.json()
-      setQrCode(data.qrCode)
+      if (res.ok) {
+        setQrCode(data.qrCode)
+      } else {
+        toast.error(data.error || 'Failed to start 2FA setup')
+        if (res.status === 409) {
+          setTwoFactorEnabled(true)
+        }
+      }
+    } catch {
+      toast.error('Failed to start 2FA setup')
     }
   }
 
   const verify2FA = async () => {
-    const res = await fetch('/api/admin/security/2fa/verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: totpToken }),
-    })
-    if (res.ok) {
-      toast.success('2FA enabled')
-      setTwoFactorEnabled(true)
-      setQrCode(null)
-    } else toast.error('Invalid code')
+    try {
+      const res = await fetch('/api/admin/security/2fa/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: totpToken }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success('2FA enabled')
+        setTwoFactorEnabled(true)
+        setQrCode(null)
+        setTotpToken('')
+        load()
+      } else toast.error(data.error || 'Invalid code')
+    } catch {
+      toast.error('Failed to verify 2FA code')
+    }
   }
 
   const disable2FA = async () => {
-    const res = await fetch('/api/admin/security/2fa/disable', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ token: totpToken }),
-    })
-    if (res.ok) {
-      toast.success('2FA disabled')
-      setTwoFactorEnabled(false)
-    } else toast.error('Invalid code')
+    try {
+      const res = await fetch('/api/admin/security/2fa/disable', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: totpToken }),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success('2FA disabled')
+        setTwoFactorEnabled(false)
+        setTotpToken('')
+        load()
+      } else toast.error(data.error || 'Invalid code')
+    } catch {
+      toast.error('Failed to disable 2FA')
+    }
   }
 
   const filtered = suspicious.filter((s) => {

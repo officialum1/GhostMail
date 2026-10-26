@@ -27,7 +27,11 @@ import {
   Star,
   Trash2,
   X,
+  Key,
+  Sparkles,
 } from 'lucide-react'
+import CryptoUpgradeModal from '@/components/CryptoUpgradeModal'
+import DashboardApiKeys from '@/components/DashboardApiKeys'
 
 type EmailItem = {
   id: number
@@ -46,7 +50,7 @@ type FullEmail = EmailItem & {
   rawHeaders: string | null
 }
 
-type MailboxKey = 'inbox' | 'sent' | 'starred' | 'trash'
+type MailboxKey = 'inbox' | 'sent' | 'starred' | 'trash' | 'api'
 
 const cssVars = {
   '--bg-primary': '#0a0f1e',
@@ -117,8 +121,31 @@ export default function DashboardPage() {
   const [composeBody, setComposeBody] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [showMoreMenu, setShowMoreMenu] = useState(false)
+  const [apiKeyData, setApiKeyData] = useState<{
+    isPro: boolean
+    apiKey: string | null
+    status: string
+    pendingOrder?: {
+      txId: string
+      network: string
+      createdAt: string
+    } | null
+  } | null>(null)
+  const [showCryptoModal, setShowCryptoModal] = useState(false)
   const previousEmailsRef = useRef<EmailItem[]>([])
   const moreMenuRef = useRef<HTMLDivElement | null>(null)
+
+  const fetchApiKey = useCallback(async () => {
+    try {
+      const res = await fetch('/api/user/api-key')
+      if (res.ok) {
+        const data = await res.json()
+        setApiKeyData(data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch api key data', err)
+    }
+  }, [])
 
   const fetchInbox = useCallback(async (showLoading = false) => {
     if (showLoading) setLoading(true)
@@ -175,6 +202,7 @@ export default function DashboardPage() {
     if (status !== 'authenticated') return
 
     fetchInbox(true)
+    fetchApiKey()
     const interval = window.setInterval(() => {
       setRefreshCountdown((prev) => {
         if (prev <= 1) {
@@ -186,6 +214,45 @@ export default function DashboardPage() {
     }, 1000)
 
     return () => window.clearInterval(interval)
+  }, [fetchInbox, fetchApiKey, status])
+
+  useEffect(() => {
+    if (status !== 'authenticated') return
+
+    let eventSource: EventSource | null = null
+    let retryTimer: ReturnType<typeof setTimeout> | null = null
+
+    const connectSSE = () => {
+      try {
+        eventSource = new EventSource('/api/email/stream')
+        eventSource.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data)
+            if (data?.type === 'new_email') {
+              fetchInbox()
+            }
+          } catch {
+            /* Heartbeats and comments ignored */
+          }
+        }
+        eventSource.onerror = () => {
+          if (eventSource) {
+            eventSource.close()
+            eventSource = null
+          }
+          retryTimer = setTimeout(connectSSE, 5000)
+        }
+      } catch (e) {
+        console.error('SSE connection error:', e)
+      }
+    }
+
+    connectSSE()
+
+    return () => {
+      if (eventSource) eventSource.close()
+      if (retryTimer) clearTimeout(retryTimer)
+    }
   }, [fetchInbox, status])
 
   useEffect(() => {
@@ -285,20 +352,32 @@ export default function DashboardPage() {
     }
   }
 
-  const toggleRead = useCallback((email: FullEmail | EmailItem | null) => {
+  const toggleRead = useCallback(async (email: FullEmail | EmailItem | null) => {
     if (!email) return
+
+    const nextReadState = !email.isRead
 
     setEmails((current) =>
       current.map((item) =>
-        item.id === email.id ? { ...item, isRead: !item.isRead } : item
+        item.id === email.id ? { ...item, isRead: nextReadState } : item
       )
     )
     setSelectedEmail((current) =>
       current && current.id === email.id
-        ? { ...current, isRead: !current.isRead }
+        ? { ...current, isRead: nextReadState }
         : current
     )
     toast.success(email.isRead ? 'Marked as unread' : 'Marked as read')
+
+    try {
+      await fetch(`/api/email/${email.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isRead: nextReadState }),
+      })
+    } catch (err) {
+      console.error('Failed to persist read state', err)
+    }
   }, [])
 
   const toggleStar = useCallback((email: FullEmail | EmailItem | null) => {
@@ -387,7 +466,8 @@ ${email.bodyText || 'No plain text content'}`
     setIsComposeMinimized(false)
   }
 
-  const selectedMailboxLabel = mailbox[0].toUpperCase() + mailbox.slice(1)
+  const selectedMailboxLabel =
+    mailbox === 'api' ? 'Developer API' : mailbox[0].toUpperCase() + mailbox.slice(1)
   const selectedEmailStarred =
     selectedEmail ? starredIds.includes(selectedEmail.id) : false
 
@@ -443,6 +523,7 @@ ${email.bodyText || 'No plain text content'}`
             { key: 'sent' as const, icon: Send, count: sentCount },
             { key: 'starred' as const, icon: Star, count: starredCount },
             { key: 'trash' as const, icon: Trash2, count: trashCount },
+            { key: 'api' as const, icon: Key, count: apiKeyData?.isPro ? 'PRO' : 'FREE' },
           ].map((item) => {
             const Icon = item.icon
             const active = mailbox === item.key
@@ -461,11 +542,38 @@ ${email.bodyText || 'No plain text content'}`
                 }`}
               >
                 <Icon className="h-5 w-5" />
-                <span className="flex-1 capitalize">{item.key}</span>
-                <span className="rounded-full bg-slate-200 dark:bg-white/10 px-2 py-0.5 text-xs text-slate-700 dark:text-slate-200">{item.count}</span>
+                <span className="flex-1 capitalize">{item.key === 'api' ? 'API Keys' : item.key}</span>
+                <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                  item.key === 'api'
+                    ? apiKeyData?.isPro
+                      ? 'bg-emerald-500/20 text-emerald-400'
+                      : 'bg-cyan-500/10 text-cyan-400'
+                    : 'bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-200'
+                }`}>
+                  {item.count}
+                </span>
               </button>
             )
           })}
+
+          {!apiKeyData?.isPro ? (
+            <div className="mt-4 rounded-xl border border-cyan-500/20 bg-gradient-to-br from-cyan-950/40 to-slate-900 p-3">
+              <div className="flex items-center gap-1.5 text-cyan-400 font-semibold text-xs">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>REST API Access</span>
+              </div>
+              <p className="mt-1 text-[11px] text-slate-400 leading-tight">
+                Extract OTPs & create inboxes via code.
+              </p>
+              <button
+                type="button"
+                onClick={() => setShowCryptoModal(true)}
+                className="mt-2.5 w-full rounded-lg bg-cyan-400/10 hover:bg-cyan-400/20 border border-cyan-400/30 text-[11px] font-bold text-cyan-300 py-1.5 transition text-center"
+              >
+                Upgrade to Pro →
+              </button>
+            </div>
+          ) : null}
         </nav>
 
         <div className="border-t border-slate-200 dark:border-white/10 p-4">
@@ -537,7 +645,15 @@ ${email.bodyText || 'No plain text content'}`
           </div>
         </div>
 
-        <div className="flex min-h-0 flex-1">
+        {mailbox === 'api' ? (
+          <DashboardApiKeys
+            apiKeyData={apiKeyData}
+            onOpenUpgrade={() => setShowCryptoModal(true)}
+            onRefresh={fetchApiKey}
+            userEmail={session?.user?.email || ''}
+          />
+        ) : (
+          <div className="flex min-h-0 flex-1">
           <section className={`${selectedEmail ? 'hidden md:flex' : 'flex'} w-full flex-col border-r border-slate-200 dark:border-white/10 bg-[#0f1623] md:w-[380px]`}>
             {loading ? (
               <div className="space-y-4 px-4 py-5">
@@ -788,6 +904,7 @@ ${email.bodyText || 'No plain text content'}`
             )}
           </section>
         </div>
+        )}
       </main>
 
       {isComposeOpen ? (
@@ -880,6 +997,15 @@ ${email.bodyText || 'No plain text content'}`
           </div>
         </div>
       ) : null}
+
+      <CryptoUpgradeModal
+        isOpen={showCryptoModal}
+        onClose={() => {
+          setShowCryptoModal(false)
+          fetchApiKey()
+        }}
+        userEmail={session?.user?.email || ''}
+      />
 
       <style jsx global>{`
         @keyframes fadeInUp {

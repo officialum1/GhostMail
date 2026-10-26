@@ -28,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...seoEntries,
     { url: `${SITE_URL}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
     { url: `${SITE_URL}/pricing`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${SITE_URL}/api-docs`, lastModified: now, changeFrequency: 'weekly', priority: 0.85 },
     { url: `${SITE_URL}/blog`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     ...blogEntries,
     { url: `${SITE_URL}/login`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },

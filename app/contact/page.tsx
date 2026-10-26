@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { AlertTriangle, Briefcase, LifeBuoy } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import { SITE_URL } from '@/lib/seo';
@@ -73,9 +74,9 @@ export default function ContactPage() {
           <p className="mt-3 text-slate-500 dark:text-slate-400">
             Before reaching out, you might find a faster answer in the FAQ.
           </p>
-          <a href="/faq" className="mt-6 inline-flex text-cyan-600 dark:text-cyan-300 hover:text-cyan-200">
+          <Link href="/faq" className="mt-6 inline-flex text-cyan-600 dark:text-cyan-300 hover:text-cyan-200">
             Before reaching out, check our FAQ →
-          </a>
+          </Link>
         </div>
       </section>
     </PageLayout>

@@ -10,6 +10,7 @@ const footerGroups = [
       { href: '/#features', label: 'Features' },
       { href: '/#how-it-works', label: 'How It Works' },
       { href: '/pricing', label: 'Pricing' },
+      { href: '/api-docs', label: 'Developer API' },
       { href: '/status', label: 'Status' },
     ],
   },
@@ -61,6 +62,8 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <Link
                 href="https://twitter.com/ghostmailstore"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="rounded-full border border-slate-200 dark:border-white/10 p-2.5 text-slate-500 dark:text-slate-400 transition hover:border-cyan-400/40 hover:text-cyan-300"
                 aria-label="GhostMail on X"
               >

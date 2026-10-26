@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { HardDrive, Save, Server, Shield, Trash2, Webhook } from 'lucide-react'
+import AdminCryptoAndApiManagement from '@/components/AdminCryptoAndApiManagement'
 
 type SettingsState = {
   siteName: string
@@ -98,6 +99,9 @@ export default function AdminSettingsPage() {
       if (regRes.ok) {
         const reg = await regRes.json()
         setRegistrationEnabled(reg.enabled !== false)
+        if (reg.minUsernameLength) {
+          setMinUsernameLength(String(reg.minUsernameLength))
+        }
       }
       if (maintRes.ok) {
         const maint = await maintRes.json()
@@ -497,6 +501,8 @@ export default function AdminSettingsPage() {
               </table>
             </div>
           </section>
+
+          <AdminCryptoAndApiManagement />
         </>
       )}
     </div>

@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/faq', label: 'FAQ' },
   { href: '/blog', label: 'Blog' },
   { href: '/pricing', label: 'Pricing' },
+  { href: '/api-docs', label: 'API' },
   { href: '/status', label: 'Status' },
   { href: '/contact', label: 'Contact' },
 ];

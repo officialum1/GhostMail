@@ -91,3 +91,30 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+  const resolved = await resolveRequest(params);
+  if (resolved instanceof NextResponse) return resolved;
+  const { userId, emailId } = resolved;
+
+  try {
+    const body = await req.json().catch(() => ({}));
+    if (body?.isRead === undefined || typeof body.isRead !== 'boolean') {
+      return NextResponse.json({ error: 'isRead boolean field is required' }, { status: 400 });
+    }
+
+    const result = await db.email.updateMany({
+      where: { id: emailId, userId, deletedAt: null },
+      data: { isRead: body.isRead },
+    });
+
+    if (result.count === 0) {
+      return NextResponse.json({ error: 'Email not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ success: true, isRead: body.isRead });
+  } catch (error) {
+    console.error('Error updating email:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}

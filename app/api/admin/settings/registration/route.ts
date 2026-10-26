@@ -9,8 +9,14 @@ export async function GET() {
     const admin = await getAdminFromToken()
     if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-    const setting = await db.adminSetting.findUnique({ where: { key: 'registration_enabled' } })
-    return NextResponse.json({ enabled: setting?.value !== 'false' })
+    const [regSetting, minLenSetting] = await Promise.all([
+      db.adminSetting.findUnique({ where: { key: 'registration_enabled' } }),
+      db.adminSetting.findUnique({ where: { key: 'min_username_length' } }),
+    ])
+    return NextResponse.json({
+      enabled: regSetting?.value !== 'false',
+      minUsernameLength: minLenSetting?.value || '3',
+    })
   } catch (error) {
     console.error('Registration setting GET error:', error)
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
