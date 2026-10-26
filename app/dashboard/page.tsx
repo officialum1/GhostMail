@@ -9,6 +9,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { signOut, useSession } from 'next-auth/react'
 import toast, { Toaster } from 'react-hot-toast'
 import {
+  Activity,
   Check,
   ChevronLeft,
   Copy,
@@ -21,6 +22,7 @@ import {
   RefreshCw,
   Search,
   Send,
+  ShieldCheck,
   Star,
   Trash2,
   X,
@@ -29,6 +31,7 @@ import {
   KeyRound,
   Volume2,
   VolumeX,
+  Zap,
 } from 'lucide-react'
 import CryptoUpgradeModal from '@/components/CryptoUpgradeModal'
 import DashboardApiKeys from '@/components/DashboardApiKeys'
@@ -380,6 +383,17 @@ export default function DashboardPage() {
     return detectOtpFromText(selectedEmail.bodyText || '')
   }, [selectedEmail])
 
+  const otpEmailsList = useMemo(() => {
+    return emails
+      .map((em) => ({
+        ...em,
+        detectedOtp: detectOtpFromText(em.bodyText || ''),
+      }))
+      .filter((em) => Boolean(em.detectedOtp))
+  }, [emails])
+
+  const totalOtpCount = otpEmailsList.length
+
   if (status === 'loading') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-white">
@@ -699,12 +713,176 @@ export default function DashboardPage() {
               } min-w-0 flex-1 flex-col bg-slate-50 dark:bg-[#07090e]`}
             >
               {!selectedEmail ? (
-                <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
-                    <Mail className="h-8 w-8" />
+                <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6 max-w-4xl mx-auto w-full">
+                  {/* Top Welcome Banner */}
+                  <div className="relative overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/80 p-6 backdrop-blur shadow-sm">
+                    <div className="absolute top-0 right-0 -mt-6 -mr-6 h-36 w-36 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none" />
+
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-500">
+                            Real-Time Listener Active
+                          </span>
+                        </div>
+                        <h2 className="mt-1.5 text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                          Mailbox Command Center
+                        </h2>
+                        <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">
+                          Incoming emails & verification codes arrive automatically via Cloudflare Edge.
+                        </p>
+                      </div>
+
+                      {/* Address pill with 1-tap copy */}
+                      <button
+                        onClick={copyEmail}
+                        className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-2 text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/20 transition self-start sm:self-auto group shadow-sm"
+                        title="Click to copy address"
+                      >
+                        {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5 group-hover:scale-110 transition-transform" />}
+                        <span>{session?.user?.email}</span>
+                      </button>
+                    </div>
+
+                    {/* Quick Stats Grid */}
+                    <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-5 border-t border-slate-200/60 dark:border-white/5">
+                      <div className="rounded-xl border border-slate-200/60 dark:border-white/5 bg-slate-50/50 dark:bg-black/30 p-3">
+                        <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Total Inbox</span>
+                        <div className="mt-1 text-xl font-extrabold text-slate-900 dark:text-white">{emails.length}</div>
+                        <span className="text-[10px] text-cyan-500 font-medium">{unreadCount} unread</span>
+                      </div>
+
+                      <div className="rounded-xl border border-slate-200/60 dark:border-white/5 bg-slate-50/50 dark:bg-black/30 p-3">
+                        <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">OTPs Detected</span>
+                        <div className="mt-1 text-xl font-extrabold text-cyan-400">{totalOtpCount}</div>
+                        <span className="text-[10px] text-emerald-500 font-medium">1-tap copy ready</span>
+                      </div>
+
+                      <div className="rounded-xl border border-slate-200/60 dark:border-white/5 bg-slate-50/50 dark:bg-black/30 p-3">
+                        <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Auto-Refresh</span>
+                        <div className="mt-1 text-xl font-extrabold text-slate-900 dark:text-white">{refreshCountdown}s</div>
+                        <span className="text-[10px] text-slate-500 font-medium">Auto-sync interval</span>
+                      </div>
+
+                      <div className="rounded-xl border border-slate-200/60 dark:border-white/5 bg-slate-50/50 dark:bg-black/30 p-3">
+                        <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400">Privacy Status</span>
+                        <div className="mt-1 text-xs font-bold text-emerald-500 flex items-center gap-1">
+                          <ShieldCheck className="h-3.5 w-3.5" /> Protected
+                        </div>
+                        <span className="text-[10px] text-slate-500 font-medium">0 Ad Trackers</span>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">Select a message</h3>
-                  <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Click on any email in your mailbox to view details.</p>
+
+                  {/* Recent Caught OTPs Quick Section */}
+                  {otpEmailsList.length > 0 ? (
+                    <div className="rounded-2xl border border-cyan-500/25 bg-gradient-to-br from-cyan-950/20 to-black/40 p-4 sm:p-5 backdrop-blur">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Zap className="h-4 w-4 text-cyan-400" />
+                          <h3 className="text-xs font-bold uppercase tracking-wider text-cyan-400">
+                            Recent Caught OTP & Verification Codes
+                          </h3>
+                        </div>
+                        <span className="text-[10px] text-slate-500">1-Tap Instant Copy</span>
+                      </div>
+
+                      <div className="grid gap-2.5 sm:grid-cols-2">
+                        {otpEmailsList.slice(0, 4).map((item) => (
+                          <div
+                            key={item.id}
+                            className="flex items-center justify-between gap-3 rounded-xl border border-cyan-500/20 bg-[#0c1017] p-3 hover:border-cyan-400/40 transition cursor-pointer group"
+                            onClick={() => openEmail(item.id)}
+                          >
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate text-xs font-bold text-slate-200 group-hover:text-cyan-300 transition-colors">
+                                {item.fromAddress}
+                              </p>
+                              <p className="truncate text-[11px] text-slate-500">{item.subject || '(No Subject)'}</p>
+                            </div>
+                            <button
+                              onClick={(e) => copyOtpCode(item.detectedOtp!, e)}
+                              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-cyan-500/40 bg-cyan-500/20 px-2.5 py-1 text-xs font-mono font-bold text-cyan-300 hover:bg-cyan-500/30 transition shadow-sm"
+                              title="Click to copy OTP"
+                            >
+                              <Copy className="h-3 w-3" />
+                              <span>{item.detectedOtp}</span>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {/* Quick Action Station */}
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
+                      Workspace Quick Actions
+                    </h3>
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      <button
+                        onClick={copyEmail}
+                        className="flex flex-col items-start gap-2 rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-4 text-left hover:border-cyan-500/40 hover:bg-cyan-500/5 transition group"
+                      >
+                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-500 group-hover:scale-105 transition-transform">
+                          <Copy className="h-4 w-4" />
+                        </span>
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white">Copy Ghost Address</p>
+                          <p className="text-[11px] text-slate-500 mt-0.5">Ready for signups, forms & test bots.</p>
+                        </div>
+                      </button>
+
+                      <button
+                        onClick={() => setIsComposeOpen(true)}
+                        className="flex flex-col items-start gap-2 rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-4 text-left hover:border-cyan-500/40 hover:bg-cyan-500/5 transition group"
+                      >
+                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 group-hover:scale-105 transition-transform">
+                          <PenSquare className="h-4 w-4" />
+                        </span>
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white">Compose Message</p>
+                          <p className="text-[11px] text-slate-500 mt-0.5">Send a test or reply email outbound.</p>
+                        </div>
+                      </button>
+
+                      <button
+                        onClick={() => setMailbox('api')}
+                        className="flex flex-col items-start gap-2 rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-4 text-left hover:border-cyan-500/40 hover:bg-cyan-500/5 transition group"
+                      >
+                        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-purple-500/10 text-purple-400 group-hover:scale-105 transition-transform">
+                          <KeyRound className="h-4 w-4" />
+                        </span>
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 dark:text-white">Developer API Key</p>
+                          <p className="text-[11px] text-slate-500 mt-0.5">Automate inbox polling via REST API.</p>
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Real-Time Push Delivery Status Banner */}
+                  <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/50 dark:bg-[#0c1017]/50 p-4 sm:p-5 backdrop-blur flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-500">
+                        <Activity className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white">Pro Tip: Automatic Push Delivery</h4>
+                        <p className="text-[11px] text-slate-500">
+                          No need to refresh. As soon as a service sends mail to your address, GhostMail automatically delivers it and rings a chime.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => fetchInbox()}
+                      className="hidden sm:inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-black/30 px-3.5 py-2 text-xs font-bold text-slate-700 dark:text-slate-300 hover:border-cyan-500/30 transition shadow-sm"
+                    >
+                      <RefreshCw className={`h-3.5 w-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
+                      <span>Sync Now</span>
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="flex h-full flex-col">
