@@ -1,7 +1,12 @@
+// ==============================================================
+// Created & Owned by: officialum1
+// Suite: umiskills
+// ==============================================================
+
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { Activity, ArrowRight, CheckCircle2, Clock, Mail, Server, ShieldCheck } from 'lucide-react'
+import { Activity, CheckCircle2, Mail, Server, ShieldCheck } from 'lucide-react'
 import PageLayout from '@/components/PageLayout'
+import PublicHero from '@/components/public/PublicHero'
 import { statusChecks } from '@/lib/public-content'
 import { SITE_URL } from '@/lib/seo'
 
@@ -17,105 +22,61 @@ const statusIcons = [Server, Mail, Activity, ShieldCheck]
 export default function StatusPage() {
   return (
     <PageLayout>
-      <section className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm font-medium text-emerald-200">
-              <span className="h-2 w-2 rounded-full bg-emerald-300" />
-              All systems operational
-            </div>
-            <h1 className="mt-7 text-4xl font-bold leading-tight text-slate-900 dark:text-white md:text-6xl">
-              GhostMail public status.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
-              Follow the current health of the public site, email routing, inbox
-              delivery, and admin dashboard from one simple status page.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/register"
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 py-3 font-semibold text-slate-900 dark:text-white"
-              >
-                Create inbox
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <Link
-                href="/contact"
-                className="inline-flex items-center rounded-xl border border-slate-200 dark:border-white/10 px-5 py-3 font-semibold text-slate-900 dark:text-white transition hover:bg-slate-200 dark:hover:bg-white/5"
-              >
-                Contact support
-              </Link>
-            </div>
-          </div>
+      <div className="w-full">
+        <PublicHero
+          badgeText="Real-time Telemetry"
+          badgeIcon={<span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />}
+          title="GhostMail System Health &"
+          highlightText="Network Status."
+          description="Continuous uptime monitoring across Cloudflare edge ingestion, SSE streaming websockets, REST API gateways, and database clusters."
+          primaryCtaText="Claim Free Mailbox"
+          primaryCtaLink="/register"
+          secondaryCtaText="Contact Support"
+          secondaryCtaLink="/contact"
+        />
 
-          <div className="rounded-[28px] border border-slate-200 dark:border-white/10 bg-[#0f1627] p-6 shadow-[0_32px_80px_rgba(0,0,0,0.3)]">
-            <div className="flex items-center justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-5">
-              <div>
-                <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">
-                  Current health
-                </p>
-                <h2 className="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">Operational</h2>
+        <section className="py-16">
+          <div className="mx-auto max-w-5xl px-6 space-y-8">
+            {/* Global Operational Header Card */}
+            <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6 backdrop-blur flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="h-8 w-8 text-emerald-500" />
+                <div>
+                  <h2 className="text-base font-bold text-slate-900 dark:text-white">All Systems Operational</h2>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">Zero active incidents reported across global regions.</p>
+                </div>
               </div>
-              <CheckCircle2 className="h-10 w-10 text-emerald-300" aria-hidden="true" />
+              <span className="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400">99.99% Uptime</span>
             </div>
-            <div className="mt-5 space-y-4">
-              {statusChecks.map((check, index) => {
-                const Icon = statusIcons[index] || CheckCircle2
 
+            {/* Subsystem Health Grid */}
+            <div className="grid gap-4 sm:grid-cols-2">
+              {statusChecks.map((check, idx) => {
+                const Icon = statusIcons[idx] || Server
                 return (
                   <div
                     key={check.name}
-                    className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-4"
+                    className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-5 shadow-sm backdrop-blur flex items-start gap-4"
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex gap-3">
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-600 dark:text-cyan-300">
-                          <Icon className="h-5 w-5" aria-hidden="true" />
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white">{check.name}</h3>
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-bold text-emerald-500">
+                          {check.status}
                         </span>
-                        <div>
-                          <h3 className="font-semibold text-slate-900 dark:text-white">{check.name}</h3>
-                          <p className="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
-                            {check.detail}
-                          </p>
-                        </div>
                       </div>
-                      <span className="rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs font-medium text-emerald-200">
-                        {check.status}
-                      </span>
+                      <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{check.detail}</p>
                     </div>
                   </div>
                 )
               })}
             </div>
           </div>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-7xl px-6 pb-24">
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
-            <Clock className="h-6 w-6 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
-            <h2 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">Recent incidents</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              No active public incidents are reported right now.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
-            <Activity className="h-6 w-6 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
-            <h2 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">Delivery monitor</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Inbox delivery is monitored through GhostMail admin analytics and routing logs.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
-            <ShieldCheck className="h-6 w-6 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
-            <h2 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">Security contact</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">
-              Security reports can be sent through the contact page or security.txt.
-            </p>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </PageLayout>
   )
 }

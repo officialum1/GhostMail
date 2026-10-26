@@ -1,3 +1,8 @@
+// ==============================================================
+// Created & Owned by: officialum1
+// Suite: umiskills
+// ==============================================================
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import {
@@ -13,6 +18,7 @@ import PageLayout from '@/components/PageLayout'
 import LiveInboxPreview from '@/components/public/LiveInboxPreview'
 import TrustGrid from '@/components/public/TrustGrid'
 import UsernameClaimForm from '@/components/public/UsernameClaimForm'
+import FAQAccordion from '@/components/FAQAccordion'
 import {
   expandedFaqCategories,
   seoLandingPages,
@@ -30,54 +36,36 @@ export const metadata: Metadata = {
 const workflowSteps = [
   {
     icon: Sparkles,
-    title: 'Choose your address',
-    body: 'Pick a username and instantly claim your @ghostmail.store inbox.',
+    title: 'Choose custom address',
+    body: 'Claim your personal @ghostmail.store username in one click without a password or credit card.',
   },
   {
     icon: Globe,
     title: 'Use it anywhere',
-    body: 'Enter it on websites, apps, communities, trials, and testing flows.',
+    body: 'Provide your GhostMail address on communities, trials, testing platforms, or random sites.',
   },
   {
     icon: Inbox,
-    title: 'Receive email fast',
-    body: 'OTPs, verification links, receipts, and sign-up emails land in your dashboard.',
+    title: 'Instant OTP delivery',
+    body: 'Real-time Server-Sent Events deliver verification codes & OTPs in under 3 seconds to your private reader.',
   },
 ] as const
 
 const publicUseCases = [
   {
     title: 'Receive OTPs online',
-    body: 'Keep one-time passwords and verification codes out of your personal inbox.',
+    body: 'Keep one-time verification passwords out of your permanent personal mailbox.',
     href: '/receive-otp-online',
   },
   {
     title: 'Protect your real email',
-    body: 'Use GhostMail for sites you want to try without inviting spam later.',
+    body: 'Safeguard your primary inbox from endless marketing spammers, trackers, and data brokers.',
     href: '/burner-email',
   },
   {
-    title: 'Sign up for communities',
-    body: 'Create separate inboxes for Reddit, Discord, forums, and marketplaces.',
+    title: 'Community accounts',
+    body: 'Create separate, disposable inboxes for Reddit, Discord, gaming forums, and online trials.',
     href: '/email-for-reddit',
-  },
-] as const
-
-const testimonials = [
-  {
-    quote:
-      'GhostMail is the inbox I use before I trust a site with my real email.',
-    author: 'Product tester',
-  },
-  {
-    quote:
-      'OTP emails show up fast enough that sign-up flows do not slow me down.',
-    author: 'Developer',
-  },
-  {
-    quote:
-      'It keeps newsletters, trial accounts, and random verification emails separate.',
-    author: 'Privacy-focused user',
   },
 ] as const
 
@@ -88,95 +76,148 @@ const faqPreview = expandedFaqCategories
       answer: item.answer,
     })),
   )
-  .slice(0, 6)
+  .slice(0, 5)
 
 export default function HomePage() {
   return (
     <PageLayout>
-      <div className="bg-slate-50 dark:bg-[#0a0f1e]">
-        <section className="mx-auto grid min-h-[calc(100vh-5rem)] max-w-7xl gap-12 px-6 py-16 md:py-24 lg:grid-cols-[1fr_0.95fr] lg:items-center">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-400/20 bg-cyan-400/10 px-4 py-2 text-sm text-cyan-200">
-              <span className="h-2 w-2 rounded-full bg-cyan-300" />
-              Free forever. No real email required.
-            </div>
-            <h1 className="mt-7 max-w-4xl text-4xl font-bold leading-tight text-slate-900 dark:text-white md:text-6xl">
-              Your own email address, ready in seconds.
-            </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300 md:text-xl">
-              Claim a private @ghostmail.store inbox for OTPs, account sign-ups,
-              verification links, and cleaner browsing.
-            </p>
+      <div className="w-full">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden pt-12 pb-16 md:pt-20 md:pb-24 border-b border-slate-200/60 dark:border-white/5">
+          {/* Subtle Ambient Radial Glow */}
+          <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[450px] w-[700px] rounded-full bg-cyan-500/10 blur-[120px] dark:bg-cyan-500/15" />
 
-            <div className="mt-8 max-w-2xl">
-              <UsernameClaimForm />
+          <div className="relative mx-auto max-w-7xl px-6 grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+            {/* Hero Left Column */}
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3.5 py-1 text-xs font-semibold text-cyan-600 dark:text-cyan-300 shadow-sm">
+                <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                <span>Zero spam • Free forever • No credit card</span>
+              </div>
+
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1]">
+                Your private custom inbox,{' '}
+                <span className="bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
+                  ready in seconds.
+                </span>
+              </h1>
+
+              <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
+                Claim your custom @ghostmail.store address instantly. Protect your real inbox from spam, track OTPs with 1-tap auto-copy, and stay anonymous.
+              </p>
+
+              {/* Claim Box */}
+              <div className="max-w-xl pt-2">
+                <UsernameClaimForm />
+              </div>
+
+              {/* Quick trust badges */}
+              <div className="grid grid-cols-3 gap-3 pt-2 max-w-xl">
+                {trustSignals.slice(0, 3).map((signal) => (
+                  <div
+                    key={signal.title}
+                    className="rounded-xl border border-slate-200/80 dark:border-white/10 bg-white/60 dark:bg-white/[0.02] p-3 text-center sm:text-left backdrop-blur"
+                  >
+                    <CheckCircle2 className="h-4 w-4 text-emerald-500 mx-auto sm:mx-0" aria-hidden="true" />
+                    <p className="mt-1.5 text-xs font-bold text-slate-900 dark:text-white truncate">{signal.title}</p>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">{signal.description}</p>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="mt-7 grid gap-3 sm:grid-cols-3">
-              {trustSignals.slice(0, 3).map((signal) => (
-                <div key={signal.title} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-4">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-300" aria-hidden="true" />
-                  <p className="mt-3 font-semibold text-slate-900 dark:text-white">{signal.title}</p>
-                  <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">{signal.description}</p>
-                </div>
-              ))}
+            {/* Hero Right Column: Live Interactive Simulator */}
+            <div className="w-full">
+              <LiveInboxPreview />
             </div>
           </div>
-
-          <LiveInboxPreview />
         </section>
 
+        {/* Real-time KPI Stats Grid */}
         <TrustGrid />
 
-        <section id="how-it-works" className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-          <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">How it works</p>
-            <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
-              A real inbox for the parts of the internet you do not fully trust yet.
-            </h2>
-            <p className="mt-5 text-lg leading-8 text-slate-500 dark:text-slate-400">
-              GhostMail keeps the workflow simple, so users understand the product
-              before they even create an account.
-            </p>
-          </div>
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {workflowSteps.map((step) => {
-              const Icon = step.icon
+        {/* 3-Step Pipeline: How It Works */}
+        <section id="how-it-works" className="py-16 md:py-24 border-b border-slate-200/60 dark:border-white/5">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="max-w-2xl">
+              <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                Simple & Frictionless
+              </span>
+              <h2 className="mt-2 text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Built for the parts of the web you don’t trust yet.
+              </h2>
+              <p className="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-400">
+                GhostMail requires zero extensions or third-party email clients. It simply works right inside your browser.
+              </p>
+            </div>
 
-              return (
-                <div key={step.title} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6">
-                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-600 dark:text-cyan-300">
-                    <Icon className="h-5 w-5" aria-hidden="true" />
-                  </span>
-                  <h3 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">{step.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">{step.body}</p>
-                </div>
-              )
-            })}
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+              {workflowSteps.map((step, idx) => {
+                const Icon = step.icon
+                return (
+                  <div
+                    key={step.title}
+                    className="relative rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-6 shadow-sm backdrop-blur transition-all hover:border-cyan-500/30 hover:scale-[1.01]"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </span>
+                      <span className="font-mono text-xs font-bold text-slate-400">0{idx + 1}</span>
+                    </div>
+                    <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white">
+                      {step.title}
+                    </h3>
+                    <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                      {step.body}
+                    </p>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </section>
 
-        <section id="features" className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-            <div>
-              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">Use cases</p>
-              <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
-                Built for sign-ups, OTPs, and everyday privacy.
-              </h2>
+        {/* Use Cases Section */}
+        <section id="features" className="py-16 md:py-24 border-b border-slate-200/60 dark:border-white/5">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                  Privacy In Action
+                </span>
+                <h2 className="mt-2 text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  High-converting use cases.
+                </h2>
+              </div>
+              <Link
+                href="/receive-otp-online"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+              >
+                View all use cases
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
-            <div className="grid gap-5 md:grid-cols-3">
+
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
               {publicUseCases.map((useCase) => (
                 <Link
                   key={useCase.title}
                   href={useCase.href}
-                  className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-6 transition hover:border-cyan-400/30"
+                  className="group rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-6 shadow-sm backdrop-blur transition-all hover:border-cyan-500/40 hover:shadow-cyan-500/5 hover:scale-[1.01]"
                 >
-                  <Zap className="h-5 w-5 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
-                  <h3 className="mt-5 text-xl font-semibold text-slate-900 dark:text-white">{useCase.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">{useCase.body}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 dark:text-cyan-300">
-                    Learn more
-                    <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" />
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                    <Zap className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors">
+                    {useCase.title}
+                  </h3>
+                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                    {useCase.body}
+                  </p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400">
+                    Explore use case
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
                   </span>
                 </Link>
               ))}
@@ -184,133 +225,110 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-            <div className="max-w-3xl">
-              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">SEO pages</p>
-              <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
-                Search-friendly pages for the terms people already use.
-              </h2>
-            </div>
-            <Link
-              href="/faq"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 dark:text-cyan-300 hover:text-cyan-200"
-            >
-              Read FAQ
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
-          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {seoLandingPages.map((page) => (
-              <Link
-                key={page.slug}
-                href={`/${page.slug}`}
-                className="group rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-6 transition hover:border-cyan-400/30"
-              >
-                <Search className="h-5 w-5 text-cyan-600 dark:text-cyan-300" aria-hidden="true" />
-                <p className="mt-5 text-sm font-semibold uppercase text-cyan-200">
-                  {page.kicker}
-                </p>
-                <h3 className="mt-3 text-xl font-semibold text-slate-900 dark:text-white">{page.h1}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-500 dark:text-slate-400">{page.description}</p>
-                <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 dark:text-cyan-300">
-                  Open page
-                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" aria-hidden="true" />
+        {/* SEO Landing Directory */}
+        <section className="py-16 md:py-24 border-b border-slate-200/60 dark:border-white/5">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+              <div>
+                <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                  Targeted Solutions
                 </span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-          <div className="grid gap-8 rounded-[28px] border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-8 md:p-10 lg:grid-cols-[1fr_420px] lg:items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-200">
-                <span className="h-2 w-2 rounded-full bg-emerald-300" />
-                All systems operational
+                <h2 className="mt-2 text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  Tailored temporary email tools.
+                </h2>
               </div>
-              <h2 className="mt-5 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
-                Public status page for trust before sign-up.
-              </h2>
-              <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-500 dark:text-slate-400">
-                Visitors can check web app, email routing, inbox delivery, and
-                admin dashboard health from a dedicated page.
-              </p>
-            </div>
-            <div className="space-y-3">
-              {[
-                ['Web app', 'Operational'],
-                ['Email routing', 'Operational'],
-                ['Inbox delivery', 'Operational'],
-              ].map(([label, status]) => (
-                <div key={label} className="flex items-center justify-between rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3">
-                  <span className="text-slate-600 dark:text-slate-300">{label}</span>
-                  <span className="text-emerald-300">{status}</span>
-                </div>
-              ))}
-              <Link
-                href="/status"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-slate-950"
-              >
-                View status
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-            <div>
-              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">FAQ</p>
-              <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
-                Clear answers for users before they trust a new inbox.
-              </h2>
               <Link
                 href="/faq"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-cyan-600 dark:text-cyan-300 hover:text-cyan-200"
+                className="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
               >
-                See all questions
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                Read comprehensive FAQ
+                <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
-            <div className="grid gap-4">
-              {faqPreview.map((item) => (
-                <div key={item.question} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-5">
-                  <h3 className="font-semibold text-slate-900 dark:text-white">{item.question}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">{item.answer}</p>
-                </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {seoLandingPages.map((page) => (
+                <Link
+                  key={page.slug}
+                  href={`/${page.slug}`}
+                  className="group rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-5 shadow-sm backdrop-blur transition-all hover:border-cyan-500/40"
+                >
+                  <div className="flex items-center gap-2 text-cyan-600 dark:text-cyan-400">
+                    <Search className="h-4 w-4" />
+                    <span className="text-[11px] font-bold uppercase tracking-wider">{page.kicker}</span>
+                  </div>
+                  <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white group-hover:text-cyan-500 transition-colors">
+                    {page.h1}
+                  </h3>
+                  <p className="mt-1.5 text-xs leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-2">
+                    {page.description}
+                  </p>
+                </Link>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-6 py-20 md:py-28">
-          <div className="grid gap-5 md:grid-cols-3">
-            {testimonials.map((item) => (
-              <div key={item.author} className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0e1728] p-6">
-                <p className="text-base leading-7 text-slate-700 dark:text-slate-200">
-                  &quot;{item.quote}&quot;
-                </p>
-                <p className="mt-5 text-sm font-semibold text-cyan-600 dark:text-cyan-300">{item.author}</p>
-              </div>
-            ))}
+        {/* Frequently Asked Questions */}
+        <section className="py-16 md:py-24 border-b border-slate-200/60 dark:border-white/5">
+          <div className="mx-auto max-w-4xl px-6">
+            <div className="text-center max-w-2xl mx-auto mb-10">
+              <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+                Got Questions?
+              </span>
+              <h2 className="mt-2 text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                Frequently asked questions.
+              </h2>
+              <p className="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+                Everything you need to know about our privacy-first email delivery infrastructure.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-6 backdrop-blur shadow-sm">
+              <FAQAccordion items={faqPreview} />
+            </div>
+
+            <div className="text-center mt-6">
+              <Link
+                href="/faq"
+                className="inline-flex items-center gap-2 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+              >
+                View all frequently asked questions →
+              </Link>
+            </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-6 pb-24 md:pb-32">
-          <div className="grid gap-8 rounded-[28px] border border-cyan-400/15 bg-white dark:bg-[#101a2d] p-8 md:p-12 lg:grid-cols-[1fr_460px] lg:items-center">
-            <div>
-              <p className="text-sm font-semibold uppercase text-cyan-600 dark:text-cyan-300">Start free</p>
-              <h2 className="mt-4 text-3xl font-bold text-slate-900 dark:text-white md:text-5xl">
-                Claim your private inbox now.
+        {/* Pre-Footer Action Banner */}
+        <section className="py-16 md:py-24">
+          <div className="mx-auto max-w-5xl px-6">
+            <div className="relative overflow-hidden rounded-3xl border border-cyan-500/30 bg-gradient-to-br from-cyan-950/40 via-[#0c1017] to-blue-950/30 p-8 sm:p-12 text-center backdrop-blur shadow-2xl">
+              <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-cyan-500/20 blur-[80px]" />
+              <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-blue-500/20 blur-[80px]" />
+
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+                Claim your custom email in seconds.
               </h2>
-              <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
-                Create a GhostMail address for sign-ups, OTPs, and a cleaner
-                personal inbox.
+              <p className="mt-3 text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
+                No passwords, no installations, and no tracking. Keep your real inbox permanently clean.
               </p>
+
+              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+                <Link
+                  href="/register"
+                  className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 px-6 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-cyan-500/30 transition-all hover:scale-[1.02]"
+                >
+                  Get Started For Free
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/api-docs"
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-6 py-3 text-sm font-semibold text-white transition"
+                >
+                  Explore Developer API
+                </Link>
+              </div>
             </div>
-            <UsernameClaimForm compact buttonLabel="Create free inbox" />
           </div>
         </section>
       </div>

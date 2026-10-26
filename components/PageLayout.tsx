@@ -1,15 +1,20 @@
-'use client';
+// ==============================================================
+// Created & Owned by: officialum1
+// Suite: umiskills
+// ==============================================================
 
-import type { ReactNode } from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+'use client'
+
+import type { ReactNode } from 'react'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 export default function PageLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#0a0f1e] text-slate-900 dark:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#07090e] text-slate-900 dark:text-slate-100 selection:bg-cyan-500/20 selection:text-cyan-400">
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 w-full">{children}</main>
       <Footer />
     </div>
-  );
+  )
 }

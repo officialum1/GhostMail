@@ -79,13 +79,17 @@ export const metadata: Metadata = {
       }
     : undefined,
   other: {
-    'theme-color': '#0a0f1e',
+    'theme-color': '#07090e',
     'color-scheme': 'dark',
   },
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0a0f1e',
+  themeColor: '#07090e',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({
@@ -100,7 +104,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href={SITE_URL} />
       </head>
-      <body className={`${inter.variable} bg-slate-50 dark:bg-[#0a0f1e] font-sans text-slate-900 dark:text-white antialiased`}>
+      <body className={`${inter.variable} bg-slate-50 dark:bg-[#07090e] font-sans text-slate-900 dark:text-slate-100 antialiased selection:bg-cyan-500/20 selection:text-cyan-400`}>
         <GoogleAnalytics />
         <SchemaMarkup />
         <Providers>
@@ -110,9 +114,10 @@ export default function RootLayout({
             position="bottom-right"
             toastOptions={{
               style: {
-                background: '#10182a',
-                color: '#fff',
+                background: '#0d121b',
+                color: '#f8fafc',
                 border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.4)',
               },
             }}
           />

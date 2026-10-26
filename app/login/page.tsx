@@ -1,136 +1,150 @@
-'use client';
+// ==============================================================
+// Created & Owned by: officialum1
+// Suite: umiskills
+// ==============================================================
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { ArrowRight, Lock, Mail } from 'lucide-react';
-import { signIn } from 'next-auth/react';
-import toast from 'react-hot-toast';
-import PageLayout from '@/components/PageLayout';
+'use client'
+
+import { useState } from 'react'
+import Link from 'next/link'
+import { ArrowRight, Mail, Shield } from 'lucide-react'
+import { signIn } from 'next-auth/react'
+import toast from 'react-hot-toast'
+import PageLayout from '@/components/PageLayout'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setError('');
-    setLoading(true);
+    event.preventDefault()
+    setError('')
+    setLoading(true)
 
     try {
       const result = await signIn('credentials', {
         email,
         password,
         redirect: false,
-      });
+      })
 
       if (result?.error) {
         const message = result.error.includes('suspended')
           ? 'Your account has been suspended'
-          : 'Invalid email or password';
-        setError(message);
-        toast.error(message);
+          : 'Invalid email or password'
+        setError(message)
+        toast.error(message)
       } else {
-        toast.success('Welcome back');
-        window.location.href = '/dashboard';
+        toast.success('Welcome back')
+        window.location.href = '/dashboard'
       }
     } catch {
-      setError('An error occurred during login');
-      toast.error('An error occurred during login');
+      setError('An error occurred during login')
+      toast.error('An error occurred during login')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <PageLayout>
-      <section className="mx-auto max-w-7xl px-6 py-20 md:py-24">
-        <div className="grid gap-8 lg:grid-cols-[1fr_440px]">
-          <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] p-8 backdrop-blur md:p-12">
-            <p className="text-sm uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">Login</p>
-            <h1 className="mt-4 text-4xl font-bold md:text-6xl">
-              Step back into your private GhostMail inbox.
+      <div className="w-full py-16 md:py-24">
+        <div className="mx-auto max-w-4xl px-6 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+          {/* Left Column Info */}
+          <div className="space-y-6">
+            <span className="text-xs font-bold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">
+              Welcome Back
+            </span>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Access your private GhostMail inbox.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 dark:text-slate-300">
-              Read OTPs, confirmations, and account notices from a dashboard built
-              for speed, focus, and privacy.
+            <p className="text-xs sm:text-sm leading-relaxed text-slate-600 dark:text-slate-400 max-w-md">
+              Retrieve incoming OTPs, confirmations, and security notices from a clean workspace tuned for speed and privacy.
             </p>
-            <div className="mt-10 grid gap-4 md:grid-cols-2">
-              <div className="rounded-3xl border border-slate-200 dark:border-white/10 bg-[#0f1728] p-6">
-                <Mail className="h-6 w-6 text-cyan-600 dark:text-cyan-300" />
-                <p className="mt-4 text-lg font-semibold text-slate-900 dark:text-white">Fast inbox access</p>
-                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                  Open your messages quickly with a dashboard tuned for readability.
-                </p>
+
+            <div className="grid gap-3 pt-2">
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-white/60 dark:bg-[#0c1017]/70 p-3.5 backdrop-blur">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-500">
+                  <Mail className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white">Real-Time Ingestion</p>
+                  <p className="text-[11px] text-slate-500">Live SSE push delivery right to your browser.</p>
+                </div>
               </div>
-              <div className="rounded-3xl border border-slate-200 dark:border-white/10 bg-[#0f1728] p-6">
-                <Lock className="h-6 w-6 text-cyan-600 dark:text-cyan-300" />
-                <p className="mt-4 text-lg font-semibold text-slate-900 dark:text-white">Private by default</p>
-                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                  Credentials stay hashed and inbox access stays tied to your account.
-                </p>
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-white/60 dark:bg-[#0c1017]/70 p-3.5 backdrop-blur">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-500">
+                  <Shield className="h-4 w-4" />
+                </span>
+                <div>
+                  <p className="text-xs font-bold text-slate-900 dark:text-white">Private By Architecture</p>
+                  <p className="text-[11px] text-slate-500">Zero advertising trackers or commercial cookies.</p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="rounded-[32px] border border-slate-200 dark:border-white/10 bg-[#0f1627] p-8 shadow-[0_32px_80px_rgba(0,0,0,0.35)] backdrop-blur">
-            <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">Welcome back</h2>
-            <p className="mt-2 text-slate-500 dark:text-slate-400">Log in to check your messages.</p>
+          {/* Right Column Login Form */}
+          <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/80 p-6 sm:p-8 shadow-2xl backdrop-blur">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Account Login</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Sign in with your username or full email address.</p>
 
-            {error ? (
-              <div className="mt-6 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-200">
+            {error && (
+              <div className="mt-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-500 font-medium">
                 {error}
               </div>
-            ) : null}
+            )}
 
-            <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            <form onSubmit={handleSubmit} className="mt-5 space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">Username or Email</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Username or Email
+                </label>
                 <input
                   type="text"
                   required
                   value={email}
-                  onChange={(event) => setEmail(event.target.value.toLowerCase())}
-                  placeholder="username or username@ghostmail.store"
-                  className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
+                  onChange={(e) => setEmail(e.target.value.toLowerCase())}
+                  placeholder="username or user@ghostmail.store"
+                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/30 px-3.5 py-2.5 text-xs font-mono text-slate-900 dark:text-white outline-none focus:border-cyan-500"
                 />
-                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                  You can login with your username or full email address
-                </p>
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-600 dark:text-slate-300">Password</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Password
+                </label>
                 <input
                   type="password"
                   required
                   value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white outline-none placeholder:text-slate-500 focus:border-cyan-400/30"
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••••••"
+                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/30 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-cyan-500"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 px-6 py-3.5 font-semibold text-slate-900 dark:text-white transition hover:scale-[1.01] disabled:opacity-60"
+                className="flex items-center justify-center gap-2 w-full rounded-xl bg-cyan-500 hover:bg-cyan-400 py-3 text-xs font-bold text-slate-950 shadow-md shadow-cyan-500/20 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-60"
               >
-                {loading ? 'Logging in...' : 'Login'}
+                {loading ? 'Authenticating...' : 'Sign In to Mailbox'}
                 <ArrowRight className="h-4 w-4" />
               </button>
             </form>
 
-            <p className="mt-6 text-sm text-slate-500 dark:text-slate-400">
-              Don&apos;t have an account?
-              {' '}
-              <Link href="/register" className="text-cyan-600 dark:text-cyan-300 hover:text-cyan-200">
-                Register
+            <div className="mt-6 pt-4 border-t border-slate-200/60 dark:border-white/5 text-center text-xs text-slate-500">
+              Don&apos;t have an inbox yet?{' '}
+              <Link href="/register" className="font-bold text-cyan-600 dark:text-cyan-400 hover:underline">
+                Claim free address
               </Link>
-            </p>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
     </PageLayout>
-  );
+  )
 }

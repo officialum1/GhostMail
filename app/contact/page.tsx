@@ -1,84 +1,86 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { AlertTriangle, Briefcase, LifeBuoy } from 'lucide-react';
-import PageLayout from '@/components/PageLayout';
-import { SITE_URL } from '@/lib/seo';
+// ==============================================================
+// Created & Owned by: officialum1
+// Suite: umiskills
+// ==============================================================
+
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { AlertTriangle, Briefcase, LifeBuoy, Mail, MessageSquare } from 'lucide-react'
+import PageLayout from '@/components/PageLayout'
+import PublicHero from '@/components/public/PublicHero'
+import { SITE_URL } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Contact GhostMail — Get Support',
   description:
     'Contact the GhostMail team for help, feedback, or business inquiries. We respond within 24 hours.',
   alternates: { canonical: `${SITE_URL}/contact` },
-};
+}
 
 const contacts = [
   {
     icon: LifeBuoy,
-    title: 'Support',
+    title: 'Customer Support',
     email: 'support@ghostmail.store',
-    body: 'For help with your account, inbox issues, or anything technical.',
+    body: 'For account recovery, mailbox issues, or technical integration questions.',
   },
   {
     icon: Briefcase,
-    title: 'Business',
+    title: 'Business & Partnerships',
     email: 'business@ghostmail.store',
-    body: 'For partnerships, press requests, integrations, or business inquiries.',
+    body: 'For custom domain integrations, volume API limits, or press inquiries.',
   },
   {
     icon: AlertTriangle,
-    title: 'Abuse',
+    title: 'Abuse & Security Reports',
     email: 'abuse@ghostmail.store',
-    body: 'To report spam, abuse, phishing, or misuse of the platform.',
+    body: 'To report spam vectors, phishing attempts, or protocol misuse.',
   },
-];
+]
 
 export default function ContactPage() {
   return (
     <PageLayout>
-      <section className="mx-auto max-w-7xl px-6 py-20 md:py-32">
-        <div className="max-w-3xl">
-          <p className="text-sm uppercase tracking-[0.3em] text-cyan-600 dark:text-cyan-300">Contact</p>
-          <h1 className="mt-4 text-4xl font-bold md:text-6xl">Get In Touch</h1>
-          <p className="mt-6 text-lg leading-8 text-slate-600 dark:text-slate-300">
-            We built GhostMail to feel fast and dependable, and we try to offer the
-            same experience when you need to reach us.
-          </p>
-        </div>
+      <div className="w-full">
+        <PublicHero
+          badgeText="Support Desk"
+          badgeIcon={<MessageSquare className="h-3.5 w-3.5 text-cyan-500" />}
+          title="We're here to help you"
+          highlightText="stay private."
+          description="GhostMail is engineered to feel fast, dependable, and transparent. If you ever have a question or need assistance, our team is directly accessible."
+        />
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {contacts.map((contact) => {
-            const Icon = contact.icon;
-            return (
-              <div
-                key={contact.title}
-                className="rounded-[28px] border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 p-8 backdrop-blur"
-              >
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400/10">
-                  <Icon className="h-6 w-6 text-cyan-600 dark:text-cyan-300" />
-                </div>
-                <h2 className="mt-6 text-2xl font-semibold text-slate-900 dark:text-white">{contact.title}</h2>
-                <p className="mt-3 text-slate-500 dark:text-slate-400">{contact.body}</p>
-                <a
-                  href={`mailto:${contact.email}`}
-                  className="mt-6 inline-flex text-base font-medium text-cyan-600 dark:text-cyan-300 transition hover:text-cyan-200"
+        <section className="py-16">
+          <div className="mx-auto max-w-6xl px-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {contacts.map((contact) => {
+              const Icon = contact.icon
+              return (
+                <div
+                  key={contact.title}
+                  className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-6 shadow-sm backdrop-blur flex flex-col justify-between"
                 >
-                  {contact.email}
-                </a>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-12 rounded-[28px] border border-slate-200 dark:border-white/10 bg-[#10182a] p-8 backdrop-blur">
-          <p className="text-lg font-semibold text-slate-900 dark:text-white">We typically respond within 24 hours.</p>
-          <p className="mt-3 text-slate-500 dark:text-slate-400">
-            Before reaching out, you might find a faster answer in the FAQ.
-          </p>
-          <Link href="/faq" className="mt-6 inline-flex text-cyan-600 dark:text-cyan-300 hover:text-cyan-200">
-            Before reaching out, check our FAQ →
-          </Link>
-        </div>
-      </section>
+                  <div>
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <h2 className="mt-4 text-base font-bold text-slate-900 dark:text-white">{contact.title}</h2>
+                    <p className="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">{contact.body}</p>
+                  </div>
+                  <div className="mt-6 pt-4 border-t border-slate-200/60 dark:border-white/5">
+                    <Link
+                      href={`mailto:${contact.email}`}
+                      className="inline-flex items-center gap-2 text-xs font-mono font-bold text-cyan-600 dark:text-cyan-400 hover:underline"
+                    >
+                      <Mail className="h-3.5 w-3.5" />
+                      {contact.email}
+                    </Link>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
+      </div>
     </PageLayout>
-  );
+  )
 }
