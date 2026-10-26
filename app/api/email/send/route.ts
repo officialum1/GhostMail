@@ -37,7 +37,9 @@ export async function POST(req: Request) {
 
     if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
       console.error('SMTP is not configured; refusing to send.')
-      return NextResponse.json({ error: 'Sending is not available' }, { status: 503 });
+      return NextResponse.json({ 
+        error: 'Outbound SMTP is not configured on the server. Please add SMTP_HOST, SMTP_PORT, SMTP_USER, and SMTP_PASS to your environment settings.' 
+      }, { status: 503 });
     }
 
     // Outbound mail from a free disposable-address service is a spam magnet.
@@ -87,14 +89,23 @@ export async function POST(req: Request) {
     const safeSubject = subject.replace(/[\r\n]+/g, ' ').trim();
     const displayName = sender.username.replace(/[\r\n"<>]/g, '');
 
+    const port = parseInt(process.env.SMTP_PORT || '587', 10);
+    const isSecure = port === 465;
+
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || '465', 10),
-      secure: true, // Use SSL/TLS
+      port,
+      secure: isSecure, // true for port 465 (SSL), false for 587/25 (STARTTLS)
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      tls: {
+        rejectUnauthorized: false,
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 15000,
     });
 
     await transporter.sendMail({
@@ -120,6 +131,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Send email error:', error);
-    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 });
+    const details = error instanceof Error ? error.message : 'Unknown mail transport error';
+    return NextResponse.json({ error: `Failed to send email: ${details}` }, { status: 500 });
   }
 }
