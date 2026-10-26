@@ -34,7 +34,7 @@ type CryptoOrder = {
   userEmail: string
   network: string
   txId: string
-  status: 'PENDING' | 'APPROVED' | 'REJECTED'
+  status: string
   createdAt: string
   approvedAt?: string
   apiKey?: string
@@ -308,7 +308,7 @@ export default function AdminCryptoAndApiManagement() {
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Crypto Upgrade Submissions ({orders.length})</h3>
           </div>
           <span className="text-xs text-slate-500">
-            {orders.filter((o) => o.status === 'PENDING').length} Pending Review
+            {orders.filter((o) => (o.status || '').toUpperCase() === 'PENDING').length} Pending Review
           </span>
         </div>
 
@@ -330,53 +330,64 @@ export default function AdminCryptoAndApiManagement() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-white/5">
-                {orders.map((order) => (
-                  <tr key={order.id} className="hover:bg-black/10 transition">
-                    <td className="py-3.5 font-medium text-slate-900 dark:text-white">{order.userEmail}</td>
-                    <td className="py-3.5 text-xs font-mono text-cyan-600 dark:text-cyan-400">{order.network}</td>
-                    <td className="py-3.5 font-mono text-xs text-slate-600 dark:text-slate-300 max-w-[200px] truncate" title={order.txId}>
-                      {order.txId}
-                    </td>
-                    <td className="py-3.5">
-                      <span
-                        className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                          order.status === 'APPROVED'
-                            ? 'bg-emerald-500/20 text-emerald-400'
-                            : order.status === 'REJECTED'
-                              ? 'bg-red-500/20 text-red-400'
-                              : 'bg-amber-500/20 text-amber-400 animate-pulse'
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                    </td>
-                    <td className="py-3.5 text-xs text-slate-500">
-                      {new Date(order.createdAt).toLocaleString()}
-                    </td>
-                    <td className="py-3.5 text-right space-x-2">
-                      {order.status === 'PENDING' ? (
-                        <>
-                          <button
-                            onClick={() => approveOrder(order.id)}
-                            className="inline-flex items-center gap-1 rounded-lg bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 text-xs font-bold text-slate-950 transition"
-                          >
-                            <Check className="h-3.5 w-3.5" />
-                            Approve & Issue Key
-                          </button>
-                          <button
-                            onClick={() => rejectOrder(order.id)}
-                            className="inline-flex items-center gap-1 rounded-lg border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 px-2.5 py-1.5 text-xs font-medium text-red-300 transition"
-                          >
-                            <X className="h-3.5 w-3.5" />
-                            Reject
-                          </button>
-                        </>
-                      ) : (
-                        <span className="text-xs text-slate-500">Processed</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                {orders.map((order) => {
+                  const statusUpper = (order.status || '').toUpperCase()
+                  const isPending = statusUpper === 'PENDING'
+                  const isApproved = statusUpper === 'APPROVED'
+                  const isRejected = statusUpper === 'REJECTED'
+
+                  return (
+                    <tr key={order.id} className="hover:bg-black/10 transition">
+                      <td className="py-3.5 font-medium text-slate-900 dark:text-white">{order.userEmail}</td>
+                      <td className="py-3.5 text-xs font-mono text-cyan-600 dark:text-cyan-400">{order.network}</td>
+                      <td className="py-3.5 font-mono text-xs text-slate-600 dark:text-slate-300 max-w-[200px] truncate" title={order.txId}>
+                        {order.txId}
+                      </td>
+                      <td className="py-3.5">
+                        <span
+                          className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                            isApproved
+                              ? 'bg-emerald-500/20 text-emerald-400'
+                              : isRejected
+                                ? 'bg-red-500/20 text-red-400'
+                                : 'bg-amber-500/20 text-amber-400 animate-pulse'
+                          }`}
+                        >
+                          {statusUpper || 'PENDING'}
+                        </span>
+                      </td>
+                      <td className="py-3.5 text-xs text-slate-500">
+                        {new Date(order.createdAt).toLocaleString()}
+                      </td>
+                      <td className="py-3.5 text-right space-x-2">
+                        {isPending ? (
+                          <div className="flex items-center justify-end gap-2">
+                            <button
+                              onClick={() => approveOrder(order.id)}
+                              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 px-3 py-1.5 text-xs font-bold text-slate-950 shadow-md transition"
+                            >
+                              <Check className="h-3.5 w-3.5" />
+                              Approve & Issue Key
+                            </button>
+                            <button
+                              onClick={() => rejectOrder(order.id)}
+                              className="inline-flex items-center gap-1.5 rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 px-2.5 py-1.5 text-xs font-medium text-red-300 transition"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                              Reject
+                            </button>
+                          </div>
+                        ) : isApproved ? (
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400">
+                            <Check className="h-3.5 w-3.5" /> Approved & Key Active
+                          </span>
+                        ) : (
+                          <span className="text-xs text-red-400 font-semibold">Rejected</span>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>
