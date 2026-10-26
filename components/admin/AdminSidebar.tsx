@@ -7,6 +7,7 @@ import {
   BarChart2,
   ChevronLeft,
   ChevronRight,
+  Coins,
   LayoutDashboard,
   LogOut,
   Mail,
@@ -50,6 +51,7 @@ export default function AdminSidebar() {
   const [bannedCount, setBannedCount] = useState(0)
   const [todayEmails, setTodayEmails] = useState(0)
   const [securityAlerts, setSecurityAlerts] = useState(0)
+  const [pendingOrdersCount, setPendingOrdersCount] = useState(0)
   const [adminEmail, setAdminEmail] = useState('')
   const mobilePanelRef = useRef<HTMLDivElement>(null)
 
@@ -83,11 +85,12 @@ export default function AdminSidebar() {
 
   const loadSidebarData = useCallback(async () => {
     try {
-      const [usersRes, emailsRes, meRes, suspiciousRes] = await Promise.all([
+      const [usersRes, emailsRes, meRes, suspiciousRes, ordersRes] = await Promise.all([
         fetch('/api/admin/users?limit=1'),
         fetch('/api/admin/emails?limit=1'),
         fetch('/api/admin/me'),
         fetch('/api/admin/suspicious?resolved=false&severity=high'),
+        fetch('/api/admin/crypto-orders'),
       ])
 
       if (usersRes.ok) {
@@ -109,6 +112,14 @@ export default function AdminSidebar() {
         const items = await suspiciousRes.json()
         setSecurityAlerts(Array.isArray(items) ? items.length : 0)
       }
+
+      if (ordersRes.ok) {
+        const orders = await ordersRes.json()
+        if (Array.isArray(orders)) {
+          const pending = orders.filter((o: { status?: string }) => o.status === 'PENDING').length
+          setPendingOrdersCount(pending)
+        }
+      }
     } catch (error) {
       console.error('Failed to load admin sidebar data:', error)
     }
@@ -122,6 +133,13 @@ export default function AdminSidebar() {
 
   const links = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    {
+      name: 'Monetization',
+      href: '/admin/monetization',
+      icon: Coins,
+      badge: pendingOrdersCount > 0 ? String(pendingOrdersCount) : null,
+      badgeClass: 'bg-amber-500/20 text-amber-400 border-amber-500/30 font-bold animate-pulse',
+    },
     {
       name: 'Users',
       href: '/admin/users',

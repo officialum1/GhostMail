@@ -19,6 +19,7 @@ import {
 import ActivityFeed from '@/components/admin/ActivityFeed'
 import AdminAutoRefresh from '@/components/admin/AdminAutoRefresh'
 import AdminDashboardCharts from '@/components/admin/AdminDashboardCharts'
+import AdminSystemHealthCard from '@/components/admin/AdminSystemHealthCard'
 
 type ChartPoint = { date: string; count: number; label: string }
 
@@ -303,6 +304,7 @@ export default function AdminDashboardPage() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2 space-y-6">
+          <AdminSystemHealthCard />
           <AdminDashboardCharts userGrowth={data.userGrowth} emailVolume={data.emailVolume} />
 
           {data.suspicious.length > 0 && (
