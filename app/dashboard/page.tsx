@@ -18,12 +18,15 @@ import {
   LogOut,
   Mail,
   Menu,
+  Moon,
   PenSquare,
   RefreshCw,
+  Reply,
   Search,
   Send,
   ShieldCheck,
   Star,
+  Sun,
   Trash2,
   X,
   Key,
@@ -55,7 +58,33 @@ type FullEmail = EmailItem & {
 
 type MailboxKey = 'inbox' | 'sent' | 'starred' | 'trash' | 'api'
 
-const senderColors = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#06b6d4', '#8b5cf6', '#ec4899']
+const senderColors = ['#06b6d4', '#3b82f6', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#14b8a6']
+
+function formatSenderName(from: string): string {
+  if (!from) return 'Unknown Sender'
+  const nameMatch = from.match(/^"?([^"<]+)"?\s*<.*>$/)
+  if (nameMatch && nameMatch[1].trim()) return nameMatch[1].trim()
+  const atIdx = from.indexOf('@')
+  if (atIdx > 0) {
+    const user = from.slice(0, atIdx)
+    const domain = from.slice(atIdx + 1)
+    if (['team', 'noreply', 'no-reply', 'support', 'info', 'notifications', 'mailer', 'security'].includes(user.toLowerCase())) {
+      const parts = domain.split('.')
+      if (parts.length >= 2) {
+        const root = parts[parts.length - 2]
+        return root[0].toUpperCase() + root.slice(1)
+      }
+    }
+    return user[0].toUpperCase() + user.slice(1)
+  }
+  return from
+}
+
+function extractEmailAddress(from: string): string {
+  if (!from) return ''
+  const match = from.match(/<([^>]+)>/)
+  return match ? match[1] : from
+}
 
 function formatMailboxTime(dateString: string) {
   const date = new Date(dateString)
@@ -84,7 +113,7 @@ function senderAvatarColor(email: string) {
 }
 
 function extractPreview(email: EmailItem) {
-  return (email.bodyText || '').replace(/\s+/g, ' ').trim().slice(0, 80)
+  return (email.bodyText || '').replace(/\s+/g, ' ').trim().slice(0, 95)
 }
 
 function detectOtpFromText(text: string): string | null {
@@ -144,6 +173,7 @@ export default function DashboardPage() {
     } | null
   } | null>(null)
   const [showCryptoModal, setShowCryptoModal] = useState(false)
+  const [canvasTheme, setCanvasTheme] = useState<'light' | 'dark'>('light')
   const previousEmailsRef = useRef<EmailItem[]>([])
 
   const fetchApiKey = useCallback(async () => {
@@ -349,6 +379,16 @@ export default function DashboardPage() {
     URL.revokeObjectURL(url)
     toast.success('Email downloaded')
   }, [])
+
+  const handleReply = useCallback(() => {
+    if (!selectedEmail) return
+    const recipient = extractEmailAddress(selectedEmail.fromAddress)
+    setComposeTo(recipient)
+    const subj = selectedEmail.subject || ''
+    setComposeSubject(subj.toLowerCase().startsWith('re:') ? subj : `Re: ${subj}`)
+    setComposeBody(`\n\n--- On ${new Date(selectedEmail.receivedAt).toLocaleString()}, ${selectedEmail.fromAddress} wrote:\n> ${(selectedEmail.bodyText || '').slice(0, 300)}`)
+    setIsComposeOpen(true)
+  }, [selectedEmail])
 
   const handleSend = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -647,52 +687,59 @@ export default function DashboardPage() {
                     const selected = selectedEmail?.id === email.id
                     const unread = !email.isRead && !email.sent
                     const detectedOtp = detectOtpFromText(email.bodyText || '')
+                    const senderName = formatSenderName(email.fromAddress)
 
                     return (
                       <div
                         key={email.id}
                         onClick={() => openEmail(email.id)}
-                        className={`group cursor-pointer rounded-xl border p-3 transition-all ${
+                        className={`group relative cursor-pointer rounded-xl border p-3.5 transition-all ${
                           selected
-                            ? 'border-cyan-500/40 bg-cyan-500/10 shadow-sm'
-                            : 'border-slate-200/60 dark:border-white/5 bg-white/70 dark:bg-[#0c1017]/70 hover:border-slate-300 dark:hover:border-white/15'
+                            ? 'border-cyan-500/50 bg-[#0f1724] shadow-md ring-1 ring-cyan-500/25'
+                            : 'border-slate-200/80 dark:border-white/5 bg-white/80 dark:bg-[#0c1017]/80 hover:bg-slate-100/70 dark:hover:bg-[#101520] hover:border-slate-300 dark:hover:border-white/10'
                         }`}
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            {unread && (
+                              <span
+                                className="h-2 w-2 rounded-full bg-cyan-400 shrink-0 shadow-[0_0_8px_rgba(6,182,212,0.8)]"
+                                title="Unread"
+                              />
+                            )}
                             <span
-                              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold text-slate-950"
+                              className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold text-slate-950 shadow-sm"
                               style={{ backgroundColor: senderAvatarColor(email.fromAddress) }}
                             >
-                              {email.fromAddress[0]?.toUpperCase()}
+                              {senderName[0]?.toUpperCase() || 'E'}
                             </span>
-                            <span className={`truncate text-xs ${unread ? 'font-bold text-slate-900 dark:text-white' : 'font-medium text-slate-600 dark:text-slate-400'}`}>
-                              {email.fromAddress}
+                            <span className={`truncate text-xs ${unread ? 'font-bold text-slate-900 dark:text-white' : 'font-medium text-slate-700 dark:text-slate-300'}`}>
+                              {senderName}
                             </span>
                           </div>
-                          <span className="shrink-0 text-[10px] text-slate-400">
+                          <span className="shrink-0 font-mono text-[10px] text-slate-400">
                             {formatMailboxTime(email.receivedAt)}
                           </span>
                         </div>
 
-                        <p className={`mt-1.5 truncate text-xs ${unread ? 'font-bold text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`}>
+                        <p className={`mt-1.5 truncate text-xs ${unread ? 'font-bold text-slate-950 dark:text-slate-100' : 'font-medium text-slate-700 dark:text-slate-300'}`}>
                           {email.subject || '(No Subject)'}
                         </p>
 
-                        <p className="mt-1 truncate text-[11px] text-slate-500 dark:text-slate-400">
+                        <p className="mt-1 line-clamp-1 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
                           {extractPreview(email)}
                         </p>
 
                         {/* 1-Tap OTP Card Badge */}
                         {detectedOtp && (
-                          <div className="mt-2 flex items-center justify-between rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-2 py-1">
+                          <div className="mt-2.5 flex items-center justify-between rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1">
                             <span className="text-[10px] font-mono text-cyan-600 dark:text-cyan-300 font-bold">
                               OTP: {detectedOtp}
                             </span>
                             <button
                               type="button"
                               onClick={(e) => copyOtpCode(detectedOtp, e)}
-                              className="inline-flex items-center gap-1 rounded bg-cyan-500 hover:bg-cyan-400 px-1.5 py-0.5 text-[9px] font-bold text-slate-950"
+                              className="inline-flex items-center gap-1 rounded bg-cyan-500 hover:bg-cyan-400 px-2 py-0.5 text-[9px] font-bold text-slate-950 transition"
                             >
                               <Copy className="h-2.5 w-2.5" />
                               Copy
@@ -887,9 +934,9 @@ export default function DashboardPage() {
               ) : (
                 <div className="flex h-full flex-col">
                   {/* Reading Pane Header */}
-                  <div className="border-b border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-4 md:p-6 backdrop-blur space-y-3">
+                  <div className="border-b border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-4 md:p-6 backdrop-blur space-y-4">
                     <div className="flex items-start justify-between gap-3">
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <button
                           onClick={() => setSelectedEmail(null)}
                           className="inline-flex items-center gap-1 text-xs text-cyan-500 md:hidden mb-2"
@@ -897,30 +944,52 @@ export default function DashboardPage() {
                           <ChevronLeft className="h-3.5 w-3.5" />
                           Back to list
                         </button>
-                        <h2 className="text-lg md:text-xl font-extrabold text-slate-900 dark:text-white">
+                        <h2 className="text-xl md:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                           {selectedEmail.subject || '(No Subject)'}
                         </h2>
                       </div>
 
                       {/* Header Actions */}
-                      <div className="flex items-center gap-1.5">
+                      <div className="flex items-center gap-2">
+                        {selectedEmail.bodyHtml && (
+                          <button
+                            onClick={() => setCanvasTheme((c) => (c === 'dark' ? 'light' : 'dark'))}
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:border-cyan-500/40 transition"
+                            title={canvasTheme === 'dark' ? 'Switch to Light Document' : 'Switch to Dark Canvas'}
+                          >
+                            {canvasTheme === 'dark' ? <Sun className="h-3.5 w-3.5 text-amber-400" /> : <Moon className="h-3.5 w-3.5 text-cyan-400" />}
+                            <span className="hidden sm:inline">{canvasTheme === 'dark' ? 'Light View' : 'Dark View'}</span>
+                          </button>
+                        )}
+
+                        <button
+                          onClick={handleReply}
+                          className="inline-flex items-center gap-1.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/20 transition shadow-sm"
+                          title="Reply to sender"
+                        >
+                          <Reply className="h-3.5 w-3.5" />
+                          <span>Reply</span>
+                        </button>
+
                         <button
                           onClick={() => toggleStar(selectedEmail)}
-                          className="rounded-lg p-2 text-slate-500 hover:text-amber-400 transition"
+                          className="rounded-xl border border-slate-200 dark:border-white/10 p-2 text-slate-500 hover:text-amber-400 hover:border-amber-400/30 transition"
                           title="Star message"
                         >
                           <Star className={`h-4 w-4 ${selectedEmailStarred ? 'fill-current text-amber-400' : ''}`} />
                         </button>
+
                         <button
                           onClick={() => downloadEmail(selectedEmail)}
-                          className="rounded-lg p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white transition"
-                          title="Download email"
+                          className="rounded-xl border border-slate-200 dark:border-white/10 p-2 text-slate-500 hover:text-white transition"
+                          title="Export email"
                         >
                           <Download className="h-4 w-4" />
                         </button>
+
                         <button
                           onClick={() => deleteEmail(selectedEmail.id)}
-                          className="rounded-lg p-2 text-red-400 hover:bg-red-500/10 transition"
+                          className="rounded-xl border border-red-500/20 bg-red-500/10 p-2 text-red-400 hover:bg-red-500/20 transition"
                           title="Delete email"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -928,12 +997,34 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    {/* Sender Info & Date */}
-                    <div className="flex flex-wrap items-center justify-between text-xs text-slate-500 dark:text-slate-400 gap-2">
-                      <div>
-                        From: <strong className="text-slate-900 dark:text-white font-mono">{selectedEmail.fromAddress}</strong>
+                    {/* Sender Profile Bar */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-200/60 dark:border-white/5">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold text-sm text-slate-950 shadow-sm"
+                          style={{ backgroundColor: senderAvatarColor(selectedEmail.fromAddress) }}
+                        >
+                          {formatSenderName(selectedEmail.fromAddress)[0]?.toUpperCase() || 'E'}
+                        </span>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-sm text-slate-900 dark:text-white">
+                              {formatSenderName(selectedEmail.fromAddress)}
+                            </span>
+                            <span className="text-xs font-mono text-slate-500 dark:text-slate-400">
+                              &lt;{extractEmailAddress(selectedEmail.fromAddress)}&gt;
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+                            <span>to <span className="font-mono text-slate-700 dark:text-slate-300 font-medium">{selectedEmail.toAddress}</span></span>
+                            <span>•</span>
+                            <span>{new Date(selectedEmail.receivedAt).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })}</span>
+                            <span className="hidden sm:inline-flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-400">
+                              <ShieldCheck className="h-3 w-3" /> Cloudflare Edge
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div>{new Date(selectedEmail.receivedAt).toLocaleString()}</div>
                     </div>
 
                     {/* Prominent 1-Tap OTP Banner inside Reader */}
@@ -957,21 +1048,41 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  {/* Body Content */}
-                  <div className="flex-1 overflow-y-auto p-4 md:p-6">
-                    {selectedEmail.bodyHtml ? (
-                      <iframe
-                        title="email-reading-pane"
-                        sandbox="allow-popups allow-popups-to-escape-sandbox"
-                        referrerPolicy="no-referrer"
-                        srcDoc={`<html><head><base target="_blank"><meta name="referrer" content="no-referrer"></head><body style="margin:0;padding:16px;background:white;font-family:sans-serif;color:#111;">${selectedEmail.bodyHtml}</body></html>`}
-                        className="min-h-[460px] w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white"
-                      />
-                    ) : (
-                      <div className="rounded-xl border border-slate-200/80 dark:border-white/10 bg-white/70 dark:bg-[#0c1017]/70 p-5 text-xs sm:text-sm leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-wrap font-sans">
-                        {selectedEmail.bodyText || 'This email has no text content.'}
-                      </div>
-                    )}
+                  {/* Body Content with Authentic Email Canvas Frame */}
+                  <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-100/50 dark:bg-[#07090e]">
+                    <div className={`mx-auto max-w-4xl rounded-2xl overflow-hidden transition-all ${
+                      canvasTheme === 'light'
+                        ? 'bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200 dark:border-slate-800'
+                        : 'bg-[#0c1017] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10'
+                    }`}>
+                      {selectedEmail.bodyHtml ? (
+                        <iframe
+                          title="email-reading-pane"
+                          sandbox="allow-popups allow-popups-to-escape-sandbox"
+                          referrerPolicy="no-referrer"
+                          srcDoc={`<!DOCTYPE html><html><head><base target="_blank"><meta name="referrer" content="no-referrer"><style>
+                            html, body {
+                              margin: 0;
+                              padding: 24px;
+                              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                              line-height: 1.6;
+                              color: ${canvasTheme === 'dark' ? '#f1f5f9' : '#0f172a'};
+                              background: ${canvasTheme === 'dark' ? '#0c1017' : '#ffffff'};
+                              word-break: break-word;
+                            }
+                            a { color: ${canvasTheme === 'dark' ? '#38bdf8' : '#0284c7'}; }
+                            img { max-width: 100% !important; height: auto !important; border-radius: 6px; }
+                            table { max-width: 100% !important; border-collapse: collapse; }
+                            pre, code { background: ${canvasTheme === 'dark' ? '#1e293b' : '#f1f5f9'}; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+                          </style></head><body>${selectedEmail.bodyHtml}</body></html>`}
+                          className="w-full min-h-[550px] border-0"
+                        />
+                      ) : (
+                        <div className="p-8 text-sm leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-wrap font-sans">
+                          {selectedEmail.bodyText || 'This email has no text content.'}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

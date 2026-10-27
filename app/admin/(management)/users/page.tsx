@@ -1,9 +1,28 @@
+// ==============================================================
+// Created & Owned by: officialum1
+// Suite: umiskills
+// ==============================================================
+
 'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { Ban, ChevronDown, Download, Eye, KeyRound, MoreHorizontal, Search, Trash2, Users, LogIn } from 'lucide-react'
+import {
+  Ban,
+  ChevronDown,
+  Download,
+  Eye,
+  KeyRound,
+  MoreHorizontal,
+  Search,
+  Trash2,
+  Users,
+  LogIn,
+  CheckCircle,
+  ShieldAlert,
+  UserCheck,
+} from 'lucide-react'
 import { signIn } from 'next-auth/react'
 
 type UserRecord = {
@@ -55,7 +74,9 @@ export default function AdminUsersPage() {
   const fetchUsers = useCallback(async () => {
     setLoading(true)
     try {
-      const res = await fetch(`/api/admin/users?search=${encodeURIComponent(search)}&page=${page}&limit=20&sort=${sort}`)
+      const res = await fetch(
+        `/api/admin/users?search=${encodeURIComponent(search)}&page=${page}&limit=20&sort=${sort}`
+      )
       if (!res.ok) throw new Error('Failed to fetch users')
       const data = await res.json()
       setUsers(data.users || [])
@@ -63,7 +84,7 @@ export default function AdminUsersPage() {
       setStats(data.stats || { total: 0, active: 0, banned: 0 })
     } catch (error) {
       console.error(error)
-      toast.error('Failed to load users')
+      toast.error('Failed to load user directory')
     } finally {
       setLoading(false)
     }
@@ -79,13 +100,13 @@ export default function AdminUsersPage() {
     try {
       const res = await fetch(`/api/admin/users/${deleteModal.id}`, { method: 'DELETE' })
       if (!res.ok) throw new Error('Failed to delete user')
-      toast.success('User deleted successfully')
+      toast.success('Account purged from database')
       setDeleteModal(null)
       setConfirmUsername('')
       await fetchUsers()
     } catch (error) {
       console.error(error)
-      toast.error('Failed to delete user')
+      toast.error('Failed to delete user account')
     } finally {
       setActionLoading(false)
     }
@@ -101,7 +122,7 @@ export default function AdminUsersPage() {
         body: JSON.stringify({ reason: banReason }),
       })
       if (!res.ok) throw new Error('Failed to update ban')
-      toast.success(banModal.isBanned ? 'User unbanned' : 'User banned')
+      toast.success(banModal.isBanned ? 'User status restored to Active' : 'User account banned')
       setBanModal(null)
       setBanReason('')
       await fetchUsers()
@@ -120,7 +141,7 @@ export default function AdminUsersPage() {
       if (!res.ok) throw new Error('Failed to reset password')
       const data = await res.json()
       setPasswordModal({ user, password: data.password })
-      toast.success('Password reset successfully')
+      toast.success('New temporary password generated')
     } catch (error) {
       console.error(error)
       toast.error('Failed to reset password')
@@ -136,133 +157,263 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-6">
+      {/* Top Header */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="flex items-center gap-3 text-3xl font-bold text-slate-900 dark:text-white">
-            <Users className="h-8 w-8 text-cyan-600 dark:text-cyan-400" />
-            Users
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-cyan-400">
+              <UserCheck className="h-3 w-3 text-cyan-400" />
+              Member Directory
+            </span>
+            <span className="text-xs text-slate-400">officialum1 • umiskills</span>
+          </div>
+          <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Registered Accounts
           </h1>
-          <p className="mt-2 text-slate-500 dark:text-slate-400">Search, moderate, export, and manage registered users.</p>
+          <p className="mt-1 text-xs lg:text-sm text-slate-500 dark:text-slate-400">
+            Search, moderate, impersonate, and audit member activity across all custom domains.
+          </p>
         </div>
-        <button onClick={handleExport} className="rounded-2xl bg-slate-200 dark:bg-white/10 px-4 py-3 text-sm font-medium text-slate-900 dark:text-white transition hover:bg-white/20">
-          <span className="inline-flex items-center gap-2"><Download className="h-4 w-4" /> Export CSV</span>
+
+        <button
+          onClick={handleExport}
+          className="inline-flex items-center gap-2 self-start lg:self-auto rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-4 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm backdrop-blur transition hover:bg-slate-100 dark:hover:bg-white/10 hover:border-slate-300 dark:hover:border-white/20"
+        >
+          <Download className="h-4 w-4 text-cyan-400" />
+          <span>Export Users CSV</span>
         </button>
       </div>
 
+      {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-5">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Total users</p>
-          <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{stats.total}</p>
+        <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-5 shadow-sm backdrop-blur">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              Total Accounts
+            </p>
+            <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-2.5 text-cyan-400">
+              <Users className="h-4 w-4" />
+            </div>
+          </div>
+          <p className="mt-2 text-3xl font-black tracking-tight text-slate-900 dark:text-white font-mono">
+            {stats.total.toLocaleString()}
+          </p>
+          <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">Registered member profiles</p>
         </div>
-        <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-5">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Active</p>
-          <p className="mt-2 text-3xl font-bold text-emerald-400">{stats.active}</p>
+
+        <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-5 shadow-sm backdrop-blur">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              Active Status
+            </p>
+            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-2.5 text-emerald-400">
+              <CheckCircle className="h-4 w-4" />
+            </div>
+          </div>
+          <p className="mt-2 text-3xl font-black tracking-tight text-emerald-500 dark:text-emerald-400 font-mono">
+            {stats.active.toLocaleString()}
+          </p>
+          <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">In good standing</p>
         </div>
-        <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-5">
-          <p className="text-sm text-slate-500 dark:text-slate-400">Banned</p>
-          <p className="mt-2 text-3xl font-bold text-red-400">{stats.banned}</p>
+
+        <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-5 shadow-sm backdrop-blur">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              Banned Accounts
+            </p>
+            <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-2.5 text-rose-400">
+              <ShieldAlert className="h-4 w-4" />
+            </div>
+          </div>
+          <p className="mt-2 text-3xl font-black tracking-tight text-rose-500 dark:text-rose-400 font-mono">
+            {stats.banned.toLocaleString()}
+          </p>
+          <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">Enforced by security policy</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-4">
+      {/* Filter & Search Bar */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_240px] gap-3">
         <div className="relative">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
           <input
             value={search}
             onChange={(event) => {
               setSearch(event.target.value)
               setPage(1)
             }}
-            placeholder="Search by username or email"
-            className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 py-3 pl-11 pr-4 text-slate-900 dark:text-white outline-none placeholder:text-slate-500 focus:border-cyan-400"
+            placeholder="Search accounts by username, email, or domain..."
+            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 py-2.5 pl-10 pr-4 text-xs font-medium text-slate-900 dark:text-white outline-none placeholder:text-slate-400 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/30 transition backdrop-blur shadow-sm"
           />
         </div>
+
         <select
           value={sort}
           onChange={(event) => {
             setSort(event.target.value)
             setPage(1)
           }}
-          className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white outline-none focus:border-cyan-400"
+          className="rounded-xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 px-3.5 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-200 outline-none focus:border-cyan-500 transition backdrop-blur shadow-sm cursor-pointer"
         >
-          <option value="newest">Newest</option>
-          <option value="oldest">Oldest</option>
-          <option value="mostEmails">Most Emails</option>
-          <option value="username">Username A-Z</option>
+          <option value="newest">Sort: Newest First</option>
+          <option value="oldest">Sort: Oldest First</option>
+          <option value="mostEmails">Sort: Most Inbound Mails</option>
+          <option value="username">Sort: Username (A-Z)</option>
         </select>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 backdrop-blur">
+      {/* Data Table */}
+      <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 backdrop-blur-xl shadow-sm overflow-hidden">
         {loading ? (
-          <div className="flex items-center justify-center py-24">
-            <div className="h-9 w-9 animate-spin rounded-full border-2 border-cyan-400 border-t-transparent" />
+          <div className="flex flex-col items-center justify-center py-24 gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-cyan-500 border-t-transparent" />
+            <p className="text-xs uppercase tracking-wider text-slate-400 font-semibold">
+              Querying Accounts...
+            </p>
           </div>
         ) : users.length === 0 ? (
-          <div className="py-20 text-center text-slate-500 dark:text-slate-400">No users found.</div>
+          <div className="py-20 text-center">
+            <Users className="mx-auto h-10 w-10 text-slate-400 mb-2 opacity-40" />
+            <p className="text-sm font-semibold text-slate-900 dark:text-white">No accounts found</p>
+            <p className="text-xs text-slate-400 mt-0.5">Try adjusting your search criteria.</p>
+          </div>
         ) : (
-          <div className="w-full">
-            <table className="w-full text-sm">
+          <div className="w-full overflow-x-auto">
+            <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-white/10 text-left text-slate-500 dark:text-slate-400">
-                  <th className="px-6 py-4 font-medium">User</th>
-                  <th className="px-6 py-4 font-medium">Email</th>
-                  <th className="px-6 py-4 font-medium">Joined</th>
-                  <th className="px-6 py-4 font-medium">Emails</th>
-                  <th className="px-6 py-4 font-medium">Last Active</th>
-                  <th className="px-6 py-4 font-medium">Status</th>
-                  <th className="px-6 py-4 font-medium text-right">Actions</th>
+                <tr className="border-b border-slate-200/80 dark:border-white/10 bg-slate-50/50 dark:bg-white/[0.02] text-slate-400 font-semibold uppercase tracking-wider text-[11px]">
+                  <th className="px-6 py-3.5">User Identity</th>
+                  <th className="px-6 py-3.5">Primary Email</th>
+                  <th className="px-6 py-3.5">Registered</th>
+                  <th className="px-6 py-3.5 text-center">Inbound Mails</th>
+                  <th className="px-6 py-3.5">Last Seen</th>
+                  <th className="px-6 py-3.5">Status</th>
+                  <th className="px-6 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-slate-200/60 dark:divide-white/5">
                 {users.map((user) => (
-                  <tr key={user.id} className="border-b border-slate-200 dark:border-white/5 hover:bg-slate-200 dark:hover:bg-white/5">
+                  <tr
+                    key={user.id}
+                    className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition"
+                  >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 font-semibold text-slate-900 dark:text-white">
-                          {user.username[0]?.toUpperCase()}
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-xs font-black text-white shadow-sm shrink-0">
+                          {user.username[0]?.toUpperCase() || 'U'}
                         </div>
-                        <span className="font-medium text-slate-900 dark:text-white">{user.username}</span>
+                        <div className="min-w-0">
+                          <p className="font-bold text-slate-900 dark:text-white truncate">
+                            {user.username}
+                          </p>
+                          <span className="text-[10px] text-slate-400 font-mono">ID #{user.id}</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-slate-600 dark:text-slate-300">{user.email}</td>
-                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{formatRelativeDate(user.createdAt)}</td>
+
                     <td className="px-6 py-4">
-                      <span className="rounded-full bg-cyan-400/10 px-2 py-0.5 text-xs text-cyan-600 dark:text-cyan-300">{user._count.emails}</span>
+                      <span className="font-mono text-cyan-600 dark:text-cyan-400 font-medium">
+                        {user.email}
+                      </span>
                     </td>
-                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400">{formatRelativeDate(user.lastActive)}</td>
+
+                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400">
+                      {formatRelativeDate(user.createdAt)}
+                    </td>
+
+                    <td className="px-6 py-4 text-center">
+                      <span className="inline-block rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-2.5 py-0.5 font-mono text-[11px] font-bold text-cyan-600 dark:text-cyan-300">
+                        {user._count.emails}
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-4 text-slate-500 dark:text-slate-400 font-mono text-[11px]">
+                      {formatRelativeDate(user.lastActive)}
+                    </td>
+
                     <td className="px-6 py-4">
-                      <span className={`rounded-full px-2 py-0.5 text-xs ${user.isBanned ? 'bg-red-500/10 text-red-300' : 'bg-emerald-500/10 text-emerald-300'}`}>
+                      <span
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold border ${
+                          user.isBanned
+                            ? 'border-rose-500/30 bg-rose-500/10 text-rose-400'
+                            : 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400'
+                        }`}
+                      >
+                        <span
+                          className={`h-1.5 w-1.5 rounded-full ${
+                            user.isBanned ? 'bg-rose-500' : 'bg-emerald-500'
+                          }`}
+                        />
                         {user.isBanned ? 'Banned' : 'Active'}
                       </span>
                     </td>
+
                     <td className="px-6 py-4 text-right">
                       <div className="relative inline-flex justify-end">
                         <button
                           onClick={() => setMenuOpenFor(menuOpenFor === user.id ? null : user.id)}
-                          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-3 py-2 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-2.5 py-1.5 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition shadow-sm"
                         >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <ChevronDown className="h-4 w-4" />
+                          <MoreHorizontal className="h-3.5 w-3.5" />
+                          <ChevronDown className="h-3 w-3 text-slate-400" />
                         </button>
-                        {menuOpenFor === user.id ? (
-                          <div className="absolute right-0 top-12 z-20 w-52 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] p-2 shadow-2xl">
-                            <button onClick={() => { router.push(`/admin/emails?userId=${user.id}`); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/5">
-                              <Eye className="h-4 w-4" /> View Emails
+
+                        {menuOpenFor === user.id && (
+                          <div className="absolute right-0 top-10 z-30 w-52 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c1017] p-1.5 shadow-2xl backdrop-blur-xl animate-fade-in">
+                            <button
+                              onClick={() => {
+                                router.push(`/admin/emails?userId=${user.id}`)
+                                setMenuOpenFor(null)
+                              }}
+                              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition"
+                            >
+                              <Eye className="h-3.5 w-3.5 text-cyan-400" /> View Emails
                             </button>
-                            <button onClick={() => { signIn('impersonation', { userId: String(user.id), callbackUrl: '/dashboard' }); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-cyan-600 dark:text-cyan-300 hover:bg-cyan-500/10">
-                              <LogIn className="h-4 w-4" /> Login as User
+
+                            <button
+                              onClick={() => {
+                                signIn('impersonation', {
+                                  userId: String(user.id),
+                                  callbackUrl: '/dashboard',
+                                })
+                                setMenuOpenFor(null)
+                              }}
+                              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/10 transition"
+                            >
+                              <LogIn className="h-3.5 w-3.5" /> Impersonate User
                             </button>
-                            <button onClick={() => { setBanModal(user); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/5">
-                              <Ban className="h-4 w-4" /> {user.isBanned ? 'Unban User' : 'Ban User'}
+
+                            <button
+                              onClick={() => {
+                                setBanModal(user)
+                                setMenuOpenFor(null)
+                              }}
+                              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 transition"
+                            >
+                              <Ban className="h-3.5 w-3.5" />
+                              {user.isBanned ? 'Unban Account' : 'Ban Account'}
                             </button>
-                            <button onClick={() => handleResetPassword(user)} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-white/5">
-                              <KeyRound className="h-4 w-4" /> Reset Password
+
+                            <button
+                              onClick={() => handleResetPassword(user)}
+                              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5 transition"
+                            >
+                              <KeyRound className="h-3.5 w-3.5 text-purple-400" /> Reset Password
                             </button>
-                            <button onClick={() => { setDeleteModal(user); setMenuOpenFor(null) }} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-red-300 hover:bg-red-500/10">
-                              <Trash2 className="h-4 w-4" /> Delete User
+
+                            <div className="my-1 border-t border-slate-200/60 dark:border-white/5" />
+
+                            <button
+                              onClick={() => {
+                                setDeleteModal(user)
+                                setMenuOpenFor(null)
+                              }}
+                              className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-rose-500 hover:bg-rose-500/10 transition"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" /> Delete Account
                             </button>
                           </div>
-                        ) : null}
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -271,81 +422,162 @@ export default function AdminUsersPage() {
             </table>
           </div>
         )}
-      </div>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Showing {Math.min((page - 1) * 20 + 1, total)}-{Math.min(page * 20, total)} of {total}
-        </p>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setPage((value) => Math.max(1, value - 1))} disabled={page === 1} className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-2 text-slate-900 dark:text-white disabled:opacity-50">
-            Previous
-          </button>
-          <span className="text-sm text-slate-500 dark:text-slate-400">Page {page} / {totalPages}</span>
-          <button onClick={() => setPage((value) => Math.min(totalPages, value + 1))} disabled={page >= totalPages} className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-2 text-slate-900 dark:text-white disabled:opacity-50">
-            Next
-          </button>
+        {/* Pagination Bar */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-slate-200/80 dark:border-white/10 px-6 py-4">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
+            Showing {Math.min((page - 1) * 20 + 1, total)}–{Math.min(page * 20, total)} of {total} accounts
+          </p>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((value) => Math.max(1, value - 1))}
+              disabled={page === 1}
+              className="rounded-lg border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-40 transition hover:bg-slate-100 dark:hover:bg-white/10"
+            >
+              Previous
+            </button>
+            <span className="text-xs font-mono text-slate-400">
+              Page {page} of {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
+              disabled={page >= totalPages}
+              className="rounded-lg border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 disabled:opacity-40 transition hover:bg-slate-100 dark:hover:bg-white/10"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
 
-      {banModal ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#0a0f1e] p-6">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{banModal.isBanned ? 'Unban user' : 'Ban user'}</h2>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Update moderation status for {banModal.username}.</p>
-            {!banModal.isBanned ? (
+      {/* Ban / Moderation Modal */}
+      {banModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0c1017] p-6 shadow-2xl">
+            <div className="flex items-center gap-2 mb-2">
+              <Ban className="h-5 w-5 text-amber-400" />
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                {banModal.isBanned ? 'Restore Account' : 'Ban Account'}
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500">
+              Update platform access for{' '}
+              <strong className="text-slate-900 dark:text-white font-mono">{banModal.username}</strong> ({banModal.email}).
+            </p>
+
+            {!banModal.isBanned && (
+              <div className="mt-4">
+                <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                  Ban Reason (Optional)
+                </label>
+                <input
+                  value={banReason}
+                  onChange={(event) => setBanReason(event.target.value)}
+                  placeholder="e.g. Terms violation, spam bot, suspicious relay..."
+                  className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/40 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-amber-500 transition"
+                />
+              </div>
+            )}
+
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => {
+                  setBanModal(null)
+                  setBanReason('')
+                }}
+                className="flex-1 rounded-xl border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleBanToggle}
+                disabled={actionLoading}
+                className="flex-1 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 py-2.5 text-xs font-bold text-white shadow-md hover:from-amber-400 hover:to-rose-500 disabled:opacity-60 transition"
+              >
+                {actionLoading ? 'Saving...' : banModal.isBanned ? 'Unban Account' : 'Confirm Ban'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Account Modal */}
+      {deleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md rounded-2xl border border-rose-500/30 bg-white dark:bg-[#0c1017] p-6 shadow-2xl">
+            <div className="flex items-center gap-2 mb-2">
+              <Trash2 className="h-5 w-5 text-rose-500" />
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">
+                Delete Account: {deleteModal.username}?
+              </h2>
+            </div>
+            <p className="text-xs text-rose-600 dark:text-rose-400 bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl">
+              This action is irreversible. All generated aliases, stored mail, and tokens for this user will be permanently destroyed.
+            </p>
+
+            <div className="mt-4">
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">
+                Type &quot;{deleteModal.username}&quot; to confirm
+              </label>
               <input
-                value={banReason}
-                onChange={(event) => setBanReason(event.target.value)}
-                placeholder="Ban reason"
-                className="mt-4 w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white outline-none focus:border-cyan-400"
+                value={confirmUsername}
+                onChange={(event) => setConfirmUsername(event.target.value)}
+                placeholder={deleteModal.username}
+                className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-black/40 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white outline-none focus:border-rose-500 transition font-mono"
               />
-            ) : null}
+            </div>
+
             <div className="mt-6 flex gap-3">
-              <button onClick={() => { setBanModal(null); setBanReason('') }} className="flex-1 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white">Cancel</button>
-              <button onClick={handleBanToggle} disabled={actionLoading} className="flex-1 rounded-2xl bg-red-500 px-4 py-3 font-medium text-slate-900 dark:text-white disabled:opacity-60">
-                {actionLoading ? 'Saving...' : banModal.isBanned ? 'Unban User' : 'Ban User'}
+              <button
+                onClick={() => {
+                  setDeleteModal(null)
+                  setConfirmUsername('')
+                }}
+                className="flex-1 rounded-xl border border-slate-200 dark:border-white/10 py-2.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                disabled={confirmUsername !== deleteModal.username || actionLoading}
+                className="flex-1 rounded-xl bg-rose-600 py-2.5 text-xs font-bold text-white shadow-md hover:bg-rose-500 disabled:opacity-50 transition"
+              >
+                {actionLoading ? 'Deleting...' : 'Permanently Delete'}
               </button>
             </div>
           </div>
         </div>
-      ) : null}
+      )}
 
-      {deleteModal ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#0a0f1e] p-6">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Delete {deleteModal.username}?</h2>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">This will delete user and ALL their emails. Type the username to confirm.</p>
-            <input
-              value={confirmUsername}
-              onChange={(event) => setConfirmUsername(event.target.value)}
-              placeholder={`Type "${deleteModal.username}"`}
-              className="mt-4 w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white outline-none focus:border-red-400"
-            />
-            <div className="mt-6 flex gap-3">
-              <button onClick={() => { setDeleteModal(null); setConfirmUsername('') }} className="flex-1 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 px-4 py-3 text-slate-900 dark:text-white">Cancel</button>
-              <button onClick={handleDelete} disabled={confirmUsername !== deleteModal.username || actionLoading} className="flex-1 rounded-2xl bg-red-500 px-4 py-3 font-medium text-slate-900 dark:text-white disabled:opacity-60">
-                {actionLoading ? 'Deleting...' : 'Delete User'}
-              </button>
+      {/* Password Reset Modal */}
+      {passwordModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-md rounded-2xl border border-cyan-500/30 bg-white dark:bg-[#0c1017] p-6 shadow-2xl">
+            <div className="flex items-center gap-2 mb-2">
+              <KeyRound className="h-5 w-5 text-cyan-400" />
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Password Generated</h2>
             </div>
-          </div>
-        </div>
-      ) : null}
+            <p className="text-xs text-slate-500">
+              Copy this temporary password now. It will only be shown once for{' '}
+              <strong className="text-slate-900 dark:text-white">{passwordModal.user.username}</strong>.
+            </p>
 
-      {passwordModal ? (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#0a0f1e] p-6">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Password Reset</h2>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Copy this password now. It will only be shown once for {passwordModal.user.username}.</p>
-            <div className="mt-4 rounded-2xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 font-mono text-cyan-600 dark:text-cyan-300">
+            <div className="mt-4 rounded-xl border border-cyan-500/30 bg-cyan-500/10 p-3.5 font-mono text-center text-sm font-bold text-cyan-600 dark:text-cyan-300 select-all">
               {passwordModal.password}
             </div>
+
             <div className="mt-6 flex justify-end">
-              <button onClick={() => setPasswordModal(null)} className="rounded-2xl bg-slate-200 dark:bg-white/10 px-4 py-3 text-slate-900 dark:text-white hover:bg-white/20">Close</button>
+              <button
+                onClick={() => setPasswordModal(null)}
+                className="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-md hover:from-cyan-400 hover:to-blue-500 transition"
+              >
+                Dismiss
+              </button>
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   )
 }
