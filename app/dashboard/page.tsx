@@ -173,7 +173,7 @@ export default function DashboardPage() {
     } | null
   } | null>(null)
   const [showCryptoModal, setShowCryptoModal] = useState(false)
-  const [canvasTheme, setCanvasTheme] = useState<'light' | 'dark'>('light')
+  const [canvasTheme, setCanvasTheme] = useState<'light' | 'dark'>('dark')
   const previousEmailsRef = useRef<EmailItem[]>([])
 
   const fetchApiKey = useCallback(async () => {
@@ -1071,13 +1071,37 @@ export default function DashboardPage() {
                             background: ${canvasTheme === 'dark' ? '#0c1017' : '#ffffff'};
                             word-break: break-word;
                           }
-                          ${canvasTheme === 'dark' ? '* { color-scheme: dark; } p, span, div, h1, h2, h3, h4, h5, h6, li, td, th { color: #f1f5f9 !important; } a, a * { color: #38bdf8 !important; }' : ''}
+                          ${canvasTheme === 'dark' ? `
+                            * { color-scheme: dark; }
+                            body, table, tbody, thead, tr, td, th, div, section, article, main, header, footer {
+                              background-color: transparent !important;
+                            }
+                            body {
+                              background-color: #0c1017 !important;
+                              color: #f1f5f9 !important;
+                            }
+                            p, span, div, h1, h2, h3, h4, h5, h6, li, td, th, strong, b, em, i {
+                              color: #f1f5f9 !important;
+                            }
+                            a, a * {
+                              color: #38bdf8 !important;
+                              text-decoration: underline;
+                            }
+                            hr {
+                              border-color: rgba(255, 255, 255, 0.1) !important;
+                            }
+                          ` : `
+                            body {
+                              background-color: #ffffff !important;
+                              color: #0f172a !important;
+                            }
+                          `}
                           ::-webkit-scrollbar { width: 8px; height: 8px; }
                           ::-webkit-scrollbar-track { background: transparent; }
                           ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 4px; }
                           ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.5); }
                           a { color: ${canvasTheme === 'dark' ? '#38bdf8' : '#0284c7'}; }
-                          img { max-width: 100% !important; height: auto !important; }
+                          img { max-width: 100% !important; height: auto !important; border-radius: 6px; }
                           table { max-width: 100% !important; border-collapse: collapse; }
                           pre, code { background: ${canvasTheme === 'dark' ? '#1e293b' : '#f1f5f9'}; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
                         </style></head><body>${selectedEmail.bodyHtml}</body></html>`}
