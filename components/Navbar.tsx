@@ -201,7 +201,7 @@ export default function Navbar() {
               </div>
             )}
             <p className="text-center text-[11px] text-slate-500">
-              GhostMail v2.0 • Created & Owned by officialum1
+              GhostMail v2.0 • Ultra-fast disposable mail
             </p>
           </div>
         </div>

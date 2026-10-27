@@ -96,7 +96,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-t border-slate-200 dark:border-white/5 pt-6 text-xs text-slate-500 dark:text-slate-400">
           <div>
-            © {new Date().getFullYear()} GhostMail. Created & Owned by <strong className="text-slate-900 dark:text-white">officialum1</strong> • umiskills Suite.
+            © {new Date().getFullYear()} GhostMail. All rights reserved.
           </div>
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
