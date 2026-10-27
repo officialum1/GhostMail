@@ -165,7 +165,7 @@ export default function AdminUsersPage() {
               <UserCheck className="h-3 w-3 text-cyan-400" />
               Member Directory
             </span>
-            <span className="text-xs text-slate-400">officialum1 • umiskills</span>
+            <span className="text-xs text-slate-400">Accounts &amp; Authentication Registry</span>
           </div>
           <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             Registered Accounts

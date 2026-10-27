@@ -68,10 +68,10 @@ export default function ActivityFeed() {
   }, [fetchActivity])
 
   return (
-    <div className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-5 h-full flex flex-col">
+    <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 backdrop-blur-xl shadow-sm p-5 h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Live Activity</h2>
-        <div className="flex items-center gap-2 text-xs text-emerald-400">
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white">Live Activity Stream</h2>
+        <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
@@ -82,7 +82,7 @@ export default function ActivityFeed() {
 
       <div className="flex-1 overflow-y-auto space-y-2 max-h-[520px] custom-scrollbar pr-1">
         {items.length === 0 ? (
-          <p className="text-sm text-slate-500 text-center py-8">No activity yet</p>
+          <p className="text-xs text-slate-500 text-center py-8">No inbound stream activity yet</p>
         ) : (
           items.map((item) => {
             const style = typeStyles[item.type] || { dot: 'bg-slate-400', label: 'text-slate-600 dark:text-slate-300' }
@@ -93,14 +93,14 @@ export default function ActivityFeed() {
             return (
               <div
                 key={item.id}
-                className={`flex gap-3 rounded-xl border border-slate-200 dark:border-white/5 bg-black/20 px-3 py-2.5 transition-all ${
+                className={`flex gap-3 rounded-xl border border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-white/[0.02] p-3 transition-all hover:bg-slate-100 dark:hover:bg-white/5 ${
                   isNew ? 'animate-[fadeIn_0.4s_ease-out]' : ''
                 }`}
               >
                 <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${style.dot}`} />
                 <div className="min-w-0 flex-1">
-                  <p className={`text-sm truncate ${style.label}`}>{formatMessage(item)}</p>
-                  <p className="text-[10px] text-slate-500 mt-0.5">{relativeTime(item.createdAt)}</p>
+                  <p className={`text-xs font-medium truncate ${style.label}`}>{formatMessage(item)}</p>
+                  <p className="text-[10px] text-slate-500 font-mono mt-0.5">{relativeTime(item.createdAt)}</p>
                 </div>
               </div>
             )

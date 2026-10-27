@@ -24,8 +24,9 @@ export default function AdminManagementLayout({ children }: { children: React.Re
         />
         <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#07090e]/80 px-4 py-2.5 backdrop-blur-md lg:px-8">
           <div className="flex items-center gap-2">
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400 hidden sm:inline">
-              GhostMail Operations • officialum1
+              GhostMail Enterprise Operations
             </span>
           </div>
           <AdminCommandPalette />

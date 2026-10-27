@@ -223,7 +223,7 @@ export default function AdminCryptoAndApiManagement() {
       </div>
 
       {/* 1. Crypto Wallet Config */}
-      <section className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-6 space-y-5">
+      <section className="border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 rounded-2xl backdrop-blur-xl shadow-sm p-6 space-y-5">
         <div className="flex items-center gap-2">
           <Zap className="h-5 w-5 text-amber-500 dark:text-amber-400" />
           <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Crypto Wallet Receiving Addresses & Pricing</h3>
@@ -301,7 +301,7 @@ export default function AdminCryptoAndApiManagement() {
       </section>
 
       {/* 2. Crypto Upgrade Orders */}
-      <section className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-6 space-y-4">
+      <section className="border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 rounded-2xl backdrop-blur-xl shadow-sm p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-emerald-500 dark:text-emerald-400" />
@@ -395,7 +395,7 @@ export default function AdminCryptoAndApiManagement() {
       </section>
 
       {/* 3. Active Developer API Keys */}
-      <section className="bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl backdrop-blur p-6 space-y-6">
+      <section className="border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 rounded-2xl backdrop-blur-xl shadow-sm p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex items-center gap-2">
             <Key className="h-5 w-5 text-cyan-500 dark:text-cyan-400" />

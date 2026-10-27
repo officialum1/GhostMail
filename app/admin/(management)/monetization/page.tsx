@@ -253,18 +253,18 @@ export default function AdminMonetizationPage() {
 
       {/* KPI Stats Row */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 p-5 backdrop-blur shadow-sm">
+        <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-5 backdrop-blur-xl shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Total Crypto Revenue</span>
             <div className="rounded-xl bg-emerald-500/10 p-2 text-emerald-500">
               <DollarSign className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-3 text-3xl font-extrabold text-slate-900 dark:text-white">${stats.totalRevenue}</p>
+          <p className="mt-3 text-3xl font-extrabold text-slate-900 dark:text-white font-mono">${stats.totalRevenue}</p>
           <p className="mt-1 text-xs text-slate-500">{stats.approvedCount} approved subscriptions</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 p-5 backdrop-blur shadow-sm">
+        <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-5 backdrop-blur-xl shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pending Review</span>
             <div className="rounded-xl bg-amber-500/10 p-2 text-amber-500">
@@ -272,7 +272,7 @@ export default function AdminMonetizationPage() {
             </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
-            <p className="text-3xl font-extrabold text-slate-900 dark:text-white">{stats.pendingCount}</p>
+            <p className="text-3xl font-extrabold text-slate-900 dark:text-white font-mono">{stats.pendingCount}</p>
             {stats.pendingCount > 0 && (
               <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-bold text-amber-400 animate-pulse">
                 ACTION REQUIRED
@@ -282,31 +282,31 @@ export default function AdminMonetizationPage() {
           <p className="mt-1 text-xs text-slate-500">Awaiting TxID validation</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 p-5 backdrop-blur shadow-sm">
+        <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-5 backdrop-blur-xl shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Active API Keys</span>
             <div className="rounded-xl bg-cyan-500/10 p-2 text-cyan-500">
               <Key className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-3 text-3xl font-extrabold text-slate-900 dark:text-white">{stats.activeKeysCount}</p>
+          <p className="mt-3 text-3xl font-extrabold text-slate-900 dark:text-white font-mono">{stats.activeKeysCount}</p>
           <p className="mt-1 text-xs text-slate-500">Developers with live API access</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 p-5 backdrop-blur shadow-sm">
+        <div className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-5 backdrop-blur-xl shadow-sm">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pro Plan Pricing</span>
             <div className="rounded-xl bg-indigo-500/10 p-2 text-indigo-500">
               <Sparkles className="h-5 w-5" />
             </div>
           </div>
-          <p className="mt-3 text-3xl font-extrabold text-slate-900 dark:text-white">${config.proPriceUsd}<span className="text-sm font-normal text-slate-500"> /mo</span></p>
+          <p className="mt-3 text-3xl font-extrabold text-slate-900 dark:text-white font-mono">${config.proPriceUsd}<span className="text-sm font-normal text-slate-500"> /mo</span></p>
           <p className="mt-1 text-xs text-slate-500">USDT / Binance Pay checkout</p>
         </div>
       </div>
 
       {/* Receiving Wallets Configuration Card */}
-      <section className="rounded-3xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 p-6 md:p-8 backdrop-blur shadow-sm space-y-6">
+      <section className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-6 md:p-8 backdrop-blur-xl shadow-sm space-y-6">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
             <Zap className="h-5 w-5" />
@@ -386,7 +386,7 @@ export default function AdminMonetizationPage() {
       </section>
 
       {/* Orders Table Section */}
-      <section className="rounded-3xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 p-6 md:p-8 backdrop-blur shadow-sm space-y-6">
+      <section className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-6 md:p-8 backdrop-blur-xl shadow-sm space-y-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div className="flex items-center gap-3">
             <ShieldCheck className="h-5 w-5 text-emerald-500" />
@@ -525,7 +525,7 @@ export default function AdminMonetizationPage() {
       </section>
 
       {/* Developer API Keys Section */}
-      <section className="rounded-3xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-white/5 p-6 md:p-8 backdrop-blur shadow-sm space-y-6">
+      <section className="rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0c1017]/80 p-6 md:p-8 backdrop-blur-xl shadow-sm space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Key className="h-5 w-5 text-cyan-500" />

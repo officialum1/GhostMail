@@ -1048,41 +1048,46 @@ export default function DashboardPage() {
                     )}
                   </div>
 
-                  {/* Body Content with Authentic Email Canvas Frame */}
-                  <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-100/50 dark:bg-[#07090e]">
-                    <div className={`mx-auto max-w-4xl rounded-2xl overflow-hidden transition-all ${
-                      canvasTheme === 'light'
-                        ? 'bg-white shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-200 dark:border-slate-800'
-                        : 'bg-[#0c1017] shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10'
-                    }`}>
-                      {selectedEmail.bodyHtml ? (
-                        <iframe
-                          title="email-reading-pane"
-                          sandbox="allow-popups allow-popups-to-escape-sandbox"
-                          referrerPolicy="no-referrer"
-                          srcDoc={`<!DOCTYPE html><html><head><base target="_blank"><meta name="referrer" content="no-referrer"><style>
-                            html, body {
-                              margin: 0;
-                              padding: 24px;
-                              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-                              line-height: 1.6;
-                              color: ${canvasTheme === 'dark' ? '#f1f5f9' : '#0f172a'};
-                              background: ${canvasTheme === 'dark' ? '#0c1017' : '#ffffff'};
-                              word-break: break-word;
-                            }
-                            a { color: ${canvasTheme === 'dark' ? '#38bdf8' : '#0284c7'}; }
-                            img { max-width: 100% !important; height: auto !important; border-radius: 6px; }
-                            table { max-width: 100% !important; border-collapse: collapse; }
-                            pre, code { background: ${canvasTheme === 'dark' ? '#1e293b' : '#f1f5f9'}; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
-                          </style></head><body>${selectedEmail.bodyHtml}</body></html>`}
-                          className="w-full min-h-[550px] border-0"
-                        />
-                      ) : (
-                        <div className="p-8 text-sm leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-wrap font-sans">
-                          {selectedEmail.bodyText || 'This email has no text content.'}
-                        </div>
-                      )}
-                    </div>
+                  {/* Full-Bleed Authentic Email Body Canvas (Gmail / Apple Mail Standard) */}
+                  <div
+                    className={`flex-1 relative flex flex-col min-h-0 w-full overflow-hidden transition-colors ${
+                      canvasTheme === 'light' ? 'bg-white' : 'bg-[#0c1017]'
+                    }`}
+                  >
+                    {selectedEmail.bodyHtml ? (
+                      <iframe
+                        title="email-reading-pane"
+                        sandbox="allow-popups allow-popups-to-escape-sandbox"
+                        referrerPolicy="no-referrer"
+                        srcDoc={`<!DOCTYPE html><html><head><base target="_blank"><meta name="referrer" content="no-referrer"><meta name="viewport" content="width=device-width, initial-scale=1"><style>
+                          html, body {
+                            margin: 0;
+                            padding: 28px 36px;
+                            min-height: 100%;
+                            box-sizing: border-box;
+                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                            line-height: 1.6;
+                            color: ${canvasTheme === 'dark' ? '#f1f5f9' : '#0f172a'};
+                            background: ${canvasTheme === 'dark' ? '#0c1017' : '#ffffff'};
+                            word-break: break-word;
+                          }
+                          ${canvasTheme === 'dark' ? '* { color-scheme: dark; } p, span, div, h1, h2, h3, h4, h5, h6, li, td, th { color: #f1f5f9 !important; } a, a * { color: #38bdf8 !important; }' : ''}
+                          ::-webkit-scrollbar { width: 8px; height: 8px; }
+                          ::-webkit-scrollbar-track { background: transparent; }
+                          ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.3); border-radius: 4px; }
+                          ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.5); }
+                          a { color: ${canvasTheme === 'dark' ? '#38bdf8' : '#0284c7'}; }
+                          img { max-width: 100% !important; height: auto !important; }
+                          table { max-width: 100% !important; border-collapse: collapse; }
+                          pre, code { background: ${canvasTheme === 'dark' ? '#1e293b' : '#f1f5f9'}; padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+                        </style></head><body>${selectedEmail.bodyHtml}</body></html>`}
+                        className="w-full h-full flex-1 border-0 block"
+                      />
+                    ) : (
+                      <div className="flex-1 overflow-y-auto p-6 md:p-8 text-sm leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-wrap font-sans">
+                        {selectedEmail.bodyText || 'This email has no text content.'}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}

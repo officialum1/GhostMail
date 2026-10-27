@@ -312,7 +312,7 @@ export default function AdminDashboardPage() {
               <Radio className="h-3 w-3 animate-pulse text-cyan-400" />
               Live Operations
             </span>
-            <span className="text-xs text-slate-400">officialum1 • umiskills</span>
+            <span className="text-xs text-slate-400">Global Ingestion & Edge Relay</span>
           </div>
           <h1 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
             Admin Mission Control
